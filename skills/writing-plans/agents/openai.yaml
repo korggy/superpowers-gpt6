@@ -1,0 +1,4 @@
+interface:
+  display_name: "Writing Plans"
+  short_description: "Plan deliverables, interfaces, and verification"
+  default_prompt: "Use $writing-plans to help with this task within the scope I specify."

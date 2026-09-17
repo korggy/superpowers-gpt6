@@ -12,11 +12,11 @@ Flaky tests often guess at timing with arbitrary delays. This creates race condi
 digraph when_to_use {
     "Test uses setTimeout/sleep?" [shape=diamond];
     "Testing timing behavior?" [shape=diamond];
-    "Document WHY timeout needed" [shape=box];
+    "Use controlled time and assert timing contract" [shape=box];
     "Use condition-based waiting" [shape=box];
 
     "Test uses setTimeout/sleep?" -> "Testing timing behavior?" [label="yes"];
-    "Testing timing behavior?" -> "Document WHY timeout needed" [label="yes"];
+    "Testing timing behavior?" -> "Use controlled time and assert timing contract" [label="yes"];
     "Testing timing behavior?" -> "Use condition-based waiting" [label="no"];
 }
 ```
@@ -27,9 +27,7 @@ digraph when_to_use {
 - Tests timeout when run in parallel
 - Waiting for async operations to complete
 
-**Don't use when:**
-- Testing actual timing behavior (debounce, throttle intervals)
-- Always document WHY if using arbitrary timeout
+**For actual timing behavior** (debounce, throttle intervals), prefer the project's controlled clock or timer facilities and assert the timing contract. Waiting for an output alone does not establish when it occurred.
 
 ## Core Pattern
 
@@ -92,19 +90,19 @@ See `condition-based-waiting-example.ts` in this directory for complete implemen
 **❌ Stale data:** Cache state before loop
 **✅ Fix:** Call getter inside loop for fresh data
 
-## When Arbitrary Timeout IS Correct
+## Observable Progress and Timer Behavior
 
 ```typescript
-// Tool ticks every 100ms - need 2 ticks to verify partial output
-await waitForEvent(manager, 'TOOL_STARTED'); // First: wait for condition
-await new Promise(r => setTimeout(r, 200));   // Then: wait for timed behavior
-// 200ms = 2 ticks at 100ms intervals - documented and justified
+// This test needs two output chunks, regardless of scheduler delay.
+await waitFor(() => outputChunks.length >= 2, 'two output chunks');
+expect(outputChunks.length).toBeGreaterThanOrEqual(2);
 ```
 
-**Requirements:**
-1. First wait for triggering condition
-2. Based on known timing (not guessing)
-3. Comment explaining WHY
+A 200ms wall-clock sleep does not guarantee two callbacks from a 100ms interval. Scheduler delays and callback work can postpone observable progress. Wait for the output or event count that the test actually needs, with a bounded timeout for failure.
+
+When testing the interval itself, use the project's controlled-time facilities: establish when the timer starts, advance to just before its deadline and assert no output, then cross the deadline and assert the expected output. Advance through the next deadline to test subsequent ticks. Use the framework's supported mechanism to settle pending asynchronous work.
+
+Use real elapsed-time waits only for explicit real-time integration requirements where controlled time cannot exercise the behavior. Assert observable results with justified bounds and tolerances; elapsed time alone is not proof that callbacks ran.
 
 ## Real-World Impact
 

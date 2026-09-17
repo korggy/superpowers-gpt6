@@ -1,0 +1,4 @@
+interface:
+  display_name: "Using Superpowers"
+  short_description: "Select the right GPT-6 development workflow"
+  default_prompt: "Use $using-superpowers to help with this task within the scope I specify."

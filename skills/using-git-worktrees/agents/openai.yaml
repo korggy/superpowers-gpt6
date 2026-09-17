@@ -1,0 +1,4 @@
+interface:
+  display_name: "Using Git Worktrees"
+  short_description: "Manage requested isolation and workspace ownership"
+  default_prompt: "Use $using-git-worktrees to help with this task within the scope I specify."

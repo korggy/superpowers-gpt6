@@ -1,0 +1,4 @@
+interface:
+  display_name: "Requesting Code Review"
+  short_description: "Review changes against requirements and evidence"
+  default_prompt: "Use $requesting-code-review to help with this task within the scope I specify."

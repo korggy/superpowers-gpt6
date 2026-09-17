@@ -1,0 +1,4 @@
+interface:
+  display_name: "Writing Skills"
+  short_description: "Author focused skills and evaluate their behavior"
+  default_prompt: "Use $writing-skills to help with this task within the scope I specify."

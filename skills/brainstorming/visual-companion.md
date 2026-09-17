@@ -32,8 +32,13 @@ The server watches a directory for HTML files and serves the newest one to the b
 
 ## Starting a Session
 
+Follow the [shared workflow policy](../using-superpowers/references/workflow-policy.md).
+Use the companion when the task authorizes the local server and browser side effects;
+an explicit request to use it already supplies that authorization. Do not ask again
+for the same scope. Prefer an available host-native visual surface when suitable.
+
 ```bash
-# Start AFTER the user approves the companion. --open auto-opens their browser on
+# Start within authorized scope. --open auto-opens the browser on
 # the first screen; --project-dir persists mockups and enables same-port restart.
 scripts/start-server.sh --project-dir /path/to/project --open
 
@@ -112,17 +117,17 @@ Use `--url-host` to control what hostname is printed in the returned URL JSON.
    - Use your file-creation tool — **never use cat/heredoc** (dumps noise into terminal)
    - Server automatically serves the newest file
 
-2. **Tell user what to expect and end your turn:**
-   - Remind them of the URL (every step, not just first)
-   - Give a brief text summary of what's on screen (e.g., "Showing 3 layout options for the homepage")
-   - Ask them to respond in the terminal: "Take a look and let me know what you think. Click to select an option if you'd like."
+2. **Explain the screen and continue authorized work:**
+   - Give a brief summary of what the screen shows. Share its complete URL initially and when it changes or the user needs it again.
+   - A preview alone does not require feedback or approval. Continue when the next step is already authorized and no material decision is unresolved.
+   - When a user decision or explicit approval checkpoint blocks the next step, ask the focused question and wait for that answer. Continue independent authorized work while waiting when the host supports it.
 
-3. **On your next turn** — after the user responds in the terminal:
+3. **When feedback arrives:**
    - Read `$STATE_DIR/events` if it exists — this contains the user's browser interactions (clicks, selections) as JSON lines
    - Merge with the user's terminal text to get the full picture
    - The terminal message is the primary feedback; `state_dir/events` provides structured interaction data
 
-4. **Iterate or advance** — if feedback changes current screen, write a new file (e.g., `layout-v2.html`). Only move to the next question when the current step is validated.
+4. **Iterate or advance** — if feedback changes the current screen, write a new file (e.g., `layout-v2.html`). Honor unresolved decisions and explicit checkpoints; otherwise continue toward the requested deliverable without requiring validation of every screen.
 
 5. **Unload when returning to terminal** — when the next step doesn't need the browser (e.g., a clarifying question, a tradeoff discussion), push a waiting screen to clear the stale content:
 

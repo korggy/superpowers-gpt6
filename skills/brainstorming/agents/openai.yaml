@@ -1,0 +1,4 @@
+interface:
+  display_name: "Brainstorming"
+  short_description: "Resolve meaningful requirements and design choices"
+  default_prompt: "Use $brainstorming to help with this task within the scope I specify."

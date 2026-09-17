@@ -13,9 +13,9 @@ here:
 2. Every test exercises the real thing
 ```
 
-Strict TDD produces both naturally: a test written first and watched
-failing against real code has already proven it can fail, and only earns
-a mock when the real dependency proves slow or external.
+A focused failing regression can demonstrate both. Existing implementation
+does not need to be discarded to obtain that evidence; follow the shared
+workflow policy and isolate a comparison with the previous behavior when useful.
 
 ## Principle 1: Name the Break
 
@@ -48,7 +48,7 @@ retried 5 times and the 6th attempt never happens."
 contains an exact line proves only that the source is the source. Run
 scripts against controlled inputs and assert outputs, side effects, or
 exit codes. Documents that instruct agents are tested by the consuming
-agent's behavior (superpowers:writing-skills); prose for humans earns no
+agent's behavior (superpowers-gpt6:writing-skills); prose for humans earns no
 test at all.
 
 **Your code, not the framework.** Test the contract your code makes at
@@ -80,10 +80,9 @@ BEFORE writing the test body:
 
 ## Principle 2: Exercise the Real Thing
 
-**The mock earns no assertions.** A mock assertion passes when the mock
-is present and fails when it is absent — it says nothing about the
-component. Assert the real component's behavior; if the mock is what you
-are checking, unmock it or delete the assertion.
+**Mock existence is not behavior.** Merely asserting that a substitute exists
+does not exercise the component's contract. Assertions on arguments, ordering,
+and call counts are useful when they verify a required interaction with a dependency.
 
 ```typescript
 // ✅ Real behavior
@@ -116,10 +115,10 @@ part of the contract, assert them — a fake that accepts anything verifies
 nothing. Give each branch (success, error, malformed) its own fixture or
 spy, so the wrong branch cannot satisfy the expectation.
 
-**Mirror real data completely.** Mock the complete structure as it exists
-in reality — all documented fields — not just the ones your test reads.
-Partial mocks fail silently when downstream code reads an omitted field:
-the test passes while integration breaks.
+**Represent the relevant contract faithfully.** Include fields and variants
+that the exercised path depends on, including significant omitted or malformed
+values. Use shared schemas or realistic fixtures when structure is important;
+do not copy an entire external schema into every unrelated unit test.
 
 **Production classes carry production methods only.** Cleanup that only
 tests need lives in test utilities, never as a `destroy()` on the
@@ -139,18 +138,18 @@ BEFORE adding a mock or test helper:
   List the real method's side effects; keep the ones the test
   depends on real — mock the slow/external level below them.
 
-  Mock responses mirror the complete real structure.
+  Mock responses represent the exercised contract and relevant failure cases.
 
   A method only tests call lives in test utilities, not production.
 
   About to assert on the mock itself?
-    Unmock it or delete the assertion.
+    Keep assertions that verify required interactions; replace mock-existence checks.
 ```
 
 ## Tests Ship With the Implementation
 
-The TDD cycle — failing test, minimal implementation, refactor — is what
-"complete" means. Ship the tests the behavior needs and only those:
+Completion follows acceptance criteria and meaningful evidence, not the order
+in which code and tests were written. Ship the tests the behavior needs:
 trivial code and human prose earn none, and a test written to satisfy
 process costs maintenance forever.
 
@@ -178,7 +177,7 @@ test as tautological.
 | Reach for a dependency test | Test your boundary contract, not their documented mechanics |
 | Want to assert on a mocked element | Test the real component, or unmock it |
 | Are about to mock a method | Learn its side effects; mock the slow/external level |
-| Build a mock response | Mirror the real structure completely |
+| Build a mock response | Represent the exercised contract and failure cases |
 | Need cleanup only tests use | Put it in test utilities |
 | Watch mock setup balloon | Switch to an integration test with real components |
 | Finish a test file | Run the mutation check |

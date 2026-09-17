@@ -1,0 +1,4 @@
+interface:
+  display_name: "Systematic Debugging"
+  short_description: "Trace failures to supported causal explanations"
+  default_prompt: "Use $systematic-debugging to help with this task within the scope I specify."

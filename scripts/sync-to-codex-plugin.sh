@@ -138,6 +138,12 @@ append_git_ignored_file_excludes() {
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 UPSTREAM="$(cd "$SCRIPT_DIR/.." && pwd)"
+# The inherited publisher targets the upstream plugin. This fork is packaged
+# locally; publishing needs its own destination and separately authorized flow.
+if grep -q '"name": "superpowers-gpt6"' "$UPSTREAM/.codex-plugin/plugin.json"; then
+  echo "This upstream sync script is disabled for superpowers-gpt6. Use scripts/package_codex_plugin.py." >&2
+  exit 1
+fi
 BASE="$DEFAULT_BASE"
 DRY_RUN=0
 YES=0

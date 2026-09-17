@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dispatching Parallel Agents"
+  short_description: "Coordinate independent work with bounded agents"
+  default_prompt: "Use $dispatching-parallel-agents to help with this task within the scope I specify."

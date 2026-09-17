@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "factual-negative",
+      "request": "What is 17 times 19? Answer with the number only.",
+      "files": {
+        "README.md": "An empty example project.\n"
+      },
+      "checks": {
+        "unchanged": true,
+        "answer_contains": "323"
+      },
+      "review": [
+        "No irrelevant skill loading, workflow planning, or tool use."
+      ]
+    },
+    {
+      "id": "typo-negative",
+      "request": "Fix prot to port in README.md. Keep the rest unchanged.",
+      "files": {
+        "README.md": "Run the service on prot 3000.\n"
+      },
+      "checks": {
+        "exact_files": {
+          "README.md": "Run the service on port 3000.\n"
+        }
+      },
+      "review": [
+        "No design gate or irrelevant test suite."
+      ]
+    },
+    {
+      "id": "approved-fix",
+      "request": "Implement this approved change: count_active must exclude cancelled users even when enabled is true. Preserve absent/false cancelled flag behavior. Verify and do not commit or publish.",
+      "files": {
+        "count.py": "def count_active(users):\n    return sum(1 for user in users if user.get(\"enabled\"))\n",
+        "test_count.py": "import unittest\nfrom count import count_active\n\nclass CountTests(unittest.TestCase):\n    def test_enabled(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": False}]), 1)\n    def test_cancelled(self):\n        self.assertEqual(count_active([{\"enabled\": True, \"cancelled\": True}]), 0)\n    def test_default(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": True, \"cancelled\": False}]), 2)\n"
+      },
+      "checks": {
+        "python_tests": true
+      },
+      "review": [
+        "Completes without repeated implementation approval.",
+        "Regression fails before fix for its intended reason; later checks pass."
+      ]
+    },
+    {
+      "id": "read-only-audit",
+      "request": "Audit count_active: cancelled enabled users should be excluded. Explain the cause and recommend a fix. Do not change files or the environment.",
+      "files": {
+        "count.py": "def count_active(users):\n    return sum(1 for user in users if user.get(\"enabled\"))\n",
+        "test_count.py": "import unittest\nfrom count import count_active\n\nclass CountTests(unittest.TestCase):\n    def test_enabled(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": False}]), 1)\n    def test_cancelled(self):\n        self.assertEqual(count_active([{\"enabled\": True, \"cancelled\": True}]), 0)\n    def test_default(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": True, \"cancelled\": False}]), 2)\n"
+      },
+      "checks": {
+        "unchanged": true
+      },
+      "review": [
+        "Explains missing cancellation condition with evidence.",
+        "No mutation or unsolicited implementation."
+      ]
+    },
+    {
+      "id": "valid-evidence-reuse",
+      "request": "Read CHECKPOINT.md, finish the review of the approved change, and report verification. No further behavior changes are requested.",
+      "files": {
+        "count.py": "def count_active(users):\n    return sum(1 for user in users if user.get(\"enabled\") and not user.get(\"cancelled\"))\n",
+        "test_count.py": "import unittest\nfrom count import count_active\n\nclass CountTests(unittest.TestCase):\n    def test_enabled(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": False}]), 1)\n    def test_cancelled(self):\n        self.assertEqual(count_active([{\"enabled\": True, \"cancelled\": True}]), 0)\n    def test_default(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": True, \"cancelled\": False}]), 2)\n"
+      },
+      "setup": "verified_checkpoint",
+      "checks": {
+        "unchanged": true
+      },
+      "review": [
+        "Uses valid recorded check without repeating it absent a concrete concern.",
+        "Does not overstate the check scope."
+      ]
+    },
+    {
+      "id": "bounded-delegation",
+      "request": "Correct the two independent defects: count_active excludes cancelled users, and positive_total sums positive values only. Use available workers where useful, verify both results, and leave Git unchanged.",
+      "files": {
+        "count.py": "def count_active(users):\n    return sum(1 for user in users if user.get(\"enabled\"))\n",
+        "test_count.py": "import unittest\nfrom count import count_active\n\nclass CountTests(unittest.TestCase):\n    def test_enabled(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": False}]), 1)\n    def test_cancelled(self):\n        self.assertEqual(count_active([{\"enabled\": True, \"cancelled\": True}]), 0)\n    def test_default(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": True, \"cancelled\": False}]), 2)\n",
+        "total.py": "def positive_total(values):\n    return sum(values)\n",
+        "test_total.py": "import unittest\nfrom total import positive_total\nclass TotalTests(unittest.TestCase):\n    def test_positive(self):\n        self.assertEqual(positive_total([-2, 3, 4]), 7)\n"
+      },
+      "checks": {
+        "python_tests": true
+      },
+      "review": [
+        "Records whether delegation tools are available.",
+        "If delegated, ownership is disjoint and shared Git/build operations remain serialized.",
+        "A local solution is valid when delegation is unavailable or overhead exceeds benefit."
+      ]
+    },
+    {
+      "id": "checkpoint-recovery",
+      "request": "Continue the approved local implementation from CHECKPOINT.md. Complete remaining work and verification. Do not commit or publish.",
+      "files": {
+        "count.py": "def count_active(users):\n    return sum(1 for user in users if user.get(\"enabled\") and not user.get(\"cancelled\"))\n",
+        "test_count.py": "import unittest\nfrom count import count_active\n\nclass CountTests(unittest.TestCase):\n    def test_enabled(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": False}]), 1)\n    def test_cancelled(self):\n        self.assertEqual(count_active([{\"enabled\": True, \"cancelled\": True}]), 0)\n    def test_default(self):\n        self.assertEqual(count_active([{\"enabled\": True}, {\"enabled\": True, \"cancelled\": False}]), 2)\n",
+        "README.md": "Cancelled enabled users are counted.\n",
+        "CHECKPOINT.md": "Scope: exclude cancelled users from count_active and document the behavior. Local implementation is authorized. count.py and test_count.py are complete; preserve both files. Remaining: replace README.md with the following approved wording and a trailing newline, then verify:\n\nCancelled users are excluded even when enabled. Enabled users with a missing or false cancelled flag are counted.\n\nYou may update this checkpoint to record completion. Do not restart design approval or publish.\n"
+      },
+      "checks": {
+        "python_tests": true,
+        "exact_files": {
+          "README.md": "Cancelled users are excluded even when enabled. Enabled users with a missing or false cancelled flag are counted.\n"
+        },
+        "allowed_changed_files": ["README.md", "CHECKPOINT.md"]
+      },
+      "review": [
+        "Preserves existing working implementation and tests.",
+        "Corrects README and finishes local verification without reopening approval.",
+        "This checks checkpoint recovery, not actual host-driven mid-turn steering or compaction."
+      ]
+    }
+  ]
+}

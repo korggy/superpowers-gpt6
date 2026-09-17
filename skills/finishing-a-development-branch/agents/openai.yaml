@@ -1,0 +1,4 @@
+interface:
+  display_name: "Finishing A Development Branch"
+  short_description: "Integrate and clean up authorized development work"
+  default_prompt: "Use $finishing-a-development-branch to help with this task within the scope I specify."

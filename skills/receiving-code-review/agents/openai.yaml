@@ -1,0 +1,4 @@
+interface:
+  display_name: "Receiving Code Review"
+  short_description: "Evaluate feedback and apply justified corrections"
+  default_prompt: "Use $receiving-code-review to help with this task within the scope I specify."

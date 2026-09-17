@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Driven Development"
+  short_description: "Protect behavior with meaningful regression tests"
+  default_prompt: "Use $test-driven-development to help with this task within the scope I specify."
