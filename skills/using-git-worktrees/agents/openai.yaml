@@ -1,0 +1,5 @@
+interface:
+  display_name: "Using Git Worktrees"
+  short_description: "Suggest when requested work needs an isolated checkout"
+policy:
+  allow_implicit_invocation: false

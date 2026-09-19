@@ -1,7 +1,10 @@
 ---
 name: executing-plans
-description: Use when executing an implementation plan in the current session as the implementer yourself — your human partner chose inline execution, or no subagent tool is available
+description: Suggest for inline execution of an accepted implementation plan. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Executing Plans
 
@@ -17,30 +20,26 @@ task. This skill keeps what those two things bought, by other means: the
 brief is the spec, the ledger is your memory, TDD is the per-task gate, and
 the final reviewer is the second pair of eyes.
 
-**Core principle:** The plan already did the thinking. Execute it exactly,
-prove each step with a test you watched fail and then pass, and leave a
-record that survives your own forgetting.
+**Core principle:** Implement the agreed outcomes and constraints, verify
+with evidence appropriate to risk, and leave a record that survives compaction.
+Follow the shared [decision checkpoints](../using-superpowers/references/decision-checkpoints.md).
 
-**Narration:** between tool calls, narrate at most one short line — the
-ledger and the tool results carry the record.
+**Narration:** Follow the host's and human's communication preferences. Give
+concise progress updates about findings, decisions, and remaining work.
 
-**Continuous execution:** Do not pause to check in with your human partner
-between tasks. They chose inline execution to spend less, not to answer
-"should I continue?" after every task. Execute all tasks from the plan
-without stopping.
+**Continuous execution:** Continue through authorized tasks without routine
+"should I continue?" prompts. Honor existing approvals and delegated decisions.
 
-**Rulings, not stalls.** Conflicts, ambiguities, plan defects — decide them.
-The spec is the binding authority, the plan is its argument, and your
-judgment settles what neither answers. Record every decision in the ledger
-as `Ruling: <what you decided> — <why> — <what it costs if wrong>`, and keep
-going. Deviating from the plan without a ledgered ruling is a decision made
-in secret.
+**Decisions within scope.** Resolve routine details using the agreed spec,
+current instructions, and repository evidence. Record consequential decisions
+as `Ruling: <decision> — <authority and reason> — <cost if wrong>`.
+A ledger entry records authority; it does not create it.
 
-Four things stop you, and only these: an irreversible or destructive
-operation; a security-sensitive action; a side effect outside this worktree
-that norms say you ask about first (a merge, a push to a shared branch, a
-publish); and a plan so broken that every path forward is a guess. For
-those, stop and ask.
+If new evidence changes requirements, acceptance criteria, cost, risk, or the
+agreed approach beyond delegated discretion, present the affected choice to
+your human partner and wait before that implementation. Continue independent
+authorized tasks. Preserve explicitly retained review checkpoints. Follow
+host permissions for other actions, using authorization already supplied.
 
 ## When to Use
 
@@ -52,10 +51,9 @@ those, stop and ask.
 - Tasks are mostly independent — the same precondition as
   superpowers:subagent-driven-development.
 
-A fully specified plan makes inline execution transcription plus testing:
-it runs well on a mid-tier session model, and the one place the most
-capable model earns its cost is the final review, which this skill
-dispatches separately. Tell your human partner so when they choose inline.
+Choose inline execution when shared context and direct implementation fit the
+work. Cost and review quality depend on the task and available host; do not
+promise a universal model tier or savings.
 
 Prefer superpowers:subagent-driven-development when your human partner
 wants a review gate on every task, or when the plan is long enough that
@@ -65,52 +63,19 @@ last tasks get the least of you.
 
 ## The Process
 
-```dot
-digraph process {
-    rankdir=TB;
-
-    subgraph cluster_per_task {
-        label="Per Task";
-        "task-start: brief + BASE; read the brief" [shape=box];
-        "Work the steps in order: TDD, run every verification, read every output" [shape=box];
-        "Step output matches plan's Expected?" [shape=diamond];
-        "Plan wrong? Rule and ledger. Code wrong? systematic-debugging" [shape=box];
-        "Commit as the plan's commit steps say" [shape=box];
-        "Completion contract met?" [shape=diamond];
-        "task-done: run tests, ledger the result; mark todo complete" [shape=box];
-    }
-
-    "Setup: worktree, workspace + ledger, read plan + spec, pre-flight scan" [shape=box];
-    "More tasks remain?" [shape=diamond];
-    "Final whole-branch review (fresh reviewer if you have one)" [shape=box];
-    "Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger" [shape=box];
-    "Final review clean: delete this plan's workspace" [shape=box];
-    "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
-
-    "Setup: worktree, workspace + ledger, read plan + spec, pre-flight scan" -> "task-start: brief + BASE; read the brief";
-    "task-start: brief + BASE; read the brief" -> "Work the steps in order: TDD, run every verification, read every output";
-    "Work the steps in order: TDD, run every verification, read every output" -> "Step output matches plan's Expected?";
-    "Step output matches plan's Expected?" -> "Plan wrong? Rule and ledger. Code wrong? systematic-debugging" [label="no"];
-    "Plan wrong? Rule and ledger. Code wrong? systematic-debugging" -> "Work the steps in order: TDD, run every verification, read every output";
-    "Step output matches plan's Expected?" -> "Commit as the plan's commit steps say" [label="yes, last step"];
-    "Commit as the plan's commit steps say" -> "Completion contract met?";
-    "Completion contract met?" -> "Work the steps in order: TDD, run every verification, read every output" [label="no - finish the task"];
-    "Completion contract met?" -> "task-done: run tests, ledger the result; mark todo complete" [label="yes"];
-    "task-done: run tests, ledger the result; mark todo complete" -> "More tasks remain?";
-    "More tasks remain?" -> "task-start: brief + BASE; read the brief" [label="yes"];
-    "More tasks remain?" -> "Final whole-branch review (fresh reviewer if you have one)" [label="no"];
-    "Final whole-branch review (fresh reviewer if you have one)" -> "Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger";
-    "Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger" -> "Final review clean: delete this plan's workspace";
-    "Final review clean: delete this plan's workspace" -> "Use superpowers:finishing-a-development-branch";
-}
-```
+1. Read the accepted plan and decision record; establish the working context.
+2. Read each task brief, implement its outcome, and verify required behavior.
+3. Resolve routine details within authority; hold affected work for material
+   choices while continuing independent tasks.
+4. Record completion only when acceptance criteria and required checks pass.
+5. Review the complete change, correct substantiated findings, and deliver
+   the authorized result. Integrate or clean up only within requested scope.
 
 ## Setup
 
-Ensure the work happens in an isolated workspace: use
-superpowers:using-git-worktrees to create one or verify the existing one.
-Never start implementation on a main/master branch without your human
-partner's explicit consent.
+Preserve the named checkout and branch. Use superpowers:using-git-worktrees
+when isolation is requested or included in the accepted workflow. Follow
+repository restrictions and existing authorization before changing Git state.
 
 Conversation memory does not survive compaction. An inline executor that
 loses its place re-implements tasks whose commits already exist — the same
@@ -123,28 +88,29 @@ The workspace and ledger are shared with superpowers:subagent-driven-development
 and the new one resumes from the same ledger.
 
 - Each plan owns a workspace: at skill start, run
-  `../subagent-driven-development/scripts/sdd-workspace PLAN_FILE` — it
+  `bash ../subagent-driven-development/scripts/sdd-workspace PLAN_FILE` — it
   prints the plan's git-ignored directory
   (`<repo-root>/.superpowers/sdd/<plan-basename>/`), home to every
   artifact for THIS plan: ledger, briefs, review packages. Another plan's
   directory is never yours to read or write.
-- Check for this plan's ledger at `<workspace>/progress.md`. If its first
-  line names your plan file, tasks with a `Task <N>: complete` line are
-  DONE — do not redo them; resume at the first task without one. Their
-  commits exist in git even when your context no longer remembers making
-  them: after compaction, trust the ledger and `git log` over your own
-  recollection. A ledger whose first line names a different plan file is
-  another plan's progress: leave it and start your own, fresh.
+- Check this plan's ledger at `<workspace>/progress.md`. Match its plan
+  identity and reconcile completion entries with the current repository and
+  evidence. For committed work, inspect the named commits; for uncommitted work,
+  inspect the recorded files/snapshot and current diff. Resume pending work
+  without repeating settled questions. A completion line alone does not prove
+  uncommitted files still exist. Leave other plans' ledgers untouched.
 - Create the ledger with its identity as the first line:
   `# SDD ledger — plan: <plan file path>`.
-- `git clean -fdx` will destroy the workspace (it's git-ignored scratch);
-  if that happens, recover from `git log`.
+- The workspace is ignored scratch. Cleanup can destroy its evidence, and
+  Git history cannot recover uncommitted work. Do not rely on it as a backup.
 
-Read the plan once, note its context and Global Constraints, and create a
-todo per task. If the plan names a Spec, read that too: the spec is the
-authority the plan argues from, and conflicts inside the plan resolve
-against it. A plan with no reachable spec gets a ledger note saying so —
-rulings made without one are provisional.
+Read the plan, its Decision Record, Global Constraints, and referenced spec.
+Confirm implementation is authorized; a plan-only request stops with the plan.
+Carry approved and delegated decisions, their sources, pending choices, and
+retained checkpoints into the ledger and task briefs. Current human corrections
+take precedence over older artifacts. Check the record when resuming; do not
+repeat settled questions. If a spec is missing, use the available agreement and
+resolve only material gaps before affected work. Create a todo per task.
 
 **REQUIRED SUB-SKILL:** load superpowers:test-driven-development now,
 before Task 1. It governs every step of every task below; a plan whose
@@ -156,12 +122,15 @@ Interfaces blocks tell you where to look: for every task that consumes
 what an earlier task produces, one ledger row — the two tasks, what one
 produces against what the other consumes, and what you found. Tasks that
 share nothing get no row; a plan whose tasks share nothing gets the single
-line `Pre-flight: no shared interfaces`. Rule on each conflict a row
-surfaces with the spec as the binding authority, record the ruling beside
-its row, and start Task 1. Each task's own text is checked when you read
-its brief, not here.
+line `Pre-flight: no shared interfaces`. Resolve routine conflicts within
+existing authority and record them beside their rows. Raise material choices
+under the decision checkpoints; start independent authorized tasks meanwhile.
+Each task's own text is checked when you read its brief.
 
 ## The Task Loop
+
+The brief helper extracts only task text. Carry the Decision Record and Global
+Constraints from setup alongside each brief; they are not embedded by the helper.
 
 Everything you print, and every tool result, stays resident in your
 context for the rest of the session. Redirect long test output to a file
@@ -169,9 +138,10 @@ in the workspace and read its tail; read a brief, not the whole plan.
 
 ### 1. Take the task
 
-- Run this skill's `scripts/task-start PLAN_FILE N`. It prints the brief
+- Run this skill's `bash scripts/task-start PLAN_FILE N`. It prints the brief
   path and BASE (the commit the task's range is cut from) in one call.
-  Read the brief for every task, including ones you remember from setup:
+  Record relevant existing working changes as well; BASE alone does not capture
+  them. Read the brief for every task, including ones you remember from setup:
   what you remember is a summary, the brief has the exact values,
   signatures, and test cases.
 - Mark the task's todo in_progress.
@@ -182,26 +152,24 @@ never in a call of its own.
 
 ### 2. Work the steps
 
-The plan's steps are already in RED-GREEN order; follow them in that
-order under superpowers:test-driven-development, loaded at setup. A test
-step's code is written first and run first. Watching it fail is a step,
-not a formality — a test that passes before the implementation exists is
-a finding about the test.
+Follow task dependencies and acceptance criteria. Use the selected TDD guidance
+for behavioral changes; use appropriate inspection or validation for low-impact
+changes. Verify a regression test reproduces the intended defect before relying
+on it. Do not invent tests solely to make a prose plan look executable.
 
-Every step that runs a command has an `Expected:` line. Run the command,
-read its output, and compare. Three outcomes:
+For each required command, check its prerequisites and expected result, run
+it when relevant evidence is missing, and compare the output. Three outcomes:
 
 - **Matches.** Next step.
 - **The code is wrong.** Use superpowers:systematic-debugging. Find the
   cause; never patch the symptom to make the step's output match.
 - **The plan is wrong** — a step contradicts the spec, an interface from an
   earlier task doesn't match what this task consumes, a command that
-  cannot work. Rule on the smallest change that satisfies the spec, ledger
-  it as `Task <N>: Ruling: <finding> — <what you decided and why>`, and
-  continue. The ruling is carried, not remembered: later tasks that touch
-  the same interface read it from the ledger.
+  cannot work. Correct routine details within the accepted scope and record
+  the evidence and authority. A material change needs the affected decision
+  resolved first. Carry the decision into later briefs that use that interface.
 
-Commit as the plan's commit steps say. A task that spans several commits
+Commit only when authorized. A task that spans several commits
 is fine; BASE is what the review range is cut from, never `HEAD~1`.
 
 ### 3. The completion contract
@@ -209,10 +177,11 @@ is fine; BASE is what the review range is cut from, never `HEAD~1`.
 Before a task's ledger line, all of the following are true, with evidence
 in this session — not inferred from the diff looking right:
 
-- Every test the brief names exists and ran in this task, and you read
-  the output.
-- The final test run for the task passed — `task-done` is that run, and
-  it writes the command and result into the ledger line.
+- Every required check in the brief has relevant evidence, and you read
+  its output. Record scope adjustments using the TDD and verification guidance.
+- The task's verification passed. Run it through `task-done` once when needed;
+  if already run on unchanged relevant content, record its command, result,
+  scope, and evidence path directly in the ledger rather than rerunning it.
 - Every `Expected:` line in the brief was compared against real output.
 - Every deviation from the brief has a `Ruling:` line in the ledger.
 
@@ -221,8 +190,13 @@ the claim. If any item is missing, the task is not complete: finish it.
 
 ### 4. Complete the task
 
-Run this skill's `scripts/task-done PLAN_FILE N BASE -- <test command>`
-with the test command the brief names for the whole task. It runs the
+For uncommitted work, record checks and the reviewed working-tree state directly
+in the ledger; the helper's commit-only completion line cannot identify it.
+For committed work needing a new run, run this skill's
+`bash scripts/task-done PLAN_FILE N BASE -- <verification command>`
+with the appropriate command from the brief. Otherwise record existing
+evidence directly as described in the completion contract, then advance.
+The helper runs the
 tests, keeps the full output in the workspace, prints the tail, and — only
 if they pass — appends the completion line to the ledger:
 
@@ -233,21 +207,22 @@ mark the todo complete and take the next task.
 
 ## Final Review
 
-Run `../subagent-driven-development/scripts/review-package PLAN_FILE MERGE_BASE HEAD`
-(MERGE_BASE = the commit the branch started from, e.g.
-`git merge-base main HEAD`) and review from the file it prints.
+Build the review package using
+[review evidence](../subagent-driven-development/review-evidence.md). Use the
+commit-range helper for fully committed scope; include current tracked and new
+untracked files for uncommitted or mixed work. A review must cover the actual
+implementation, even when HEAD has not changed.
 
-**With a subagent tool:** dispatch the reviewer on the most capable
-available model — the whole-branch review is a judgment task — using
+**With an authorized subagent tool:** choose a reviewer suited to the scope,
+complexity, and risk using the host's allowed models and effort levels. Use
 superpowers:requesting-code-review's
 [code-reviewer.md](../requesting-code-review/code-reviewer.md), with the
 package path, the plan and spec paths, the plan's Review Focus section
 verbatim if it has one (the input classes and failure modes the plan's
 tests do not exercise — the reviewer checks each deliberately), and a
 pointer to the ledger's `Ruling:` lines so it can weigh the calls you
-made. Specify the model
-explicitly; an omitted model inherits the session's, which may not be the
-most capable. This is the one fresh context the whole run buys. Do not
+made. Follow the current host's model and context-fork rules. Explicit overrides
+require a compatible fork mode; see the platform reference. This is the one fresh context the whole run buys. Do not
 skip it, and do not replace it with your own read of the diff.
 
 **Without a subagent tool:** read code-reviewer.md and perform that review
@@ -257,16 +232,24 @@ ledger, and say so in your final message: a self-review by the author is
 weaker than a fresh reviewer, and your human partner decides whether that
 is enough before merge.
 
-Sort the findings before you act on any of them. The reviewer's severity
-labels are advice; the gate is yours. Its "Declined to judge" list is
-yours too: every line there is a ruling you make and ledger, exactly like
-a plan conflict — `Final: Ruling: <behavior the reviewer set aside> —
-<what a reasonable person using this software gets, and why that stands
-or why it is now a finding> — <cost if wrong>`. Re-grade first, by effect: the
-spec is a vision document, and a finding's grade is what a reasonable
-person using this software gets if it ships, not whether the spec names
-the input that triggers it — a reviewer who set a finding at Minor
-because the spec was silent has graded the spec, not the effect. Then:
+Sort findings by evidence, scope, and authority before severity. The reviewer's
+label does not establish a requirement or authorize a product decision.
+
+- **Correctness defect:** A substantiated failure of the requested behavior or
+  an existing contract remains a defect even if the spec did not enumerate the
+  trigger. Data loss on an ordinary failed save is one example. Grade the actual
+  consequence and correct it within existing authority.
+- **Unresolved product choice:** New features, defaults, policy, and tradeoffs
+  are proposals when the request and decision record do not settle them. Present
+  the evidence, options, and recommendation to the human before affected work,
+  or use explicit delegated discretion. Continue independent authorized fixes.
+  Keep required open decisions pending; do not declare the whole task complete.
+- **Optional improvement:** Record it as nonblocking when it is outside the
+  accepted requirements and does not repair a correctness defect.
+
+Apply these distinctions to the reviewer's "Declined to judge" list too. Record
+consequential rulings with their authority and reason; a ledger entry cannot
+turn an assumed preference into an accepted requirement. Within authorized scope:
 
 - **Critical and Important** enter the fix pass.
 - **Minor** goes to the ledger as `Final: minor (deferred): <one-liner>`
@@ -274,19 +257,21 @@ because the spec was silent has graded the spec, not the effect. Then:
   the fix pass, and never become rulings — a ruling is a decision about a
   conflict, not a note that you declined a polish suggestion.
 
-Fix the Critical and Important findings yourself — you are the
-implementer here — in ONE pass. Each fix is verified by TDD, not by a
-second reviewer: write the test that reproduces the finding, watch it
-fail, make it pass, then run the whole suite. Record each in the ledger as
-`Final: fixed <finding> — <test name> RED→GREEN, suite <N>/<N>`. A fix
-without a test that failed first is not verified; a suite that is not
-green after the pass means the pass is not over. Do not dispatch a
-re-review: it would re-read a diff whose covering tests already answer
-"addressed" and whose suite run already answers "broke nothing".
+Fix the Critical and Important findings yourself. Use a regression test
+for a reproducible behavior defect and appropriate inspection or validation
+for low-impact prose or metadata changes. Run required project checks and
+risk-appropriate integration checks, reusing results for unchanged content.
+Record each fix, its verification scope, command, result, and evidence path
+in the ledger. Classify unrelated baseline or environment failures separately.
+A new review is useful only when changes introduce unresolved risk or the
+first review identified a need for it.
 
 A finding you decide not to fix is a ruling — `Final: Ruling: <finding> —
 <why the code stands> — <cost if wrong>` — and reaches your human partner
-in the rulings list. There is no second fix pass.
+in the rulings list. Required behavior cannot be deferred by a unilateral
+ruling. Resolve any material scope change with the human or existing delegation;
+keep incomplete work pending. Continue until authorized corrections and required
+checks are complete.
 
 ## Finish
 
@@ -297,28 +282,27 @@ line under "Deferred minors". Both lists are exhaustive. Your final
 message is the only place the decisions you took on your human partner's
 behalf — and the findings you chose not to act on — reach them.
 
-When the final review is clean and its fixes are committed, delete this
-plan's workspace directory — the git history is the record now. Sibling
-directories belong to other plans; leave them alone.
-
-Use superpowers:finishing-a-development-branch.
+Preserve the decision record and verification evidence needed for recovery.
+Follow the repository's existing guidance and the user's instructions for
+integration and cleanup. Completion of this workflow does not itself authorize
+commits, publication, merging, or deletion of a workspace or recovery evidence.
 
 ## Common Rationalizations
 
 | Excuse | Reality |
 |--------|---------|
 | "I remember what Task N says" | You remember a summary. The brief has the exact values. Read it. |
-| "The plan's code is right, skip watching the test fail" | A test you never saw fail proves nothing. It is one step. Run it. |
-| "I'll run the full suite at the end instead of per step" | Per-step runs are how you learn which step broke it. The end-of-task run is the contract, not a substitute. |
-| "The plan is wrong here, I'll just do the right thing" | Do the right thing and ledger the ruling. Unledgered deviation is a decision made in secret. |
+| "The plan's code is right, so no regression evidence is needed" | Use evidence that distinguishes the defect from correct behavior. Reuse a valid recorded failure; add missing regression protection without deleting valid work or inventing a failure. |
+| "The tests passed, but task completion needs another run" | Record still-valid evidence directly. Run only missing or invalidated checks; a ledger entry, commit, or task boundary does not require another run. |
+| "The plan is wrong here, I'll just do the right thing" | Resolve routine details within authority; ask about material changes and record the decision. |
 | "I'll write the ledger lines after a few tasks" | Compaction does not wait for a convenient moment. One line per task, in the same message as the commit. |
-| "Let me check in before the next task" | They chose inline to spend less. Progress prompts spend their time instead. Only the four stops stop you. |
+| "Let me check in before the next task" | Continue authorized work. Ask only about an unresolved material decision or retained checkpoint. |
 | "I read my own diff carefully; the final reviewer is redundant" | Same author, same blind spots. The reviewer is the only fresh context this run buys. |
-| "Tests should pass, the change was trivial" | "Should" is not evidence. The contract requires the command and its output. |
+| "It was trivial, so no evidence is needed" | Match the evidence to the change: meaningful regression checks for behavior, or appropriate inspection/parsing for low-impact edits. Complete required checks and record the observed result. |
 | "Subagents are slow and expensive, I'll skip the final review too" | Inline already removed the per-task reviewers. One review of the whole branch is the floor, not the ceiling. |
-| "The reviewer said Minor, so it's Minor" | The label graded the spec's silence. Grade what the person gets. Re-grade, then gate. |
-| "The fix is obvious, no need for a failing test first" | The failing test is the only proof the finding was real and is now gone. Without it you have a diff and a hope. |
-| "I'll fix the minors too while I'm in there" | Every minor you fix is a test, a fix, and a suite run your partner did not ask for. Ledger them; your partner decides. |
+| "The reviewer called it Important, so the requirement is settled" | Establish whether it is a correctness defect, an unresolved product choice, or an optional improvement. Severity does not supply missing authority. |
+| "The fix is obvious, no verification needed" | Use evidence that can detect the defect. Behavioral regressions usually need tests; low-impact prose or metadata may need inspection or parsing. |
+| "I'll fix the minors too while I'm in there" | Keep scope bounded. Record deferred findings for your partner. |
 
 ## Example Workflow
 
@@ -340,7 +324,9 @@ Task 1: Hook installation script
 [Step 4: run it — PASS 1/1. Matches Expected.]
 [Step 5: commit — d4e5f6a]
 [Contract: tests ran, output read, no deviations]
-[task-done plan 1 a1b2c3d -- npm test -- hooks → ledger: Task 1: complete (commits a1b2c3d..d4e5f6a, tests: npm test -- hooks → 1/1 pass)]
+[Record the existing npm test -- hooks result, command, scope, and evidence path
+ directly in the ledger. Tested content is unchanged; do not call task-done again.]
+[Ledger: Task 1 complete; commits a1b2c3d..d4e5f6a; existing evidence covers current content]
 
 Task 2: Recovery modes
 
@@ -349,16 +335,18 @@ Task 2: Recovery modes
  installHook, brief consumes install_hook]
 [Ruling: brief's consumer name is a typo against Task 1's Produces block;
  use installHook — Ledger: Task 2: Ruling: install_hook → installHook — matches Task 1 Produces — cost if wrong: one rename]
-[Steps 2-5 as planned; commit b7c8d9e]
+[Re-run after correcting the brief: fails for the intended missing recovery behavior]
+[Implement recovery; authorized commit b7c8d9e]
+[Required verification has not yet run on the implemented content]
 [task-done plan 2 d4e5f6a -- npm test -- recovery → ledger: Task 2: complete (commits d4e5f6a..b7c8d9e, tests: npm test -- recovery → 8/8 pass)]
 
 ...
 
-[After all tasks: review-package plan MERGE_BASE HEAD; dispatch code-reviewer, most capable model]
-Reviewer: One Important finding — progress reporting interval hardcoded. Two Minor.
+[After all tasks: review-package plan MERGE_BASE HEAD; dispatch code-reviewer with capability appropriate to the review]
+Reviewer: One Important finding — failed repair discards the saved index. Two Minor.
 [Re-grade: Important stands; minors → ledger as deferred]
-[Fix pass: test_progress_interval_configurable RED → extract PROGRESS_INTERVAL → GREEN; suite 12/12; commit]
-[Ledger: Final: fixed hardcoded interval — test_progress_interval_configurable RED→GREEN, suite 12/12]
+[Fix pass: test_failed_repair_preserves_index RED → preserve saved data on failure → GREEN; suite 12/12; authorized commit]
+[Ledger: Final: fixed failed-repair data loss — test_failed_repair_preserves_index RED→GREEN, suite 12/12]
 
 Rulings I made:
 - Task 2: install_hook → installHook (brief typo; cost if wrong: one rename)
@@ -367,7 +355,7 @@ Deferred minors:
 - README lacks a usage example
 - recovery.js could split verify/repair into two files
 
-[Delete this plan's workspace — the record now lives in git]
+[Preserve the decision record and recovery evidence]
 
-Using superpowers:finishing-a-development-branch.
+Follow the repository guidance for any authorized integration or cleanup.
 ```

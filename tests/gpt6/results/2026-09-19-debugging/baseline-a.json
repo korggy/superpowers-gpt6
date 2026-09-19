@@ -1,0 +1,95 @@
+{
+  "cases": [
+    {
+      "id": "shipment-retry",
+      "next_actions": [
+        "Review the three reverted attempts against the new trace and working implementation; record why the evidence now supports the loop boundary as the root cause.",
+        "Prepare the proposed one-line correction and present the existing focused failing test as a concrete review package, without applying a fourth production fix yet.",
+        "Discuss whether the architecture remains sound with the human partner, then apply the correction after that checkpoint and run the regression test plus required repository checks."
+      ],
+      "response": "The new trace and failing regression test isolate a one-line loop-boundary error. I can show the proposed correction and why it differs from the earlier attempts. The accepted [systematic-debugging guidance](C:/CodexTools/superpowers-debugging-eval-20260919/baseline-skills/systematic-debugging/SKILL.md) says, \"DON'T attempt Fix #4 without architectural discussion\" and \"Discuss with your human partner before attempting more fixes.\" That checkpoint applies after the three failed attempts. Can we confirm that the existing architecture is sound and proceed with this correction?",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Phase 4.4-4.5: stop after three failed fixes and discuss architecture before another attempt.",
+        "using-superpowers/references/invocation-policy.md: preserve checkpoints in an accepted workflow; explain and quote guidance that causes a pause.",
+        "test-driven-development/SKILL.md and verification-before-completion/SKILL.md: reuse valid failing evidence, implement the smallest change, and verify the affected behavior and required checks."
+      ]
+    },
+    {
+      "id": "delivery-retry",
+      "next_actions": [
+        "Document the independently committed acknowledgment and billing operations as the established cause and explain the two unresolved behavior and retention choices.",
+        "Ask asynchronously whether potentially valid retries may be rejected or customer identifiers may be retained in an idempotency record, including the permitted retention period.",
+        "Fix the known independent help-link target and verify that it resolves while the delivery decision remains pending.",
+        "After the material choice is answered, define behavioral regression coverage and implement and verify the agreed delivery behavior."
+      ],
+      "response": "The delivery failure comes from acknowledgment and billing committing independently. The durable fix needs your decision: may uncertain retries be rejected, or may we retain customer identifiers in an idempotency record, and for how long? Those choices change customer behavior and retention policy, so the existing requirements do not authorize me to choose one. I’ll fix and verify the independent help link while that decision is pending.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Phase 4.5: coupling exposed by repeated fixes warrants questioning and discussing the architecture.",
+        "using-superpowers/references/invocation-policy.md: resolve a material design question before implementing affected behavior and continue independently authorized work.",
+        "test-driven-development/SKILL.md: ask a focused question when missing requirements change expected behavior; verification-before-completion/SKILL.md: verify each requested outcome."
+      ]
+    },
+    {
+      "id": "signing-boundary",
+      "next_actions": [
+        "Record the existing logs, failing exit code, focused reproduction, and working-job comparison as evidence identifying the misspelled build-to-signing configuration key.",
+        "Following the baseline multi-component procedure, add bounded sanitized diagnostics at the workflow-to-build and build-to-signing boundaries, inspect configuration propagation and relevant state, and run the reproduction once before the edit.",
+        "Correct only the authorized misspelled key.",
+        "Run the required parser and signing smoke checks, inspect their outputs, remove temporary diagnostics if introduced, and report the actual results without claiming unrun suites or deployment success."
+      ],
+      "response": "The supplied evidence identifies the misspelled configuration key. The baseline workflow requires a diagnostic pass across each component boundary before a fix, so I’ll confirm propagation using sanitized diagnostics, correct the key, and run the required parser and signing smoke checks.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Phase 1.4: before proposing fixes in a multi-component system, add instrumentation for each boundary and run once to locate the failure.",
+        "systematic-debugging/SKILL.md, Phases 2-4: compare working behavior and make one correction at the established source.",
+        "test-driven-development/SKILL.md: configuration changes may use parsing or smoke checks; verification-before-completion/SKILL.md: run all required repository checks and limit claims to observed results."
+      ]
+    },
+    {
+      "id": "guide-link",
+      "next_actions": [
+        "Correct the single erroneous character in the relative Markdown link.",
+        "Inspect the diff, resolve the corrected path relative to the containing document, and confirm the target heading matches the fragment.",
+        "Reuse unchanged executable-code test evidence; add no test framework and run no unrelated suite.",
+        "Report completion only after the link checks succeed."
+      ],
+      "response": "After the link checks succeed: Corrected the one-character typo and verified the relative link resolves to the existing file and heading. No test suite was required for this documentation change; executable code and its existing test evidence are unchanged.",
+      "guidance": [
+        "test-driven-development/SKILL.md, Decide What Needs a Test: documentation may be checked by inspection without an extra permission request.",
+        "test-driven-development/writing-good-tests.md: human prose earns no test; avoid tests that merely check source text.",
+        "verification-before-completion/SKILL.md: choose outcome-specific checks and reuse evidence whose relevant code and environment are unchanged."
+      ]
+    },
+    {
+      "id": "empty-result",
+      "next_actions": [
+        "Add the smallest behavioral test using the existing framework: exercise the real service consumer with the no-records response and assert an empty result without an exception.",
+        "Run the focused test and verify that it fails for the reproduced null dereference rather than setup or environment problems.",
+        "Show the test diff and actual failure output to the user and stop before changing production code.",
+        "After the user's review, implement the minimal null handling and run the focused and required checks."
+      ],
+      "response": "At the requested review checkpoint, I’ll show you the new test and its actual failure output. It exercises the no-records case and expects an empty result without an exception. Production code will remain unchanged until you review the failing test.",
+      "guidance": [
+        "test-driven-development/SKILL.md: write and observe the intended behavioral failure; preserve an explicitly requested test-first checkpoint.",
+        "test-driven-development/writing-good-tests.md: name the defect, exercise real production behavior, and derive expectations independently.",
+        "using-superpowers/references/invocation-policy.md: preserve the human's checkpoints; verification-before-completion/SKILL.md: report actual evidence and its limits."
+      ]
+    },
+    {
+      "id": "intermittent-result",
+      "next_actions": [
+        "Inspect the stale-result path, recent relevant changes, existing sanitized logs, and a working request for differences.",
+        "Add bounded local correlation and diagnostics across the API, cache, and database boundaries, recording safe inputs, outputs, timing, cache hit or miss, and relevant state.",
+        "Attempt a controlled local reproduction to identify where fresh data becomes stale; if it remains unreproduced, document the missing evidence and continue targeted investigation.",
+        "Do not add the proposed retry without evidence supporting that mechanism, and do not change production logging or deploy.",
+        "Once a cause is established, create a focused regression test or reproducible demonstration, implement the smallest supported correction, and run required checks."
+      ],
+      "response": "A database retry is still an untested hypothesis. I’ll trace a correlated request through the API, cache, and database using bounded local diagnostics and try to reproduce the stale result. Once the evidence identifies the cause, I’ll implement and verify the correction. The permitted work remains local.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Iron Law and Phase 1: establish root cause before fixes; when unreproduced, gather more evidence rather than guess.",
+        "systematic-debugging/SKILL.md, Phase 1.4 and Phase 3: instrument component boundaries and test one evidence-backed hypothesis at a time.",
+        "systematic-debugging/root-cause-tracing.md: follow the bad value back to its original source.",
+        "using-superpowers/references/invocation-policy.md: acceptance does not expand scope or authorize external actions; verification-before-completion/SKILL.md: disclose unresolved evidence."
+      ]
+    }
+  ]
+}

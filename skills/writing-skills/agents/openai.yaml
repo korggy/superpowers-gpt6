@@ -1,0 +1,5 @@
+interface:
+  display_name: "Writing Skills"
+  short_description: "Suggest when creating, revising, or evaluating reusable skills"
+policy:
+  allow_implicit_invocation: false

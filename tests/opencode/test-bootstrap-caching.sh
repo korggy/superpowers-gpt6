@@ -15,7 +15,7 @@ run_present_file_check() {
 }
 
 run_missing_file_check() {
-    mv "$SUPERPOWERS_SKILLS_DIR/using-superpowers/SKILL.md" "$TEST_HOME/using-superpowers.SKILL.md.bak"
+    mv "$SUPERPOWERS_SKILLS_DIR/using-superpowers/references/invocation-policy.md" "$TEST_HOME/invocation-policy.md.bak"
 
     node "$SCRIPT_DIR/test-bootstrap-caching.mjs" "$SUPERPOWERS_PLUGIN_FILE" missing
 }
@@ -24,7 +24,7 @@ echo "Test 1: Caches bootstrap after the first successful transform..."
 run_present_file_check
 echo "  [PASS] Bootstrap content is cached while fresh message arrays still receive injection"
 
-echo "Test 2: Caches missing SKILL.md result..."
+echo "Test 2: Caches missing invocation-policy.md result..."
 run_missing_file_check
 echo "  [PASS] Missing bootstrap file is cached and not re-probed every transform"
 

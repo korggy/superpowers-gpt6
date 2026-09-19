@@ -1,120 +1,67 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: Suggest when work needs an evidence-based completion check. Invoke only when requested or accepted.
 ---
 
 # Verification Before Completion
 
-## Overview
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
 
-**Core principle:** Evidence before claims, always.
+**Core principle:** Evidence before claims. Match each claim to what was
+actually checked, on the relevant code and environment.
 
-**Violating the letter of this rule is violating the spirit of this rule.**
+## Choose the Evidence
 
-## The Iron Law
+Before reporting completion:
 
-```
-NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
-```
+1. Identify the requested outcome and the checks that establish it.
+2. Inspect existing evidence: command, working directory, tested revision or
+   relevant working-tree content, dependencies, environment, result, and limits.
+3. Run missing checks and checks invalidated by relevant changes.
+4. Read the results and report the supported outcome, failures, and gaps.
 
-If you haven't run the verification command in this message, you cannot claim it passes.
+Evidence remains valid when the relevant code, dependencies, inputs, and
+environment are unchanged. A new message, commit with identical tested
+content, or reviewer does not invalidate it. Reuse readable evidence from
+another worker after checking its provenance and relevance. Investigate a
+specific contradiction instead of automatically rerunning their suite.
 
-## The Gate Function
+## Scale Verification
 
-```
-BEFORE claiming any status or expressing satisfaction:
+Run checks covering the changed behavior and all required repository checks.
+Use broader suites for cross-cutting changes, integration risks, or unresolved
+failures. Once the relevant checks pass, repeat or broaden them only for a
+new change, failure, concrete concern, or project requirement.
 
-1. IDENTIFY: What command proves this claim?
-2. RUN: Execute the FULL command (fresh, complete)
-3. READ: Full output, check exit code, count failures
-4. VERIFY: Does output confirm the claim?
-   - If NO: State actual status with evidence
-   - If YES: State claim WITH evidence
-5. ONLY THEN: Make the claim
+Behavioral fixes usually need a regression test or reproducible demonstration.
+Documentation, generated files, and low-impact configuration may need
+inspection, parsing, validation, or a focused smoke check. Do not add tests
+that simply duplicate implementation or delete valid work because the test
+was written after it.
 
-Skip any step = lying, not verifying
-```
+## Interpret Results
 
-## Common Failures
+| Claim | Evidence needed | Limit |
+|---|---|---|
+| Tests pass | Relevant command completed with zero failures | Name the suite; do not imply unrun suites passed |
+| Build succeeds | Relevant build exited successfully | Lint alone does not establish a build |
+| Bug fixed | Original failure reproduced, then corrected | A changed diff alone is insufficient |
+| Regression protection | Test or demonstration distinguishes broken and fixed behavior | Test timing alone does not prove quality |
+| Requirements met | Requested outcomes checked against artifacts | Passing tests may leave untested requirements |
+| Ready to integrate | Required checks on the integration candidate | Local success is not deployment proof |
 
-| Claim | Requires | Not Sufficient |
-|-------|----------|----------------|
-| Tests pass | Test command output: 0 failures | Previous run, "should pass" |
-| Linter clean | Linter output: 0 errors | Partial check, extrapolation |
-| Build succeeds | Build command: exit 0 | Linter passing, logs look good |
-| Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
-| Regression test works | Red-green cycle verified | Test passes once |
-| Agent completed | VCS diff shows changes | Agent reports "success" |
-| Requirements met | Line-by-line checklist | Tests passing |
+Separate failures introduced by this change from pre-existing, dependency,
+and environmental failures. Fix failures within the authorized scope and
+report the others by name. An unrelated baseline failure does not erase
+valid targeted evidence or authorize unrelated repairs. A required check
+that cannot run remains a disclosed limitation; do not claim full validation.
 
-## Red Flags - STOP
+Inspect unexpected warnings for relevance. Report consequential ones without
+requiring unrelated warning cleanup as a completion gate.
 
-- Using "should", "probably", "seems to"
-- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
-- About to commit/push/PR without verification
-- Trusting agent success reports
-- Relying on partial verification
-- Thinking "just this once"
-- Tired and wanting work over
-- **ANY wording implying success without having run verification**
+## Report
 
-## Rationalization Prevention
-
-| Excuse | Reality |
-|--------|---------|
-| "Should work now" | RUN the verification |
-| "I'm confident" | Confidence ≠ evidence |
-| "Just this once" | No exceptions |
-| "Linter passed" | Linter ≠ compiler |
-| "Agent said success" | Verify independently |
-| "I'm tired" | Exhaustion ≠ excuse |
-| "Partial check is enough" | Partial proves nothing |
-| "Different words so rule doesn't apply" | Spirit over letter |
-
-## Key Patterns
-
-**Tests:**
-```
-✅ [Run test command] [See: 34/34 pass] "All tests pass"
-❌ "Should pass now" / "Looks correct"
-```
-
-**Regression tests (TDD Red-Green):**
-```
-✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
-❌ "I've written a regression test" (without red-green verification)
-```
-
-**Build:**
-```
-✅ [Run build] [See: exit 0] "Build passes"
-❌ "Linter passed" (linter doesn't check compilation)
-```
-
-**Requirements:**
-```
-✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
-❌ "Tests pass, phase complete"
-```
-
-**Agent delegation:**
-```
-✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
-❌ Trust agent report
-```
-
-## When To Apply
-
-**ALWAYS before:**
-- ANY variation of success/completion claims
-- ANY expression of satisfaction
-- ANY positive statement about work state
-- Committing, PR creation, task completion
-- Moving to next task
-- Delegating to agents
-
-**Rule applies to:**
-- Exact phrases
-- Paraphrases and synonyms
-- Implications of success
-- ANY communication suggesting completion/correctness
+State what changed, which checks ran and their results, any valid evidence
+reused, and remaining limitations. Never say a check passed unless its output
+supports that claim. Do not perform another run merely to make the evidence
+appear in the final message.

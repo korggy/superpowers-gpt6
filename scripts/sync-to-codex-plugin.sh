@@ -334,6 +334,10 @@ copy_preserved_destination_metadata() {
 
   while IFS= read -r -d '' path; do
     rel="${path#"$destination"/}"
+    # Preserve metadata only for skills still shipped by this source checkout.
+    [[ -f "$source/${rel%/agents/openai.yaml}/SKILL.md" ]] || continue
+    # Source-owned policy must win over metadata from an older installation.
+    [[ -f "$source/$rel" ]] && continue
     mkdir -p "$source/$(dirname "$rel")"
     cp -p "$path" "$source/$rel"
   done < <(find "$destination/skills" -path '*/agents/openai.yaml' -type f -print0)

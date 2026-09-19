@@ -61,12 +61,13 @@ class TestBootstrapContent:
         assert content.startswith("<EXTREMELY_IMPORTANT>")
         assert content.rstrip().endswith("</EXTREMELY_IMPORTANT>")
 
-    def test_contains_using_superpowers_body(self):
+    def test_contains_invocation_policy(self):
         content = _bootstrap()
-        # A distinctive line from the skill body proves the real SKILL.md was
-        # embedded, not a stub.
+        # Startup offers workflows without loading or invoking their bodies.
         assert "You have superpowers" in content
-        assert "## The Rule" in content
+        assert "Superpowers workflow choices" in content
+        assert "opt-in on every harness" in content
+        assert "Follow it now" not in content
 
     def test_frontmatter_stripped(self):
         content = _bootstrap()

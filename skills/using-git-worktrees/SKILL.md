@@ -1,7 +1,10 @@
 ---
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback
+description: Suggest when requested work needs an isolated checkout. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Using Git Worktrees
 
@@ -34,7 +37,12 @@ git rev-parse --show-superproject-working-tree 2>/dev/null
 
 Report with branch state:
 - On a branch: "Already in isolated workspace at `<path>` on branch `<name>`."
-- Detached HEAD: "Already in isolated workspace at `<path>` (detached HEAD, externally managed). Branch creation needed at finish time."
+- Detached HEAD: "Already in isolated workspace at `<path>` (detached HEAD)."
+
+Determine workspace ownership from the host's metadata or creation record,
+not from branch state. Detached HEAD does not imply restricted permissions.
+Before integration, preserve the work with an appropriate branch or host
+handoff within the authorized scope.
 
 **If `GIT_DIR == GIT_COMMON` (or in a submodule):** You are in a normal repo checkout.
 
@@ -80,10 +88,15 @@ Follow this priority order. Explicit user preference always beats observed files
 **MUST verify directory is ignored before creating worktree:**
 
 ```bash
-git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null
+# LOCATION is the selected project-relative worktree directory.
+git check-ignore -q -- "$LOCATION/"
 ```
 
-**If NOT ignored:** Add to .gitignore, commit the change, then proceed.
+**If NOT ignored:** Add an ignore entry for the selected location within the
+authorized setup scope, following repository guidance, then recheck that location.
+An ignore entry for a different directory does not satisfy this check. Commit
+the ignore change only when a commit is separately authorized. If the necessary
+ignore edit is outside scope, resolve that decision before creating the worktree.
 
 **Why critical:** Prevents accidentally committing worktree contents to repository.
 
@@ -93,15 +106,22 @@ git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/d
 # Determine path based on chosen location
 path="$LOCATION/$BRANCH_NAME"
 
-git worktree add "$path" -b "$BRANCH_NAME"
-cd "$path"
+if git worktree add "$path" -b "$BRANCH_NAME"; then
+  cd "$path"
+fi
 ```
 
-**Sandbox fallback:** If `git worktree add` fails with a permission error (sandbox denial), tell the user the sandbox blocked worktree creation and you're working in the current directory instead. Then run setup and baseline tests in place.
+**Blocked creation:** A permission denial does not authorize changing the chosen
+workspace. Follow the host's permission process or use an already authorized
+isolation alternative. Report the blocker and continue useful read-only inspection
+or other independent authorized work. Do not run setup or make task edits in the
+original checkout as a fallback unless the user has authorized working there.
+Ask for a workspace decision only when existing authority cannot resolve it.
 
 ## Step 2: Project Setup
 
-Auto-detect and run appropriate setup:
+Run appropriate setup only in the successfully selected, authorized workspace.
+Follow repository instructions; typical setup commands include:
 
 ```bash
 # Node.js
@@ -120,14 +140,19 @@ if [ -f go.mod ]; then go mod download; fi
 
 ## Step 3: Verify Clean Baseline
 
-Run tests to ensure workspace starts clean:
+Establish an appropriate baseline for the planned change. Reuse recorded
+results only when they cover this code, configuration, and environment.
+Otherwise run the relevant project checks; a full suite is appropriate when
+required or justified by the planned integration risk:
 
 ```bash
 # Use project-appropriate command
 npm test / cargo test / pytest / go test ./...
 ```
 
-**If tests fail:** Report failures, ask whether to proceed or investigate.
+**If tests fail:** Identify baseline, dependency, or environment causes and
+record the limitation. Ask only if the failure blocks the authorized work
+or a material scope decision is needed; continue independent work.
 
 **If tests pass:** Report ready.
 
@@ -151,9 +176,9 @@ Ready to implement <feature-name>
 | `worktrees/` exists | Use it (verify ignored) |
 | Both exist | Use `.worktrees/` |
 | Neither exists | Check instruction file, then default `.worktrees/` |
-| Directory not ignored | Add to .gitignore + commit |
-| Permission error on create | Sandbox fallback, work in place |
-| Tests fail during baseline | Report failures + ask |
+| Directory not ignored | Add an authorized ignore entry and recheck; no implied commit |
+| Permission error on create | Preserve requested isolation; resolve the blocker or workspace decision |
+| Tests fail during baseline | Classify cause; ask only for a blocking scope decision |
 | No package.json/Cargo.toml | Skip dependency install |
 
 ## Common Rationalizations
@@ -164,4 +189,4 @@ Ready to implement <feature-name>
 | "`git worktree add` is quicker than hunting for a native tool" | A native tool (e.g. `EnterWorktree`) owns placement, branching, and cleanup. Bypassing it is the #1 mistake — it creates phantom state your harness can't see or manage. |
 | "The worktree directory is surely ignored already" | Run `git check-ignore`. An unignored worktree directory commits the whole tree into the repo. |
 | "Any directory name works" | Explicit instructions beat an existing project-local directory, which beats the `.worktrees/` default. |
-| "The workspace is fresh — baseline tests can wait" | A dirty baseline makes every later failure ambiguous. Run the tests now; proceeding past failures is your human partner's call. |
+| "The workspace is fresh — baseline tests can wait" | Establish relevant baseline evidence so later failures can be attributed correctly. |

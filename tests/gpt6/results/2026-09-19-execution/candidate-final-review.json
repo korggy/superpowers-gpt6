@@ -1,0 +1,41 @@
+{
+  "cases": [
+    {
+      "id": "list-order",
+      "next_actions": [
+        "Reclassify the newest-first finding as an unresolved material product decision. The Important label and a plausible user expectation do not establish an accepted ordering requirement or a correctness defect.",
+        "Present insertion order, newest-first, and priority-first with their tradeoffs. Recommend retaining insertion order for compatibility unless the human chooses a different user-group priority; this is a recommendation awaiting a decision, not authorization to settle the default.",
+        "Ask the human to choose or explicitly delegate the default ordering. Hold changes to ordering and keep the decision pending; do not silently dismiss it as an optional Minor or declare the whole feature complete.",
+        "Continue the independent, agreed null-handling correction within existing authority. Verify its behavior and required checks, then record the correction and evidence without claiming results before they exist.",
+        "Record the ordering finding, why its defect classification was rejected, the source of authority, options, recommendation, and unresolved status in the decision record. Once the human settles it, implement any authorized ordering change and verify the affected filtering and pagination behavior before completion."
+      ],
+      "response": "The newest-first request is a product choice, not a substantiated Important defect: ordering was deliberately left open, insertion order is the existing behavior, and newest-first and priority-first serve different groups. I recommend retaining insertion order for compatibility unless you want to prioritize one of those groups. Which default should we use: insertion order, newest-first, or priority-first? I would continue the agreed null-handling fix while that decision is pending, and keep final completion pending. The frozen [executing-plans guidance](C:/CodexTools/superpowers-execution-eval-20260919/candidate-final-skills/executing-plans/SKILL.md) requires unresolved product choices to be presented to the human \"before affected work\"; that checkpoint applies because this choice was neither settled nor delegated.",
+      "guidance": [
+        "requesting-code-review/SKILL.md, Act on feedback and Red Flags: distinguish correctness defects, unresolved product choices, and optional improvements; a severity label does not authorize a new requirement; continue independent authorized fixes.",
+        "requesting-code-review/code-reviewer.md, Requirements, defects, and product choices: plausible preferences are not requirements; report unresolved defaults separately with evidence, options, a recommendation, and whether they block agreed work.",
+        "executing-plans/SKILL.md, Final Review: classify by evidence, scope, and authority before severity; keep required material decisions pending; record consequential rulings without manufacturing authority.",
+        "using-superpowers/references/decision-checkpoints.md, Proceed or wait: give the human a concrete opportunity to decide before affected implementation and continue independent authorized work.",
+        "using-superpowers/references/invocation-policy.md: the workflow is already accepted, so do not ask to invoke it again; acceptance does not expand scope."
+      ]
+    },
+    {
+      "id": "save-failure",
+      "next_actions": [
+        "Classify the reproduced destruction of an existing saved record on an ordinary failed save as a Critical correctness defect due to actual data loss, not an optional feature. Reject the implementer's claim that an unstated trigger excludes the defect from the authorized editing scope.",
+        "Proceed with the narrow correction under the existing authorization for the record editor and routine implementation decisions. Preserve the existing interfaces, product policy, and architecture; no new product decision or repeated permission request is needed.",
+        "Add or use meaningful regression protection that starts with an existing saved record, induces the ordinary write failure, and demonstrates that the original implementation loses that record. Treat the supplied reproduction as evidence and do not claim to have run a test in this probe.",
+        "Implement preservation of the existing saved record when the replacement write fails, then verify that the regression passes and that successful edits still work. Run missing or invalidated required project and risk-appropriate integration checks; reuse still-valid evidence for unchanged content.",
+        "Record the defect, severity rationale, authority, correction, current implementation state, and actual verification evidence in the ledger. Keep delivery pending until the data-loss correction and required checks are complete; request another review only if the correction leaves unresolved risk or the original review requires it."
+      ],
+      "response": "This is a Critical data-loss defect within the authorized record-editor fix. Editing an existing record must not erase the saved record when an ordinary write fails; the specification does not need to list every failure trigger. I would make the narrow correction now, verify that a failed write preserves the old record and a successful write still updates it, and complete the required checks before delivery. No additional product decision is needed for this correction. These are proposed next actions in this decision probe, not implementation or test results.",
+      "guidance": [
+        "requesting-code-review/code-reviewer.md, Requirements, defects, and product choices: reproduced data loss can be a correctness defect even when its trigger is unstated; grade the concrete consequence. The Critical category includes data-loss risks.",
+        "requesting-code-review/SKILL.md, Act on feedback: correct substantiated Critical and Important defects within existing authority.",
+        "executing-plans/SKILL.md, Final Review: data loss on an ordinary failed save remains a defect; fix within authority with regression protection, appropriate checks, and recorded evidence.",
+        "using-superpowers/references/decision-checkpoints.md, Proceed or wait and Changes and recovery: continue already authorized scope and routine implementation details without restarting approval.",
+        "subagent-driven-development/review-evidence.md, Record coverage: identify the actual implementation state and verification scope; mark complete only after requirements, checks, and review are satisfied.",
+        "using-superpowers/references/invocation-policy.md: already accepted workflows cover their supporting steps without repeated invocation consent, while scope and host permissions remain binding."
+      ]
+    }
+  ]
+}

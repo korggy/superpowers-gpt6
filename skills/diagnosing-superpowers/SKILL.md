@@ -1,16 +1,18 @@
 ---
 name: diagnosing-superpowers
-description: Use when a superpowers session went wrong and your human partner wants to know why — repeated work, ignored plans, stumbles, poor results, a skill that didn't fire, "it took too long", "why is it so expensive", "what is it doing" — or wants to build a bug report for the superpowers maintainers, for the current session or a past one identified by id or path, on any harness.
+description: Suggest when the human wants evidence about a problematic Superpowers session. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
 
 # Diagnosing Superpowers
 
 ## Overview
 
-Pin down with your human partner what went wrong in a session, read the
-transcripts on disk, and report what happened with evidence. You report;
-you do not diagnose superpowers. Whoever triages the bundle or the issue
-decides whether superpowers changes.
+Clarify the reported problem and examine the transcript. Distinguish
+observations, likely causes, and hypotheses. Recommend supported corrections;
+edit only when authorized. A report request does not authorize changes,
+exports, or external messages.
 
 **Core principle:** Every finding cites `path:line`. No citation, no
 finding. Every number comes from the transcript or from a command you ran,
@@ -34,7 +36,8 @@ Create a todo per step. Steps 5–7 run only on their stated condition.
    partner the path, and fill `templates/case.md` there, following its
    provenance rules for environment and skill observations.
 3. **Triage.** Read the region around the reported problem yourself. Then
-   dispatch one analyst subagent per dimension in parallel, each given the
+   select relevant dimensions. Analyze narrow cases yourself; delegate substantial
+   independent dimensions within host limits, each given the
    case file path, `prompts/analyst-common.md`, and one dimension file from
    `prompts/`: `skill-timeline.md`,
    `plan-adherence.md`, `repeated-work.md`, `stumbles.md`,
@@ -71,8 +74,7 @@ Create a todo per step. Steps 5–7 run only on their stated condition.
 
 ## Quick reference
 
-All seven analysts always run. This table says which region to read
-yourself in step 3 and which findings to lead with in the verdict.
+Record unexamined dimensions as coverage limits. Read and lead with:
 
 | Complaint | Read first, lead with |
 |---|---|
@@ -93,11 +95,10 @@ yourself in step 3 and which findings to lead with in the verdict.
 - **Human prompts only.** Hook output, system reminders, and tool results
   are not your partner's words. In a subagent transcript, "user" is the
   parent agent.
-- **No superpowers diagnosis.** Report §7 states involvement and stops.
-  Never name a defect in a skill or propose a change. Your partner
-  pressing for a fix does not waive this; point at the issue step and
-  mention that a bundle is available on request. No advice to your
-  partner either.
+- **Evidence and authority.** Report §7 may identify a skill defect and
+  recommend a correction with evidence and confidence. Correlation is not
+  causation. Current human requests override workflow defaults within host
+  permissions, including requests to implement and validate a correction.
 - **Approval gates.** No archive before your partner has seen the scrub
   log and file list. No issue or comment before they approve the exact
   text.
@@ -116,5 +117,5 @@ yourself in step 3 and which findings to lead with in the verdict.
 | "They're away, so I'll reconstruct the statement" | You cannot reconstruct what they wanted. Write the questions and stop. |
 | "I'll sweep everything now and ask at the end" | An unscoped sweep spends their budget on the wrong question. Ask first. |
 | "They want a bug report, so I'll build the bundle now" | The bundle is their session data, packaged. Build it only when they ask for it. |
-| "Small, targeted edit, no restructuring needed" | Not your call, however small. Report the evidence; the triager decides. |
+| "The report implies I should change the skill now" | A report request authorizes findings and recommendations. Implement only when the human requests the change. |
 | "The price per token is well known" | Numbers you did not compute from the transcript are invented. Cite or drop. |

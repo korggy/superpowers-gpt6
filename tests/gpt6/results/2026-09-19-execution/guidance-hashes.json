@@ -1,0 +1,25 @@
+{
+  "baseline_revision": "860917402208a058f8754a3ba399acd790fb8e97",
+  "snapshot_root": "C:/CodexTools/superpowers-execution-eval-20260919",
+  "algorithm": "SHA-256",
+  "snapshots": {
+    "baseline-skills": {
+      "executing-plans/SKILL.md": "2519f9a1a6ba6c05f63bc35ee6854b166a1e8fa234fbb0260a7bb44a5ebea673",
+      "requesting-code-review/SKILL.md": "4f2059e7b3485f457ebec04e0d9df173c6ab2467f6c74964c1e1a91fe8bcaf8d",
+      "requesting-code-review/code-reviewer.md": "1b7f42e33784ba77472c1dc58926ccb744cdec94967e1d53516b52847997f8bd",
+      "dispatching-parallel-agents/SKILL.md": "895f088d29cb47c1f93ba64b883fc29b06f0315f282966954adc61bc69dc1c98"
+    },
+    "candidate-skills": {
+      "executing-plans/SKILL.md": "c36b3daf26c6ecc1d5ef337daedc5618178171bbc8c800552184cf0f2af1f43d",
+      "requesting-code-review/SKILL.md": "f470865aa455699082e34d881c7a4f472ebedc9f7a76f2d3c04bacb1ae642de0",
+      "requesting-code-review/code-reviewer.md": "ec0c784ca11ba874fb17d8ff5ed5dd3a1543e15ccace0824f9cd6c987a7a103c",
+      "dispatching-parallel-agents/SKILL.md": "1e4f4d2cac4affb0dd82206cff9c5a82929d25ee5d55382511aa6f5743320ed1"
+    },
+    "candidate-final-skills": {
+      "executing-plans/SKILL.md": "c36b3daf26c6ecc1d5ef337daedc5618178171bbc8c800552184cf0f2af1f43d",
+      "requesting-code-review/SKILL.md": "4222b732b3008367337c4c36825b8f188455c98c0ff4892e64d773559059a932",
+      "requesting-code-review/code-reviewer.md": "7b36a958993269e226907fd36f97c3296e32081137901999adef4cb45c7f4d6b",
+      "dispatching-parallel-agents/SKILL.md": "1e4f4d2cac4affb0dd82206cff9c5a82929d25ee5d55382511aa6f5743320ed1"
+    }
+  }
+}

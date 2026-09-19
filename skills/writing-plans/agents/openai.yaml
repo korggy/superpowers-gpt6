@@ -1,0 +1,5 @@
+interface:
+  display_name: "Writing Plans"
+  short_description: "Suggest when a multi-step change needs a durable implementation plan"
+policy:
+  allow_implicit_invocation: false

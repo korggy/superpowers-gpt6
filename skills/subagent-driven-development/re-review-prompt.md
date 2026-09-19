@@ -10,8 +10,8 @@ that the fix itself broke nothing.
 ```
 Subagent (general-purpose):
   description: "Re-review Task N fix round R"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
+  model: [Optional supported override chosen per SKILL.md Model Selection;
+          otherwise inherit the host default and follow its fork rules]
   prompt: |
     You are re-reviewing one task's fix round. A previous review produced
     findings; an implementer has attempted to fix them. Your job is to
@@ -20,6 +20,9 @@ Subagent (general-purpose):
     ## The Task
 
     Read the task brief: [BRIEF_FILE]
+    Read its current Decision Record, Global Constraints, and relevant rulings.
+    Distinguish approved changes from proposals and worker assumptions; do not
+    treat a worker's claim as authority to change acceptance criteria.
 
     ## The Findings Under Verification
 
@@ -30,15 +33,14 @@ Subagent (general-purpose):
     Read the implementer's report (fix reports are appended at the end):
     [REPORT_FILE]
 
-    **Fix base:** [FIX_BASE_SHA] (the head the previous review saw)
-    **Head:** [HEAD_SHA]
-    **Diff file:** [DIFF_FILE]
+    **Prior reviewed state:** [commit or retained working-tree snapshot]
+    **Current state:** [commit or working-tree snapshot]
+    **Review package:** [DIFF_FILE]
 
-    Read the diff file once — it contains the fix commits, a stat summary,
-    and the fix diff with surrounding context. Do not re-run git commands.
-    If the diff file is missing, fetch the diff yourself:
-    `git diff --stat [FIX_BASE_SHA]..[HEAD_SHA]` and
-    `git diff [FIX_BASE_SHA]..[HEAD_SHA]`.
+    Read the fix diff and relevant new-file contents against the prior reviewed
+    state. HEAD may be unchanged across uncommitted fix rounds. If the package
+    is missing or incomplete, request the correct evidence under
+    review-evidence.md; do not substitute an empty commit range.
 
     Your review is read-only on this checkout. Do not mutate the working
     tree, the index, HEAD, or branch state in any way.
@@ -61,15 +63,20 @@ Subagent (general-purpose):
     does not block this task and does not extend the loop. A broad
     whole-branch review happens after all tasks are complete.
 
-    ## Tests
+    ## Verification
 
-    The implementer re-ran the tests covering the amended code and appended
-    the results to the report file. Treat the report as unverified claims:
-    confirm the fix report names the covering tests and shows their output,
-    and verify the claims against the diff. Do not re-run the suite to
-    confirm their report. Run a test only when reading the code raises a
-    specific doubt that no existing run answers — and then a focused test,
-    never a package-wide suite.
+    Treat the fix report as unverified claims. Check that its method, evidence,
+    and result cover the actual fix diff. Behavioral changes need meaningful
+    regression coverage and required checks; low-impact prose or metadata may
+    use inspection or parsing evidence. For inspection, confirm the artifact,
+    check performed, and observed result. For executed checks, inspect the
+    command and relevant output. Accept reused results only when they still
+    cover the unchanged code, configuration, and environment.
+
+    Do not require test files or a new test run solely because a fix round
+    occurred. Run a focused check only for a concrete doubt the existing
+    evidence does not answer. If broader validation is required or warranted,
+    report the gap to the controller instead of independently running a suite.
 
     ## Output Format
 
@@ -101,15 +108,14 @@ Subagent (general-purpose):
 ```
 
 **Placeholders:**
-- `[MODEL]` — REQUIRED: reviewer model per SKILL.md Model Selection; scoped
-  re-reviews of small fix diffs take a cheap-to-mid tier
+- Model override — optional, supported by the host and appropriate to the task
 - `[BRIEF_FILE]` — the task brief file (same file the implementer worked from)
 - `[FINDINGS]` — the Critical/Important findings and spec gaps from the
   previous review, copied verbatim, one per bullet
 - `[REPORT_FILE]` — the implementer's report file (fix reports appended)
-- `[FIX_BASE_SHA]` — the head the previous review saw
-- `[HEAD_SHA]` — current commit
-- `[DIFF_FILE]` — the path `bash scripts/review-package PLAN_FILE FIX_BASE HEAD` printed
+- Prior/current reviewed states — commits or retained working-tree snapshots
+- `[DIFF_FILE]` — fix package against the prior reviewed state under
+  [review-evidence.md](review-evidence.md)
 
 **Re-reviewer returns:** per-finding verdicts (ADDRESSED / NOT ADDRESSED),
 new breakage in the fix diff, out-of-scope observations, and a round verdict.

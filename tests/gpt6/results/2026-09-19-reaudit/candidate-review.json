@@ -1,0 +1,101 @@
+{
+  "cases": [
+    {
+      "id": "independent-review-items",
+      "model": "unknown",
+      "effort": "unknown",
+      "next_actions": [
+        "Ask asynchronously for the new default retention period, including its unit. Hold item 3 until that requirement is supplied; do not infer consent from silence.",
+        "Continue authorized items 1 and 2 because inspection has established their independence from item 3.",
+        "Correct item 1 and verify the documentation link resolves to its intended target and anchor.",
+        "Fix item 2 against the agreed expected result, add meaningful regression coverage for the reproduced null dereference, and complete applicable project checks. Follow TDD only if required by the task or repository.",
+        "Report items 1 and 2 with their verification evidence and keep item 3 explicitly pending."
+      ],
+      "user_response": "I’ll fix the documentation link and reproduced null dereference while you clarify item 3. What should the new default retention period be, including its unit? I’ll leave that default unchanged until you answer.",
+      "guidance_used": [
+        {
+          "path": "receiving-code-review/SKILL.md",
+          "sections": [
+            "Handling Unclear Feedback",
+            "Implementation Order"
+          ],
+          "application": "Check dependencies, ask before implementing affected changes, and continue clear independent changes already authorized. Use meaningful tests for behavior and inspection or parsing for low-impact prose."
+        },
+        {
+          "path": "using-superpowers/references/invocation-policy.md",
+          "application": "A delegated worker follows the assigned task without restarting workflow selection. Reading assigned guidance for this probe does not authorize actual implementation or unrelated workflows."
+        }
+      ],
+      "conflicts_or_uncertainty": [
+        "The replacement retention period is a missing material requirement. It blocks item 3 only.",
+        "The scenario does not specify TDD requirements or particular test commands; these should not be invented.",
+        "No hypothetical mutations were executed."
+      ]
+    },
+    {
+      "id": "prose-rereview",
+      "model": "unknown",
+      "effort": "unknown",
+      "next_actions": [
+        "Send the link correction for scoped re-review now: the stated inspection and anchor-resolution evidence covers this prose-only fix, and no additional project check is required.",
+        "Provide the same task brief, current decision record and constraints, original finding, appended fix report, and review package identifying the exact prior reviewed state and corrected state.",
+        "Include the actual one-link diff, relevant guide and target-file paths, and evidence identifying what target and anchor were checked and the successful result. Identify reused behavioral results and why they remain applicable.",
+        "Have the reviewer verify the report against the fix diff, verdict the original finding, and inspect the correction for newly introduced problems. Do not require covering test files or new test output merely because re-review occurs.",
+        "Run an additional focused check only if a concrete doubt remains unanswered. Record the re-review result before marking the task complete.",
+        "If the correction instead changes an untested null-handling branch, obtain meaningful regression coverage of the changed null behavior and relevant surrounding behavior, run applicable required checks, and record commands and relevant results. Follow TDD when required. Dispatch re-review once that evidence covers the behavioral fix; prior checks of unchanged code cannot establish the changed branch's correctness."
+      ],
+      "user_response": "The link fix is ready for scoped re-review. Its exact diff, target inspection, and successful anchor check provide appropriate evidence; this prose-only change does not require new tests or another test run. The reviewer will verify that evidence and the corrected link. If the fix changed an untested null-handling branch, I would first require meaningful regression coverage and the applicable checks for that behavior.",
+      "guidance_used": [
+        {
+          "path": "subagent-driven-development/SKILL.md",
+          "sections": [
+            "The fix loop",
+            "Complete the task"
+          ],
+          "application": "Dispatch re-review once verification covers the fix. Inspection can cover low-impact prose; test files and fresh test output are not universal requirements. A fix round ends with scoped re-review."
+        },
+        {
+          "path": "subagent-driven-development/implementer-prompt.md",
+          "sections": [
+            "After Review Findings",
+            "Report Format"
+          ],
+          "application": "The fix report identifies changed scope, verification method, evidence, and result. Prose fixes do not require invented test files or a new test run; behavioral fixes require meaningful regression coverage."
+        },
+        {
+          "path": "subagent-driven-development/task-reviewer-prompt.md",
+          "sections": [
+            "Verification"
+          ],
+          "application": "Assess whether evidence covers the actual diff and required checks. Reuse applicable evidence and run focused checks only for concrete unanswered doubts."
+        },
+        {
+          "path": "subagent-driven-development/re-review-prompt.md",
+          "sections": [
+            "The Fix",
+            "Scope",
+            "Verification"
+          ],
+          "application": "Verify each finding against the fix diff and inspect for new breakage. Accept appropriate inspection evidence and applicable reused results."
+        },
+        {
+          "path": "subagent-driven-development/review-evidence.md",
+          "application": "Identify prior and current reviewed states accurately, including working-tree snapshots when necessary; an unchanged HEAD or empty commit range does not describe an uncommitted fix."
+        },
+        {
+          "path": "using-superpowers/references/invocation-policy.md",
+          "application": "The accepted workflow covers its stated supporting steps without repeated consent."
+        },
+        {
+          "path": "using-superpowers/references/decision-checkpoints.md",
+          "application": "Continue within existing authority and do not reopen settled decisions merely because execution reaches a review boundary."
+        }
+      ],
+      "conflicts_or_uncertainty": [
+        "No evidence conflict is present under the supplied facts. Missing test files and fresh test output are not verification gaps for this link-only correction.",
+        "The behavioral counterfactual requires additional evidence; inspection alone would not establish the changed null-handling behavior.",
+        "No re-review was dispatched and no hypothetical mutations were executed."
+      ]
+    }
+  ]
+}

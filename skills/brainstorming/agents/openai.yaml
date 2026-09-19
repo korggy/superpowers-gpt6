@@ -1,0 +1,5 @@
+interface:
+  display_name: "Brainstorming"
+  short_description: "Suggest when a material design decision needs discussion"
+policy:
+  allow_implicit_invocation: false

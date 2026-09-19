@@ -141,7 +141,7 @@ tar_extracted="$TEST_ROOT/tar-extracted"
 write_metadata_fixture "$metadata_source"
 
 source_hooks="$(python3 -c 'import json; print(json.load(open("'"$REPO_ROOT"'/.codex-plugin/plugin.json")).get("hooks"))')"
-assert_equals "$source_hooks" "{}" "source Codex manifest suppresses local hook auto-discovery"
+assert_equals "$source_hooks" "./.codex-plugin/hooks.json" "source Codex manifest uses its dedicated startup notice"
 
 if output="$("$SCRIPT_UNDER_TEST" --allow-dirty --metadata-source "$metadata_source" --output "$archive" 2>&1)"; then
   pass "package script exits successfully"
@@ -166,6 +166,8 @@ archive_paths="$(list_archive "$archive" | normalize_archive_paths)"
 unexpected_pattern='(^superpowers/|^\.agents/|^hooks/|package\.json$|^\.git|^\.pytest_cache|^\.ruff_cache|^scripts/|^tests/|^docs/|^evals/|^lib/|^\.claude|^\.cursor|^\.kimi|^\.opencode|^\.pi|^AGENTS\.md$|^CLAUDE\.md$|^GEMINI\.md$|^RELEASE-NOTES\.md$|^CHANGELOG\.md$)'
 assert_not_matches "$archive_paths" "$unexpected_pattern" "archive excludes source-only paths"
 assert_contains "$archive_paths" ".codex-plugin/plugin.json" "archive includes Codex manifest"
+assert_contains "$archive_paths" ".codex-plugin/hooks.json" "archive includes Codex hooks"
+assert_contains "$archive_paths" ".codex-plugin/session-start.cjs" "archive includes Codex notice script"
 assert_contains "$archive_paths" "skills/brainstorming/SKILL.md" "archive includes skills"
 assert_contains "$archive_paths" "skills/brainstorming/agents/openai.yaml" "archive includes OpenAI skill metadata"
 assert_contains "$archive_paths" "assets/app-icon.png" "archive includes app icon"
@@ -178,6 +180,12 @@ assert_equals "$manifest_summary" "superpowers	$expected_version	./skills/	$sour
 skill_count="$(find "$extracted/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
 metadata_count="$(find "$extracted/skills" -path '*/agents/openai.yaml' -type f | wc -l | tr -d ' ')"
 assert_equals "$metadata_count" "$skill_count" "every packaged skill has OpenAI metadata"
+if cmp -s "$REPO_ROOT/skills/brainstorming/agents/openai.yaml" "$extracted/skills/brainstorming/agents/openai.yaml"; then
+  pass "source invocation policy wins over legacy package metadata"
+else
+  fail "source invocation policy wins over legacy package metadata"
+fi
+assert_contains "$(cat "$extracted/skills/brainstorming/agents/openai.yaml")" "allow_implicit_invocation: false" "packaged policy remains opt-in"
 
 if [[ -x "$extracted/skills/subagent-driven-development/scripts/task-brief" ]]; then
   pass "archive preserves executable script mode"
@@ -263,12 +271,17 @@ set +e
 missing_output="$("$SCRIPT_UNDER_TEST" --allow-dirty --metadata-source "$incomplete_metadata" --output "$TEST_ROOT/missing.tar.gz" 2>&1)"
 missing_status=$?
 set -e
-if [[ "$missing_status" -ne 0 ]]; then
-  pass "package script rejects incomplete metadata source"
+if [[ "$missing_status" -eq 0 ]]; then
+  pass "source-owned metadata does not require a complete legacy package"
 else
-  fail "package script rejects incomplete metadata source"
+  fail "source-owned metadata does not require a complete legacy package"
 fi
-assert_contains "$missing_output" "ERROR: metadata source is incomplete" "incomplete metadata reports clear error"
+
+if output="$("$SCRIPT_UNDER_TEST" --allow-dirty --output "$TEST_ROOT/source-only.tar.gz" 2>&1)"; then
+  pass "source-owned metadata packages without an external metadata source"
+else
+  fail "source-owned metadata packages without an external metadata source"
+fi
 
 dirty_repo="$TEST_ROOT/dirty-repo"
 git clone -q --no-local "$REPO_ROOT" "$dirty_repo"

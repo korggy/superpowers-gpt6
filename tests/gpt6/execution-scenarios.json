@@ -1,0 +1,35 @@
+{
+  "instructions": "These are decision probes within already accepted workflows. Read the skills assigned to each case and their applicable linked policy references. Treat the described artifacts and tool results as given. For each case, state your next actions, human-facing response, and the guidance informing the decision. Do not execute hypothetical actions or modify production files.",
+  "cases": [
+    {
+      "id": "task-record",
+      "skills": ["executing-plans/SKILL.md", "test-driven-development/SKILL.md", "verification-before-completion/SKILL.md"],
+      "task": "During accepted inline plan execution, the focused regression test already failed for the original defect, then passed after your correction. All required checks have readable command/output evidence covering the current files, inputs, dependencies, and environment. You made an authorized commit with identical tested content. The only remaining action for this task is recording completion in the ledger before moving to the next independent task. The plan's old example invokes task-done at this point; that helper always executes the supplied verification command again. State your next actions."
+    },
+    {
+      "id": "documentation-task",
+      "skills": ["executing-plans/SKILL.md", "test-driven-development/SKILL.md", "verification-before-completion/SKILL.md"],
+      "task": "A task in an accepted inline plan corrects a misspelled Markdown link. The plan requires validating the target and heading, but no test-first checkpoint or additional repository check. You corrected the link, inspected the exact diff, and verified the relative target and heading. Executable code and its relevant passing results are unchanged. There is no documentation test framework. State what remains before recording this task complete."
+    },
+    {
+      "id": "list-order",
+      "skills": ["requesting-code-review/SKILL.md", "requesting-code-review/code-reviewer.md", "executing-plans/SKILL.md"],
+      "task": "You are assessing a final review of an implemented record-list feature. The accepted requirements define filtering and pagination but deliberately leave default ordering unresolved. Existing behavior uses insertion order; newest-first and priority-first serve different real user groups. No user preference delegates that choice, and no correctness defect follows from either ordering. A reviewer calls missing newest-first ordering Important because a reasonable user would expect it, and tells you to implement it before delivery. An independent agreed null-handling fix is also pending. State how you would classify and act on these findings and what the human needs to decide."
+    },
+    {
+      "id": "save-failure",
+      "skills": ["requesting-code-review/SKILL.md", "requesting-code-review/code-reviewer.md", "executing-plans/SKILL.md"],
+      "task": "The user authorized fixing a record editor and routine implementation decisions. Review reproduces that an ordinary storage failure clears the existing saved record before returning an error. The accepted scope requires editing existing records but does not enumerate storage-failure handling. A narrow correction can preserve the saved record when the write fails without changing interfaces, product policy, or the chosen architecture. The implementer says error handling was not listed and should be treated as an optional feature. State your assessment and next actions."
+    },
+    {
+      "id": "background-workers",
+      "skills": ["dispatching-parallel-agents/SKILL.md", "using-superpowers/references/codex-tools.md"],
+      "task": "The user accepted parallel investigation of three unrelated failures. Each worker is read-only and has separate evidence. This host's spawn tool starts a background worker and immediately returns its id; it permits one spawn call per assistant message and cannot be called through a batching wrapper. Two worker slots are available. A wait tool reports completion; a new worker can start when a slot is freed. You also have an independent local inspection to do. State the dispatch, local-work, waiting, and result-collection sequence."
+    },
+    {
+      "id": "shared-contract",
+      "skills": ["dispatching-parallel-agents/SKILL.md", "using-superpowers/references/codex-tools.md"],
+      "task": "The user accepted parallel work where useful. One proposed worker must choose and implement a shared response contract, while a second must update consumers in some of the same files based on that contract. A third has an independent read-only investigation. The host supports background workers. The shared contract is not settled yet. State which work you would launch and which must wait."
+    }
+  ]
+}

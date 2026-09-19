@@ -124,11 +124,11 @@ The plugin does two things, using host-flavor-specific APIs:
 1. **Registers the skills directory** so OpenCode discovers all superpowers skills without symlinks or manual config.
     - **V1:** via the `config` hook, injecting into `config.skills.paths`
     - **V2:** via the `setup()` function using `ctx.skill.transform()` (V2 native API, confirmed active at runtime)
-2. **Injects bootstrap context** with a flavor-specific tool mapping: V1 sessions get the V1 tool names below, and V2 sessions get the V2 names.
+2. **Injects the invocation-policy notice** with a flavor-specific tool mapping. This suggests relevant workflows without invoking them. V2 also registers skills with `autoinvoke: false`; explicit loading by ID remains available.
     - **V1:** via `experimental.chat.messages.transform` hook
     - **V2:** via `ctx.session.hook("context")` — the V2 equivalent (confirmed active at runtime)
 
-Controller sessions receive the using-superpowers bootstrap in transient model
+Controller sessions receive the workflow-choice notice in transient model
 context. Delegated child sessions keep access to native skills but do not receive
 the controller bootstrap. A manual fork without a parent session keeps controller
 behavior. When V2 native compaction retains earlier user messages (the default

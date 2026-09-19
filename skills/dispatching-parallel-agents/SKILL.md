@@ -1,7 +1,10 @@
 ---
 name: dispatching-parallel-agents
-description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+description: Suggest for substantial independent investigations that benefit from parallel work. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Dispatching Parallel Agents
 
@@ -65,23 +68,34 @@ Each agent gets:
 
 ### 3. Dispatch in Parallel
 
-Issue all three subagent dispatches in the same response — they run in parallel:
+Check the host's actual dispatch, concurrency, and waiting contracts. Launch
+independent workers before waiting for their completion, up to the available
+worker limit. A background spawn may return an id immediately; separate spawn
+calls can still leave several workers running concurrently. Use a batching
+wrapper only when the host supports it.
 
 ```text
-Subagent (general-purpose): "Fix agent-tool-abort.test.ts failures"
-Subagent (general-purpose): "Fix batch-completion-behavior.test.ts failures"
-Subagent (general-purpose): "Fix tool-approval-race-conditions.test.ts failures"
-# All three run concurrently.
+With two available background-worker slots:
+  Start worker A on the abort failures; retain its id.
+  Start worker B on the independent batch failures; retain its id.
+  Do useful independent local work while A and B run.
+  When a slot becomes available, start worker C on the approval failures.
+  Collect all three results and account for failures or unfinished work.
 ```
 
-Multiple dispatch calls in one response = parallel execution. One per response = sequential.
+Concurrency depends on overlapping execution, not the number of assistant
+messages. Follow the host's event or wait tools when there is no useful local
+work; avoid busy polling. Keep work sharing files or unsettled interfaces
+sequential until its dependencies and ownership are resolved. If delegation
+is unavailable, report the limitation and use an authorized inline path or
+seek a decision when the human retained independent execution or review.
 
 ### 4. Review and Integrate
 
 When agents return:
 - Read each summary
 - Verify fixes don't conflict
-- Run full test suite
+- Run the required and risk-appropriate integration checks
 - Integrate all changes
 
 ## Agent Prompt Structure
@@ -163,5 +177,5 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 After agents return:
 1. **Review each summary** - Understand what changed
 2. **Check for conflicts** - Did agents edit same code?
-3. **Run full suite** - Verify all fixes work together
+3. **Verify integration** - Run required checks and tests covering interactions between the fixes; broaden when risk warrants it
 4. **Spot check** - Agents can make systematic errors

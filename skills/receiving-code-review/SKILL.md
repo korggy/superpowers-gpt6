@@ -1,7 +1,10 @@
 ---
 name: receiving-code-review
-description: Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation
+description: Suggest when review feedback needs technical assessment before changes. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Code Review Reception
 
@@ -21,7 +24,7 @@ WHEN receiving code review feedback:
 3. VERIFY: Check against codebase reality
 4. EVALUATE: Technically sound for THIS codebase?
 5. RESPOND: Technical acknowledgment or reasoned pushback
-6. IMPLEMENT: One item at a time, test each
+6. IMPLEMENT: Resolve dependencies, then verify each change appropriately
 ```
 
 ## Forbidden Responses
@@ -41,10 +44,11 @@ WHEN receiving code review feedback:
 
 ```
 IF any item is unclear:
-  STOP - do not implement anything yet
-  ASK for clarification on unclear items
+  CHECK which other items depend on the unresolved choice
+  ASK a focused question before implementing the affected changes
+  CONTINUE clear, independent changes already authorized
 
-WHY: Items may be related. Partial understanding = wrong implementation.
+WHY: Shared assumptions can block related changes; unrelated fixes need not wait.
 ```
 
 **Example:**
@@ -52,8 +56,10 @@ WHY: Items may be related. Partial understanding = wrong implementation.
 your human partner: "Fix 1-6"
 You understand 1,2,3,6. Unclear on 4,5.
 
-❌ WRONG: Implement 1,2,3,6 now, ask about 4,5 later
-✅ RIGHT: "I understand items 1,2,3,6. Need clarification on 4 and 5 before proceeding."
+Inspection confirms 1,2,3,6 are independent of 4,5.
+❌ WRONG: Guess the meaning of 4,5 or stop all six items without checking dependencies.
+✅ RIGHT: Ask about 4,5 now and continue 1,2,3,6 while awaiting the answer.
+If an item shares the unresolved decision, hold that item too.
 ```
 
 ## Source-Specific Handling
@@ -77,10 +83,12 @@ IF suggestion seems wrong:
   Push back with technical reasoning
 
 IF can't easily verify:
-  Say so: "I can't verify this without [X]. Should I [investigate/ask/proceed]?"
+  Investigate within the authorized scope
+  State the remaining evidence gap; ask only for missing information or authority
+  Hold affected changes and continue independent authorized work
 
 IF conflicts with your human partner's prior decisions:
-  Stop and discuss with your human partner first
+  Resolve the conflict before affected changes; continue independent work
 ```
 
 **your human partner's rule:** "External feedback - be skeptical, but check carefully"
@@ -101,13 +109,13 @@ IF reviewer suggests "implementing properly":
 
 ```
 FOR multi-item feedback:
-  1. Clarify anything unclear FIRST
-  2. Then implement in this order:
+  1. Identify dependencies and ask about unresolved material choices
+  2. Implement clear, authorized items whose dependencies are settled:
      - Blocking issues (breaks, security)
      - Simple fixes (typos, imports)
      - Complex fixes (refactoring, logic)
-  3. Test each fix individually
-  4. Verify no regressions
+  3. Verify changed behavior with meaningful tests; inspect or parse low-impact prose/metadata
+  4. Complete required checks; reuse relevant results for unchanged code and environment
 ```
 
 ## When To Push Back
@@ -167,11 +175,11 @@ State the correction factually and move on.
 |---------|-----|
 | Performative agreement | State requirement or just act |
 | Blind implementation | Verify against codebase first |
-| Batch without testing | One at a time, test each |
+| Changes without evidence | Use verification appropriate to the changed behavior and risk |
 | Assuming reviewer is right | Check if breaks things |
 | Avoiding pushback | Technical correctness > comfort |
-| Partial implementation | Clarify all items first |
-| Can't verify, proceed anyway | State limitation, ask for direction |
+| Blocking all work on one unclear item | Check dependencies; clarify affected items and continue independent fixes |
+| Can't verify, proceed anyway | Investigate within scope; state remaining gaps and hold affected changes |
 
 ## Real Examples
 
@@ -197,7 +205,8 @@ Reviewer: "Implement proper metrics tracking with database, date filters, CSV ex
 ```
 your human partner: "Fix items 1-6"
 You understand 1,2,3,6. Unclear on 4,5.
-✅ "Understand 1,2,3,6. Need clarification on 4 and 5 before implementing."
+✅ "Items 1,2,3,6 are independent and clear, so I'll fix them. For 4 and 5,
+which retention policy should apply? I'll hold those changes pending your answer."
 ```
 
 ## GitHub Thread Replies

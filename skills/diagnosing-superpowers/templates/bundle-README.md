@@ -15,9 +15,9 @@ location.
 A scrubbed record of a coding-agent session that had superpowers installed
 and went wrong. It lets an agent or person who was not present decide
 whether superpowers contributed and, if so, what to change. The report
-inside states what happened with `path:line` evidence. By design it
-contains no diagnosis of superpowers and no proposed fix; that is the
-reader's job.
+inside states what happened with `path:line` evidence. It distinguishes
+observations, likely causes, and uncertainty. When requested, it includes
+evidence-supported corrections and a validation approach.
 
 ## Files
 

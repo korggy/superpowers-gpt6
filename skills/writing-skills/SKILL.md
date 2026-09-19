@@ -1,7 +1,10 @@
 ---
 name: writing-skills
-description: Use when creating new skills, editing existing skills, or verifying skills work before deployment
+description: Suggest when creating, revising, or evaluating reusable skills. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Writing Skills
 
@@ -11,13 +14,41 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 **Personal skills live in your runtime's skills directory** (`~/.claude/skills/` on Claude Code) — see [codex-tools.md](../using-superpowers/references/codex-tools.md) or [gemini-tools.md](../using-superpowers/references/gemini-tools.md) for the path on those runtimes. Codex, Copilot CLI, and Gemini CLI all also recognize `~/.agents/skills/` as a cross-runtime alias.
 
-You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
+Define realistic outcomes and pressure scenarios, freeze the current guidance,
+observe baseline behavior, revise the skill, and compare matched candidate runs.
+Report failures, regressions, and unchanged passes honestly.
 
-**Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.
+**Core principle:** Measure what the guidance changes. A passing baseline is
+useful evidence; it is not a reason to invent a failure or abandon an authorized
+policy change. Passing samples do not establish universal reliability.
 
 **REQUIRED BACKGROUND:** You MUST understand superpowers:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.
 
 **Official guidance:** For Anthropic's official skill authoring best practices, see anthropic-best-practices.md. This document provides additional patterns and guidelines that complement the TDD-focused approach in this skill.
+
+## Authoring principles
+
+State the intended outcome, scope, decision criteria, and completion evidence.
+Prescribe exact procedures where a fragile operation or demonstrated invariant
+requires them; avoid scripting every reasoning or communication step. Express
+exceptions as clear conditions tied to observable facts.
+
+Keep shared policy model-neutral. Put host-specific tool and configuration
+details in platform references, and defer to current schemas and permissions.
+Leave response style to host and human preferences. A skill does not grant
+authority for installation, commits, publication, or unrelated work.
+
+Use the [invocation policy](../using-superpowers/references/invocation-policy.md)
+and, for design/planning/execution skills, the
+[decision checkpoints](../using-superpowers/references/decision-checkpoints.md).
+Descriptions should help suggest a skill without automatically invoking it.
+Accepted workflows may include their stated supporting steps; honor prior
+approval and delegated discretion without erasing retained human checkpoints.
+
+Examples below illustrate authoring techniques, not overrides of current scope
+or verification policy. Retain a prohibition, pressure tactic, or procedural
+gate only when it addresses an observed problem and survives evaluation against
+useful clarification, authorized completion, and unnecessary overhead.
 
 ## What is a Skill?
 
@@ -42,7 +73,9 @@ A **skill** is a reference guide for proven techniques, patterns, or tools. Skil
 | **Watch it pass** | Verify agent now complies |
 | **Refactor cycle** | Find new rationalizations → plug → re-verify |
 
-The entire skill creation process follows RED-GREEN-REFACTOR.
+Use this TDD analogy for demonstrated behavior defects. For authorized policy
+changes and compatibility updates, compare the prior and candidate outcomes;
+not every change starts with a failing no-guidance control.
 
 ## When to Create a Skill
 
@@ -97,7 +130,7 @@ skills/
 - Max 1024 characters total
 - `name`: Use letters, numbers, and hyphens only (no parentheses, special chars)
 - `description`: Third-person, describes ONLY when to use (NOT what it does)
-  - Start with "Use when..." to focus on triggering conditions
+  - Start with "Suggest when..." and end with "Invoke only when requested or accepted."
   - Include specific symptoms, situations, and contexts
   - **NEVER summarize the skill's process or workflow** (see SDO section for why)
   - Keep under 500 characters if possible
@@ -105,7 +138,7 @@ skills/
 ```markdown
 ---
 name: Skill-Name-With-Hyphens
-description: Use when [specific triggering conditions and symptoms]
+description: Suggest when [specific situations and symptoms]. Invoke only when requested or accepted.
 ---
 
 # Skill Name
@@ -145,7 +178,9 @@ Concrete results
 
 **Purpose:** Your agent reads the description to decide which skills to load for a given task. Make it answer: "Should I read this skill right now?"
 
-**Format:** Start with "Use when..." to focus on triggering conditions
+**Format:** Describe when to suggest the skill and require request or acceptance.
+Older discovery examples below illustrate relevance matching; use the opt-in
+frontmatter template above for new or revised skills.
 
 **CRITICAL: Description = When to Use, NOT What the Skill Does**
 
@@ -373,26 +408,22 @@ When: Reference material too large for inline
 
 Invoke bundled scripts through their interpreter in the prose (`bash scripts/tool.sh`, `node scripts/tool.js`), never by bare path: some harness plugin packagers strip executable bits, and a bare `scripts/tool.sh` fails there with `Permission denied`.
 
-## The Iron Law (Same as TDD)
+## Evidence Before Behavior Claims
 
-```
-NO SKILL WITHOUT A FAILING TEST FIRST
-```
+For new skills and behavioral edits, freeze the original guidance and scenario
+inputs before evaluating the candidate. Compare outcomes on the same tasks.
+A passing baseline is useful evidence: report it honestly and do not claim an
+improvement that the comparison did not demonstrate.
 
-This applies to NEW skills AND EDITS to existing skills.
+If an edit already exists, preserve valid work. Recover the prior revision for
+the baseline where possible, record the evaluation order, and check the candidate.
+Do not delete work or manufacture a failing scenario to satisfy a test-first ritual.
+If no reliable baseline is available, state that limitation rather than inventing one.
 
-Write skill before testing? Delete it. Start over.
-Edit skill without testing? Same violation.
-
-**No exceptions:**
-- Not for "simple additions"
-- Not for "just adding a section"
-- Not for "documentation updates"
-- Don't keep untested changes as "reference"
-- Don't "adapt" while running tests
-- Delete means delete
-
-**REQUIRED BACKGROUND:** The superpowers:test-driven-development skill explains why this matters. Same principles apply to documentation.
+Choose evaluation effort for the behavior and risk being changed. Structural
+inspection can verify a link or metadata correction; it cannot establish that
+a workflow improves agent behavior. Complete relevant checks before claiming
+success or publishing the skill.
 
 ## Testing All Skill Types
 
@@ -460,7 +491,9 @@ Different skill types need different test approaches:
 
 ## Match the Form to the Failure
 
-Before writing guidance, classify the baseline failure. The form that bulletproofs one failure type measurably backfires on another.
+Before writing guidance, classify any observed baseline failure. If the baseline
+passes, evaluate the proposed benefit without inventing a failure or adding
+ceremony. Match the form to the problem the evidence actually supports.
 
 | Baseline failure | Right form | Wrong form |
 |---|---|---|
@@ -471,9 +504,10 @@ Before writing guidance, classify the baseline failure. The form that bulletproo
 
 **Why prohibitions backfire on shaping problems:** under a competing incentive ("make the prompt self-contained"), agents negotiate with "don't X". In head-to-head wording tests on dispatch-prompt guidance, the prohibition arm produced clearly more of the unwanted content than the recipe arm (fully separated distributions), and trended worse than even the no-guidance control — micro-test your own case rather than assuming, but never reach for the prohibition by default. A recipe leaves nothing to negotiate: the output matches the stated shape or it doesn't.
 
-**Rules for whichever form you pick:**
-- **No nuance clauses.** "Don't X unless it matters" reopens the negotiation — appending a single nuance clause to a winning recipe degraded it from consistent to noisy in the same wording tests. Express a real exception as its own conditional on an observable predicate.
-- **Exemption clauses don't scope.** "This limit doesn't apply to code blocks" still suppresses code blocks. If part of the output must be exempt, restructure so the rule can't reach it.
+**Rules for whichever form you pick:** Test real exceptions as well as the
+main path. Prefer explicit observable conditions over vague caveats. Keep a
+formatting rule close to the content it governs and check that it does not
+suppress necessary explanation or host-required output.
 
 ## Bulletproofing Skills Against Rationalization
 
@@ -489,19 +523,17 @@ Don't just state the rule - forbid specific workarounds:
 
 <Bad>
 ```markdown
-Write code before test? Delete it.
+Always verify your work.
 ```
 </Bad>
 
 <Good>
 ```markdown
-Write code before test? Delete it. Start over.
-
-**No exceptions:**
-- Don't keep it as "reference"
-- Don't "adapt" it while writing tests
-- Don't look at it
-- Delete means delete
+Before claiming a behavioral defect is fixed, obtain evidence that detects it.
+If the implementation already exists, preserve it and establish the original
+failure from a retained revision or controlled reproduction where feasible.
+Record any missing baseline; passing candidate checks alone do not prove that
+the check detects the original defect.
 ```
 </Good>
 
@@ -522,9 +554,9 @@ Capture rationalizations from baseline testing (see Testing section below). Ever
 ```markdown
 | Excuse | Reality |
 |--------|---------|
-| "Too simple to test" | Simple code breaks. Test takes 30 seconds. |
-| "I'll test after" | Tests passing immediately prove nothing. |
-| "Tests after achieve same goals" | Tests-after = "what does this do?" Tests-first = "what should this do?" |
+| "The fix looks right" | Use evidence capable of detecting the defect. |
+| "The candidate passed, so it is better" | Compare with the baseline; both may pass. |
+| "I missed the baseline, so the work must be deleted" | Preserve valid work, recover prior evidence where possible, and report limitations. |
 ```
 
 ### Create Red Flags List
@@ -532,15 +564,14 @@ Capture rationalizations from baseline testing (see Testing section below). Ever
 Make it easy for agents to self-check when rationalizing:
 
 ```markdown
-## Red Flags - STOP and Start Over
+## Red Flags - Check the Evidence
 
-- Code before test
-- "I already manually tested it"
-- "Tests after achieve the same purpose"
-- "It's about spirit not ritual"
-- "This is different because..."
+- Claiming improvement when both baseline and candidate passed
+- Replacing a relevant check with an unrelated green suite
+- Claiming an unrun check succeeded
+- Discarding valid work solely because the evaluation order was imperfect
 
-**All of these mean: Delete code. Start over with TDD.**
+**Resolve the evidence gap and report what remains uncertain.**
 ```
 
 ### Update SDO for Violation Symptoms
@@ -551,46 +582,33 @@ Add to description: symptoms of when you're ABOUT to violate the rule:
 description: use when implementing any feature or bugfix, before writing implementation code
 ```
 
-## RED-GREEN-REFACTOR for Skills
+## Evaluate skill changes
 
-Follow the TDD cycle:
+1. **Freeze the baseline.** Record the source revision and copy the relevant
+   skills before editing. Define scenario inputs and acceptance criteria before
+   seeing candidate results. Include normal, ambiguous, and pressure cases.
+2. **Run independent probes.** Use fresh-context workers when available and
+   authorized; give realistic task context and the relevant guidance. Ask for
+   the next response and actions, not a recital of the skill. For changes,
+   compare the prior skill with the candidate; a no-guidance control can help
+   isolate added value but is not mandatory for every compatibility edit.
+3. **Assess outcomes.** Record scope fidelity, material questions resolved,
+   repeated or unnecessary approval prompts, retained checkpoints, evidence
+   reuse, completion, and observed effort. Separate hypothetical decisions
+   from executed work. Never call a passing baseline a failure.
+4. **Revise narrowly.** Fix observed regressions or unresolved contradictions.
+   Retest affected scenarios after a material edit. Repeat variable cases
+   before reliability claims; one passing sample is only a smoke result.
+5. **Keep the evidence.** Record prompts, input versions, worker outputs,
+   judgments, model/host settings when available, and limitations. Report
+   missing telemetry as unavailable, not zero. Structural checks validate
+   packaging and references, not behavior or live harness activation.
 
-### RED: Write Failing Test (Baseline)
-
-Run pressure scenario with subagent WITHOUT the skill. Document exact behavior:
-- What choices did they make?
-- What rationalizations did they use (verbatim)?
-- Which pressures triggered violations?
-
-This is "watch the test fail" - you must see what agents naturally do before writing the skill.
-
-### GREEN: Write Minimal Skill
-
-Write skill that addresses those specific rationalizations. Don't add extra content for hypothetical cases.
-
-Run same scenarios WITH skill. Agent should now comply.
-
-### REFACTOR: Close Loopholes
-
-Agent found new rationalization? Add explicit counter. Re-test until bulletproof.
-
-### Micro-Test Wording Before Full Scenarios
-
-Full pressure-scenario runs are the final gate, but they are slow and expensive per iteration. Verify the wording itself first with micro-tests:
-
-1. **One fresh-context sample per call** — a raw API call, or a single-shot subagent if you don't have API access. System prompt = the realistic context the guidance will live in (the full skill or prompt template, not the guidance in isolation); user message = a task that tempts the failure.
-2. **Always include a no-guidance control.** If the control doesn't exhibit the failure, there is nothing to fix — stop, don't author the guidance.
-3. **5+ reps per variant.** Single samples lie.
-4. **Manually read every flagged match.** Score programmatically if you like, but template echoes and quoted counter-examples masquerade as hits; automated counts alone overstate both failure and success.
-5. **Variance is a metric.** When guidance lands, reps converge on the same shape. Five different interpretations across five reps means the wording isn't binding — tighten the form before adding words.
-
-Micro-tests verify wording; they do not replace pressure scenarios for discipline skills.
-
-**Testing methodology:** See [testing-skills-with-subagents.md](testing-skills-with-subagents.md) for the complete testing methodology:
-- How to write pressure scenarios
-- Pressure types (time, sunk cost, authority, exhaustion)
-- Plugging holes systematically
-- Meta-testing techniques
+Use [testing-skills-with-subagents.md](testing-skills-with-subagents.md) for
+the reusable protocol. Repository decision scenarios live under `tests/gpt6/`;
+they are evaluation fixtures, not runtime instructions. Measure elapsed time,
+tool calls, tokens, or repeated checks only when the harness actually exposes
+them; do not infer cost savings from a shorter plan or response.
 
 ## Anti-Patterns
 
@@ -613,59 +631,26 @@ step2 [label="read file"];
 helper1, helper2, step3, pattern4
 **Why bad:** Labels should have semantic meaning
 
-## STOP: Before Moving to Next Skill
+## Before handing off or installing changes
 
-**After writing ANY skill, you MUST STOP and complete the deployment process.**
+Related skills may be changed together when they implement one shared policy.
+Evaluate each affected workflow and their handoffs before claiming completion.
+Do not install, commit, push, or open a PR merely because this skill is selected;
+follow the human's requested deliverable and repository requirements.
 
-**Do NOT:**
-- Create multiple skills in batch without testing each
-- Move to next skill before current one is verified
-- Skip testing because "batching is more efficient"
+## Skill creation checklist
 
-**The deployment checklist below is MANDATORY for EACH skill.**
-
-Deploying untested skills = deploying untested code. It's a violation of quality standards.
-
-## Skill Creation Checklist (TDD Adapted)
-
-**IMPORTANT: Create a todo for EACH checklist item below.**
-
-**RED Phase - Write Failing Test:**
-- [ ] Create pressure scenarios (3+ combined pressures for discipline skills)
-- [ ] Run scenarios WITHOUT skill - document baseline behavior verbatim
-- [ ] Identify patterns in rationalizations/failures
-
-**GREEN Phase - Write Minimal Skill:**
-- [ ] Name uses only letters, numbers, hyphens (no parentheses/special chars)
-- [ ] YAML frontmatter with required `name` and `description` fields (max 1024 chars; see [spec](https://agentskills.io/specification))
-- [ ] Description starts with "Use when..." and includes specific triggers/symptoms
-- [ ] Description written in third person
-- [ ] Keywords throughout for search (errors, symptoms, tools)
-- [ ] Clear overview with core principle
-- [ ] Address specific baseline failures identified in RED
-- [ ] Guidance form matches the failure type (see Match the Form to the Failure)
-- [ ] For behavior-shaping guidance: wording micro-tested against a no-guidance control (5+ reps, every flagged match read manually) — N/A for pure reference skills
-- [ ] Code inline OR link to separate file
-- [ ] One excellent example (not multi-language)
-- [ ] Run scenarios WITH skill - verify agents now comply
-
-**REFACTOR Phase - Close Loopholes:**
-- [ ] Identify NEW rationalizations from testing
-- [ ] Add explicit counters (if discipline skill)
-- [ ] Build rationalization table from all test iterations
-- [ ] Create red flags list
-- [ ] Re-test until bulletproof
-
-**Quality Checks:**
-- [ ] Small flowchart only if decision non-obvious
-- [ ] Quick reference table
-- [ ] Common mistakes section
-- [ ] No narrative storytelling
-- [ ] Supporting files only for tools or heavy reference
-
-**Deployment:**
-- [ ] Commit skill to git and push to your fork (if configured)
-- [ ] Consider contributing back via PR (if broadly useful)
+- [ ] Record the requested outcome, authority, baseline revision, and scenarios.
+- [ ] Use valid frontmatter and a name with letters, numbers, and hyphens.
+- [ ] Describe relevance and opt-in invocation without summarizing the workflow.
+- [ ] State scope, decision boundaries, and completion evidence clearly.
+- [ ] Keep host-specific details and substantial references in linked files.
+- [ ] Compare fresh-context baseline and candidate outcomes; preserve unchanged passes.
+- [ ] Check material clarification, retained checkpoints, prior authority,
+      completion, evidence reuse, and unnecessary effort.
+- [ ] Investigate regressions and retest scenarios affected by subsequent edits.
+- [ ] Validate metadata, references, and any changed executable behavior.
+- [ ] Report actual evidence and limits; perform only authorized delivery steps.
 
 ## Discovery Workflow
 

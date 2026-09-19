@@ -1,0 +1,5 @@
+interface:
+  display_name: "Requesting Code Review"
+  short_description: "Suggest for substantive review against requirements and correctness risks"
+policy:
+  allow_implicit_invocation: false

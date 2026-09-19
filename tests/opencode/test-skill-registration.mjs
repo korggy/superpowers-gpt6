@@ -45,6 +45,9 @@ if (JSON.stringify(added.map((s) => s.id).sort()) !== JSON.stringify(expectedIds
 }
 
 for (const skill of added) {
+  if (skill.autoinvoke !== false) {
+    failures.push(`skill "${skill.id}": implicit invocation must be disabled`);
+  }
   if (typeof skill.path !== 'string' || !path.isAbsolute(skill.path)) {
     failures.push(`skill "${skill.id}": expected required absolute Skill.Info field "path", got ${JSON.stringify(skill.path)}`);
   } else if (skill.path !== path.join(skillsDir, skill.id, 'SKILL.md')) {

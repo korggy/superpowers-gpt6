@@ -44,7 +44,8 @@ rewritten as `transcript line <n>`.>
 Session id(s): <ids>. Delivered local archive: <path, redaction level <level>
 | none built>. Attached bundle: <no claim; attach only after approval>.
 Superpowers involvement per the diagnosis report: <possible | likely>, with
-evidence at <transcript lines>. This report does not propose a fix.
+evidence at <transcript lines>. Proposed correction, if supported: <wording
+and validation, or explicitly state that the cause remains unresolved>.
 
 ---
 Filed with the `diagnosing-superpowers` skill. Model, harness, harness

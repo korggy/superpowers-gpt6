@@ -1,192 +1,170 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
+description: Suggest when a multi-step change needs a durable implementation plan. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Writing Plans
 
-## Overview
+Create a plan an engineer can execute without reconstructing the design.
+State outcomes, boundaries, dependencies, and verification clearly. Use
+exact procedures where interfaces or fragile operations require them;
+leave routine implementation choices to the executor.
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+Read the [decision checkpoints](../using-superpowers/references/decision-checkpoints.md)
+once. Carry accepted design decisions and delegated discretion into the plan.
+A planning request does not automatically authorize implementation.
 
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+## Establish Scope
 
-**Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
+Inspect the request, approved design or combined packet, relevant code, and
+existing instructions. Identify material open decisions and the requested
+deliverable. Resolve those choices with your human partner before affected
+implementation; do not re-ask settled questions.
 
-**Context:** If working in an isolated worktree, it should have been created via the `superpowers:using-git-worktrees` skill at execution time.
+For bounded work, a combined in-chat design/specification/plan may already
+satisfy the need. Do not create a duplicate artifact unless requested or
+needed for coordination, recovery, or handoff. For substantial work, save to
+`docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`, or the chosen location.
 
-**Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
-- (User preferences for plan location override this default)
+If the design contains independent subsystems, separate plans when each can
+deliver useful, testable behavior. Preserve their shared interfaces and
+order. Do not split tightly coupled work merely to create more tasks.
 
-## Scope Check
+## Define Deliverables and Interfaces
 
-If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
+Map the affected files and each component's responsibility. Follow existing
+patterns and avoid unrelated restructuring. Each task should have a
+reviewable outcome, clear dependencies, and acceptance evidence.
 
-## File Structure
+Record exact interface names, signatures, formats, compatibility constraints,
+and failure semantics when other tasks depend on them. Include code snippets
+when they remove ambiguity or protect a fragile operation. A complete code
+listing, fixed task duration, or separate task for every shell command is
+not required.
 
-Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
+Fold setup, configuration, and documentation into the deliverable they serve.
+Specify behavior and useful verification rather than turning implementation
+into transcription. Reuse helpers and interfaces already present.
 
-- Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
-- You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.
-- Files that change together should live together. Split by responsibility, not by technical layer.
-- In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
+## Plan Header
 
-This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
-
-## Task Right-Sizing
-
-A task is the smallest unit that carries its own test cycle and is worth a
-fresh reviewer's gate. When drawing task boundaries: fold setup,
-configuration, scaffolding, and documentation steps into the task whose
-deliverable needs them; split only where a reviewer could meaningfully
-reject one task while approving its neighbor. Each task ends with an
-independently testable deliverable.
-
-## Bite-Sized Task Granularity
-
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
-
-## Plan Document Header
-
-**Every plan MUST start with this header:**
+Use this header for durable plans; omit sections that are genuinely irrelevant
+and explain any material unknowns. Keep `Spec`, `Global Constraints`, and task
+headings compatible with the execution helpers.
 
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+**Goal:** [Intended outcome and who it serves]
 
-**Goal:** [One sentence describing what this builds]
+**Acceptance criteria:** [Observable behavior and boundaries]
 
-**Architecture:** [2-3 sentences about approach]
+**Architecture:** [Approach and affected components]
 
-**Tech Stack:** [Key technologies/libraries]
+**Tech Stack:** [Relevant technologies and constraints]
 
-**Spec:** [path to the spec/design doc this plan implements — the plan
-argues from the spec, so the spec travels with it; executors read both]
+**Spec:** [Existing design/spec path or a faithful summary of the approved chat packet]
+
+## Decision Record
+
+- Design/spec: [proposed, approved, or delegated; source of that authority]
+- Plan: [proposed, approved, or delegated; remaining review decisions]
+- Implementation: [authorized scope, or not yet authorized]
+- Execution method: [chosen method, delegated choice, or unresolved]
+- Retained checkpoints: [specific decisions the human wants to review]
+- Changes and pending questions: [affected decisions and evidence]
 
 ## Global Constraints
 
-[The spec's project-wide requirements — version floors, dependency limits,
-naming and copy rules, platform requirements — one line each, with exact
-values copied verbatim from the spec. Every task's requirements implicitly
-include this section.]
+[Applicable requirements, exact shared values, exclusions, and compatibility limits.]
 
 ## Review Focus
 
-[The five input classes or failure modes the spec implies but no task's
-tests exercise that are most likely to bite a person using this software
-— one line each, naming the input or condition and the behavior a
-reasonable person would expect, most likely first. The spec is a vision
-document: it says what the software must do, not everything it will
-meet, and its silence on an input is not permission for that input to
-break the program. Write the list here, once, with the spec in front of
-you. Then, for each line, add the test that pins it to the task that
-owns the code, in that task's own step style.]
+[Consequential cases, interactions, and failure modes; which checks cover them
+and which risks require review or remain unverified. Do not invent a fixed count.]
 
 ---
 ```
 
+The human's request and the current decision record govern authorization.
+Do not put a mandatory execution command in the header of a plan-only artifact.
+
 ## Task Structure
 
-````markdown
-### Task N: [Component Name]
+Use a heading such as `### Task N: [Deliverable]` so the brief helpers can
+extract it. The following is a template, not executable product code:
+
+```markdown
+### Task N: [Deliverable]
 
 **Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+- Create/modify: [verified paths and responsibilities]
+- Test: [relevant tests or other validation artifact]
+
+**Depends on:** [prior deliverables or none]
 
 **Interfaces:**
-- Consumes: [what this task uses from earlier tasks — exact signatures]
-- Produces: [what later tasks rely on — exact function names, parameter
-  and return types. A task's implementer sees only their own task; this
-  block is how they learn the names and types neighboring tasks use.]
+- Consumes: [exact shared contracts needed by this task]
+- Produces: [exact contracts later tasks rely on]
 
-- [ ] **Step 1: Write the failing test**
+**Acceptance:** [observable success and relevant failure behavior]
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+- [ ] Add meaningful regression protection for changed behavior where applicable.
+- [ ] Implement the deliverable within the specified contracts.
+- [ ] Run the required and risk-appropriate checks.
+      Run: [concrete command, working directory, and prerequisites]
+      Expected: [success condition and relevant failure signal]
+- [ ] Update affected documentation and record evidence.
+
+**Remaining decisions:** [none, or the material choice that blocks affected work]
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+Replace template placeholders with verified details in the actual plan.
+Unknown requirements must be identified as unresolved, not filled with
+invented code or assumptions. A plan may be delivered for review with open
+decisions clearly marked; it is not execution-ready for the affected tasks.
 
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
-
-- [ ] **Step 3: Write minimal implementation**
-
-```python
-def function(input):
-    return expected
-```
-
-- [ ] **Step 4: Run test to verify it passes**
-
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: PASS
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
-```
-````
-
-## No Placeholders
-
-Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
-- "TBD", "TODO", "implement later", "fill in details"
-- "Add appropriate error handling" / "add validation" / "handle edge cases"
-- "Write tests for the above" (without actual test code)
-- "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
-- Steps that describe what to do without showing how (code blocks required for code steps)
-- References to types, functions, or methods not defined in any task
+For behavioral changes, use the TDD supporting guidance when applicable.
+Documentation and low-impact metadata may need inspection or parsing instead.
+Reuse still-relevant evidence; a task boundary does not require a rerun.
+Include commit, isolation, publication, or cleanup steps only when authorized.
 
 ## Self-Review
 
-After writing the complete plan, look at the spec with fresh eyes and check the plan against it. This is a checklist you run yourself — not a subagent dispatch.
+Check that requirements map to deliverables, task interfaces agree, dependencies
+are ordered, and verification covers meaningful behavior. Read the referenced
+paths and commands; do not invent exact files, signatures, or completed results.
 
-**1. Spec coverage:** Skim each section/requirement in the spec. Can you point to a task that implements it? List any gaps.
-
-**2. Placeholder scan:** Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.
-
-**3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
-
-**4. Review Focus:** For each input class or failure mode the spec implies, is there a task whose tests exercise it? The five uncovered ones most likely to bite a person go in the Review Focus section, and each line there gets its test added to the owning task. An empty section means you checked and found none, not that you skipped the check.
-
-If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
+Resolve routine plan defects within the agreed design. Surface material
+scope, behavior, data, cost, or approach changes through the shared checkpoint.
+Review the affected parts again after substantive revisions; do not impose
+a repeated review solely because a new message or document version exists.
 
 ## Execution Handoff
 
-After saving and self-reviewing the plan, link it for your human partner
-to read. If they have already explicitly supplied an execution method, ask
-them to review the plan and confirm it captures what they want; wait for that
-review before implementation, then use the preserved method. Otherwise, ask
-them to review the plan and choose an execution method before implementation.
+Present the finished plan or combined packet and state its decision status.
 
-**When no execution method has already been supplied:**
+- **Plan only:** Link the artifact, identify open questions, and stop. Do not
+  demand an execution-method choice merely to finish a planning request.
+- **Review retained:** Ask for approval, revision, or explicit delegation of the
+  unresolved plan decisions before affected implementation. Do not re-ask about
+  the already-approved design.
+- **Implementation already authorized, decisions covered:** Continue within
+  that scope without a duplicate plan-approval question. A delegated plan is
+  labeled delegated, not falsely described as human-reviewed.
+- **Execution method unresolved and consequential:** Explain the tradeoff and
+  ask, or select within explicitly delegated discretion. Preserve a method
+  already chosen.
 
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Please review the plan. Which execution approach would you prefer?**
+Inline execution uses executing-plans. Delegated execution uses
+subagent-driven-development when useful, available, and selected. Explain
+the actual tradeoff: coordination and independent review can help separable
+work, while tightly coupled work may be clearer inline. Do not promise that
+one method is always cheapest, fastest, or most thorough.
 
-- **Subagent-driven** - A fresh subagent implements each task and a fresh reviewer checks it before the next one starts, then a whole-branch review at the end. Most thorough; costs a fresh context per task and per review.
-- **Native** - I implement every task myself in this session, the way this harness runs work, then one fresh reviewer on the most capable model checks the whole branch. Cheapest and fastest; no independent review until the end. Runs well with a mid-tier session model, since the plan carries the design.
-
-**For this plan I recommend <one of the two>, because <one sentence from the plan: how much the tasks depend on each other's interfaces, how many there are, what a shipped mistake would cost>. Does the plan capture what you want, and which approach should we use?"**
-
-**When an execution method has already been supplied:**
-
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Please review the plan. Does it capture what you want?"**
-
-**If Subagent-driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
-
-**If Native chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:executing-plans
+Pass the plan, specification, decision record, verification scope, and pending
+work to the executor. After compaction or handoff, resume from those records
+without restarting approved stages.

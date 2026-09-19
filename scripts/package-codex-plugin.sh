@@ -3,9 +3,8 @@
 # Package the Superpowers Codex plugin as a rootless archive for portal upload.
 #
 # The Codex portal artifact differs from the old openai/plugins sync flow:
-# it is a standalone archive, but it still needs the OpenAI-owned
-# skills/*/agents/openai.yaml metadata that used to be preserved from the
-# destination plugin repo. Seed that metadata from a prior official package.
+# it is a standalone archive. Source-owned skills/*/agents/openai.yaml
+# metadata takes precedence; a prior package can fill gaps in older refs.
 
 set -euo pipefail
 
@@ -31,7 +30,7 @@ Options:
                            If --output ends in .zip, .tar.gz, or .tgz, that
                            extension is used when --format is omitted.
   --metadata-source PATH   Prior official package directory, .zip, or .tar.gz used to
-                           seed skills/*/agents/openai.yaml.
+                           fill missing skills/*/agents/openai.yaml only.
                            Default: ../_tmp/sup-codex-packaging/superpowers,
                            falling back to superpowers.zip, then superpowers.tar.gz
   --ref REF                Git ref to package. Default: HEAD.
@@ -160,8 +159,6 @@ if [[ -z "$METADATA_SOURCE" ]]; then
     METADATA_SOURCE="$REPO_ROOT/../_tmp/sup-codex-packaging/superpowers.zip"
   elif [[ -f "$REPO_ROOT/../_tmp/sup-codex-packaging/superpowers.tar.gz" ]]; then
     METADATA_SOURCE="$REPO_ROOT/../_tmp/sup-codex-packaging/superpowers.tar.gz"
-  else
-    die "no metadata source found; pass --metadata-source <prior package dir, zip, or tar.gz>"
   fi
 fi
 
@@ -228,7 +225,10 @@ prepare_metadata_root() {
     die "metadata source does not contain a skills/ directory: $source"
 }
 
-METADATA_ROOT="$(prepare_metadata_root "$METADATA_SOURCE")"
+METADATA_ROOT=""
+if [[ -n "$METADATA_SOURCE" ]]; then
+  METADATA_ROOT="$(prepare_metadata_root "$METADATA_SOURCE")"
+fi
 
 # Pin tar.umask and extract with -p so staged modes are canonical 755/644
 # regardless of the builder's git config or process umask.
@@ -260,9 +260,11 @@ OUTPUT="$(cd "$(dirname "$OUTPUT")" && pwd)/$(basename "$OUTPUT")"
 missing_metadata=0
 while IFS= read -r skill_dir; do
   skill_name="${skill_dir##*/}"
+  # Preserve the source's invocation policy instead of restoring stale metadata.
+  [[ -f "$skill_dir/agents/openai.yaml" ]] && continue
   metadata_file="$METADATA_ROOT/skills/$skill_name/agents/openai.yaml"
 
-  if [[ ! -f "$metadata_file" ]]; then
+  if [[ -z "$METADATA_ROOT" || ! -f "$metadata_file" ]]; then
     echo "Missing OpenAI agent metadata for skill: $skill_name" >&2
     missing_metadata=1
     continue
@@ -273,7 +275,7 @@ while IFS= read -r skill_dir; do
 done < <(find "$STAGE/skills" -mindepth 1 -maxdepth 1 -type d -print | sort)
 
 if [[ "$missing_metadata" -ne 0 ]]; then
-  die "metadata source is incomplete"
+  die "metadata is incomplete; provide --metadata-source for missing legacy metadata"
 fi
 
 skill_count="$(find "$STAGE/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"

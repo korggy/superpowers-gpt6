@@ -1,0 +1,5 @@
+interface:
+  display_name: "Receiving Code Review"
+  short_description: "Suggest when review feedback needs technical assessment before changes"
+policy:
+  allow_implicit_invocation: false

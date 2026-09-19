@@ -1,0 +1,5 @@
+interface:
+  display_name: "Dispatching Parallel Agents"
+  short_description: "Suggest for substantial independent investigations that benefit from parallel work"
+policy:
+  allow_implicit_invocation: false

@@ -1,6 +1,6 @@
 # Superpowers
 
-Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.
+This fork of Superpowers provides composable software-development workflows. Across every supported harness, your agent suggests a relevant workflow and uses it only when you request or accept it.
 
 ## Table of Contents
 
@@ -35,15 +35,15 @@ Superpowers is a complete software development methodology for your coding agent
 
 ## How it works
 
-It starts from the moment you fire up your coding agent. As soon as it sees that you're building something, it *doesn't* just jump into trying to write code. Instead, it steps back and asks you what you're really trying to do. 
+Startup supplies a short invocation policy, not an active workflow. For substantial design work, the agent can suggest brainstorming and explain why it would help. A generic coding request does not opt you in.
 
-Once it's teased a spec out of the conversation, it shows it to you in chunks short enough to actually read and digest. 
+When you accept brainstorming, the agent clarifies the intended outcome and material design choices, then presents a reviewable design before implementation.
 
 After you've signed off on the design, your agent puts together an implementation plan that's clear enough for an enthusiastic junior engineer with poor taste, no judgement, no project context, and an aversion to testing to follow. It emphasizes true red/green TDD, YAGNI (You Aren't Gonna Need It), and DRY. 
 
 Next up, once you say "go", it launches a *subagent-driven-development* process, having agents work through each engineering task, inspecting and reviewing their work, and continuing forward. It's not uncommon for your agent to work autonomously for a couple hours at a time without deviating from the plan you put together.
 
-There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
+Accepting a named workflow covers its stated supporting steps. The agent does not ask again merely to load each supporting skill, and it preserves the workflow's design, specification, and plan checkpoints. A declined workflow is not repeatedly offered.
 
 ## Commercial Services
 
@@ -51,7 +51,13 @@ If you're using Superpowers in enterprise and could benefit from commercial supp
 
 ## Installation
 
+For the shareable Codex ZIP of this customized fork, follow [INSTALL.md](INSTALL.md).
+
 Installation differs by harness. If you use more than one, install Superpowers separately for each one.
+
+The upstream marketplace and `obra/superpowers` examples below install upstream
+Superpowers. To use this fork's changes, load or package this local checkout
+through your harness's supported local-plugin mechanism.
 
 ### Claude Code
 
@@ -93,6 +99,8 @@ Antigravity runs the plugin's session-start hook, so Superpowers is active from
 the first message. Reinstall with the same command to update.
 
 ### Codex App
+
+This fork declares a Codex-specific SessionStart hook that loads only the invocation policy. Node.js must be available on `PATH`, and Codex must trust the hook before it runs. Each skill also declares `allow_implicit_invocation: false`; explicit invocation remains available when hooks are disabled. Packaging preserves this source-owned metadata.
 
 Superpowers is available via the [official Codex plugin marketplace](https://github.com/openai/plugins).
 
@@ -247,7 +255,7 @@ For local development, run Pi with this checkout loaded as a temporary package:
 pi -e /path/to/superpowers
 ```
 
-The Pi package loads the Superpowers skills and a small extension that injects the `using-superpowers` bootstrap at session startup and again after compaction. Pi has native skills, so no compatibility `Skill` tool is required. Subagent and task-list tools remain optional Pi companion packages.
+The Pi package registers the Superpowers skills and injects the invocation-policy notice at startup and after compaction. It does not invoke a workflow. Pi has native skills; subagent and task-list tools remain optional Pi companion packages.
 
 ### Qwen Code
 
@@ -275,11 +283,11 @@ hermes plugins install obra/superpowers --enable
 
 Restart any active Hermes sessions after installing. Note: Hermes has no
 post-compaction hook, so a very long session that compacts over its first
-turn loses the bootstrap — start a fresh session if skills stop triggering.
+turn may lose the notice. Explicitly requested skills remain available.
 
 ### Muse
 
-Superpowers is available as a native Muse plugin — same repo, same skills, all harnesses. The `using-superpowers` bootstrap is injected via the native `SessionStart` hook alongside Claude Code, Codex, Cursor, Gemini, Pi, and the rest — no per-session opt-in.
+Superpowers is available as a native Muse plugin. Its `SessionStart` hook injects the same invocation-policy notice used by the other integrations. Workflows require a request or acceptance.
 
 - Install from a local checkout:
 
@@ -302,25 +310,25 @@ Superpowers is available as a native Muse plugin — same repo, same skills, all
   muse plugins update superpowers
   ```
 
-Restart any active Muse sessions after installing so the `SessionStart` hook takes effect — skills are active immediately, hooks require approval on first install. To verify, start a fresh session and send `Let's make a react todo list` — a working install auto-triggers `brainstorming` before any code is written. Version is tracked in `.version-bump.json` so `scripts/bump-version.sh` keeps it in sync.
+Restart any active Muse sessions after installing so the `SessionStart` hook takes effect — skills are active immediately, hooks require approval on first install. To verify, start a fresh session and send `Let's make a react todo list` — a working install suggests `brainstorming` without invoking it; an explicit request or acceptance starts it. Version is tracked in `.version-bump.json` so `scripts/bump-version.sh` keeps it in sync.
 
 ## The Basic Workflow
 
-1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
+1. **brainstorming** - When accepted, clarifies the intended outcome and material choices. Bounded changes use one reviewable design/spec/plan packet; substantial work uses staged decisions and durable artifacts.
 
-2. **using-git-worktrees** - Activates after design approval. Creates isolated workspace on new branch, runs project setup, verifies clean test baseline.
+2. **using-git-worktrees** - When requested or included in an accepted workflow, Creates isolated workspace on new branch, runs project setup, verifies clean test baseline.
 
-3. **writing-plans** - Activates with approved design. Breaks work into bite-sized tasks (2-5 minutes each). Every task has exact file paths, complete code, verification steps.
+3. **writing-plans** - When selected, records accepted decisions and defines deliverables, interfaces, dependencies, and risk-appropriate verification. Honors plan-only requests and existing implementation authority.
 
-4. **subagent-driven-development** or **executing-plans** - Activates with plan. Either dispatches a fresh subagent per task with a review after each (most thorough), or implements every task inline in the current session with one fresh review of the whole branch at the end (cheapest).
+4. **subagent-driven-development** or **executing-plans** - When selected for authorized implementation, uses bounded workers and task reviews, or executes inline with a final review. Preserves the chosen method and reopens only material decisions outside delegated discretion.
 
-5. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit. Deletes code written before tests.
+5. **test-driven-development** - Adds meaningful regression protection for behavioral changes. Uses suitable inspection or validation for low-impact changes and preserves valid implementation already written.
 
-6. **requesting-code-review** - Activates between tasks. Reviews against plan, reports issues by severity. Critical issues block progress.
+6. **requesting-code-review** - When requested or included in the accepted workflow, Reviews against plan, reports issues by severity. Critical issues block progress.
 
-7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
+Integration and cleanup follow your repository's guidance and your instructions.
 
-**The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
+**Workflows are opt-in on all harnesses.** A startup notice and skill discovery are not consent to run them. See the [invocation policy](skills/using-superpowers/references/invocation-policy.md) and [human decision checkpoints](skills/using-superpowers/references/decision-checkpoints.md).
 
 ## When Something Goes Wrong
 
@@ -356,7 +364,6 @@ Superpowers is built by [Jesse Vincent](https://blog.fsck.com) and the rest of t
 - **requesting-code-review** - Pre-review checklist
 - **receiving-code-review** - Responding to feedback
 - **using-git-worktrees** - Parallel development branches
-- **finishing-a-development-branch** - Merge/PR decision workflow
 - **subagent-driven-development** - Fast iteration with two-stage review (spec compliance, then code quality)
 
 **Meta**
@@ -380,7 +387,7 @@ The general contribution process for Superpowers is below. Keep in mind that we 
 2. Switch to the 'dev' branch
 3. Create a branch for your work
 4. Follow the `writing-skills` skill for creating and testing new and modified skills
-5. Submit a PR, being sure to fill in the pull request template.
+5. Submit a PR following the [contributor guidelines](AGENTS.md).
 
 Skill-behavior tests use the drill eval harness from [superpowers-evals](https://github.com/prime-radiant-inc/superpowers-evals/), cloned into `evals/` — see `evals/README.md` for setup. Plugin-infrastructure tests live at `tests/` and run via the relevant `run-*.sh` or `npm test`.
 

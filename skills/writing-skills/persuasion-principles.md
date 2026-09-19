@@ -23,8 +23,10 @@ LLMs respond to the same persuasion principles as humans. Understanding this psy
 
 **Example:**
 ```markdown
-✅ Write code before test? Delete it. Start over. No exceptions.
-❌ Consider writing tests first when feasible.
+✅ Before claiming a defect is fixed, obtain evidence that detects it. Preserve
+valid existing work; recover the original failure where feasible and report
+any missing baseline honestly.
+❌ The fix looks right, so verification can wait.
 ```
 
 ### 2. Commitment

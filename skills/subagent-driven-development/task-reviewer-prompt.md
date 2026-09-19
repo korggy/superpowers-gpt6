@@ -10,8 +10,8 @@ more, nothing less) and is well-built (clean, tested, maintainable)
 ```
 Subagent (general-purpose):
   description: "Review Task N (spec + quality)"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
+  model: [Optional supported override chosen per SKILL.md Model Selection;
+          otherwise inherit the host default and follow its fork rules]
   prompt: |
     You are reviewing one task's implementation: first whether it matches its
     requirements, then whether it is well-built. This is a task-scoped gate,
@@ -21,6 +21,9 @@ Subagent (general-purpose):
     ## What Was Requested
 
     Read the task brief: [BRIEF_FILE]
+    Read its current Decision Record, Global Constraints, and relevant rulings.
+    Distinguish approved changes from proposals and worker assumptions; do not
+    treat a worker's claim as authority to change acceptance criteria.
 
     Global constraints from the spec/design that bind this task:
     [GLOBAL_CONSTRAINTS]
@@ -31,17 +34,15 @@ Subagent (general-purpose):
 
     ## Diff Under Review
 
-    **Base:** [BASE_SHA]
-    **Head:** [HEAD_SHA]
-    **Diff file:** [DIFF_FILE]
+    **Reviewed state:** [commit range, or working-tree snapshot and changed paths]
+    **Review package:** [DIFF_FILE]
 
-    Read the diff file once — it contains the commit list, a stat summary,
-    and the full diff with surrounding context, and it is your view of the
-    change. The diff's context lines ARE the changed files: do not Read a
-    changed file separately unless a hunk you must judge is cut off
-    mid-function — and say so in your report. Do not re-run git commands.
-    If the diff file is missing, fetch the diff yourself:
-    `git diff --stat [BASE_SHA]..[HEAD_SHA]` and `git diff [BASE_SHA]..[HEAD_SHA]`.
+    Read the package's diff and relevant new-file contents. Its scope must
+    include staged, unstaged, and untracked task changes when present. Inspect
+    current files when context is insufficient for a concrete risk.
+    If the package is missing or does not cover the implementation, request
+    the correct evidence under review-evidence.md; do not substitute an empty
+    BASE..HEAD range for uncommitted work.
     Do not crawl the broader codebase. Inspect code outside the diff only
     to evaluate a concrete risk you can name — one focused check per named
     risk, and name both the risk and what you checked in your report.
@@ -70,19 +71,23 @@ Subagent (general-purpose):
     implementer grading their own work. Judge the code on its merits — a
     stated rationale never downgrades a finding's severity.
 
-    ## Tests
+    ## Verification
 
-    The implementer already ran the tests and reported results with TDD
-    evidence for exactly this code. Do not re-run the suite to confirm their
-    report. Run a test only when reading the code raises a specific doubt
-    that no existing run answers — and then a focused test, never a
-    package-wide suite, race detector run, or repeated/high-count loop. If
-    heavy validation seems warranted, recommend it in your report instead of
-    running it. If you cannot run commands in this environment, name the
-    test you would run.
+    Check that the reported verification covers the diff and required project
+    checks. Behavioral changes need meaningful regression coverage; TDD evidence
+    is required only when the task requires TDD. Low-impact prose or metadata
+    may use inspection or parsing evidence that identifies the artifact, check,
+    and observed result. Executed checks need commands and relevant output.
+    Reuse evidence only when it covers the unchanged code, configuration, and
+    environment; do not require a new run merely because review began.
 
-    Warnings or other noise in the implementer's reported test output are
-    findings — test output should be pristine.
+    Run a focused check only for a concrete doubt the existing evidence does
+    not answer. If broader validation is required or warranted, report the gap
+    to the controller instead of independently running a suite. If commands
+    are unavailable, identify the check you would run and the resulting limit.
+
+    Assess warnings by their effect. Report introduced problems or evidence
+    gaps; identify unrelated baseline and environment noise separately.
 
     Evidence you cannot see is not evidence that doesn't exist. If the
     report or its test evidence looks truncated, or you cannot locate the
@@ -120,9 +125,9 @@ Subagent (general-purpose):
     - DRY without premature abstraction?
     - Edge cases handled?
 
-    **Tests:**
-    - Do the new and changed tests verify real behavior, not mocks?
-    - Are the task's edge cases covered?
+    **Verification:**
+    - Is the evidence appropriate to the changed scope and risk?
+    - For behavioral changes, do tests verify real behavior and relevant edge cases?
 
     **Structure:**
     - Does each file have one clear responsibility with a well-defined interface?
@@ -188,7 +193,7 @@ Subagent (general-purpose):
 ```
 
 **Placeholders:**
-- `[MODEL]` — REQUIRED: reviewer model per SKILL.md Model Selection
+- Model override — optional, supported by the host and appropriate to the task
 - `[BRIEF_FILE]` — REQUIRED: the task brief file (`bash scripts/task-brief PLAN N`
   prints the path; same file the implementer worked from)
 - `[GLOBAL_CONSTRAINTS]` — the binding requirements copied verbatim from
@@ -197,11 +202,9 @@ Subagent (general-purpose):
   are already in this template)
 - `[REPORT_FILE]` — REQUIRED: the file the implementer wrote its detailed
   report to
-- `[BASE_SHA]` — commit before this task
-- `[HEAD_SHA]` — current commit
-- `[DIFF_FILE]` — REQUIRED: the path the controller wrote the review
-  package to (`bash scripts/review-package PLAN_FILE BASE HEAD` prints the unique
-  path it wrote; the package never enters the controller's context)
+- Reviewed state — commit range or identified working-tree snapshot
+- `[DIFF_FILE]` — REQUIRED: package path covering actual task changes under
+  [review-evidence.md](review-evidence.md), including relevant new files
 
 **Reviewer returns:** Spec Compliance verdict (✅/❌/⚠️), Strengths, Issues
 (Critical/Important/Minor), Task quality verdict

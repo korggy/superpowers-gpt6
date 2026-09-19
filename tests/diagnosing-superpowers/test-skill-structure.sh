@@ -29,10 +29,10 @@ if [ -f "$SKILL_MD" ]; then
     fail "frontmatter name is diagnosing-superpowers"
   fi
   description="$(printf '%s\n' "$frontmatter" | awk '/^description:/{sub(/^description:[ ]*/,""); print; found=1; next} found && /^[ ]/{print} found && !/^[ ]/{exit}' | tr '\n' ' ')"
-  if printf '%s' "$description" | grep -q '^Use when'; then
-    pass "description starts with 'Use when'"
+  if printf '%s' "$description" | grep -q '^Suggest when'; then
+    pass "description starts with 'Suggest when'"
   else
-    fail "description starts with 'Use when' (got: ${description:0:60})"
+    fail "description starts with 'Suggest when' (got: ${description:0:60})"
   fi
   if [ "${#description}" -le 1024 ]; then
     pass "description under 1024 characters"
@@ -71,7 +71,7 @@ if [ -f "$SKILL_MD" ]; then
     else
       fail "referenced file exists: $ref"
     fi
-  done < <(grep -o '\(references\|prompts\|templates\)/[A-Za-z0-9._-]*\.md' "$SKILL_MD" | sort -u)
+  done < <(grep -o '\(\.\./using-superpowers/\)\?\(references\|prompts\|templates\)/[A-Za-z0-9._-]*\.md' "$SKILL_MD" | sort -u)
 else
   fail "SKILL.md exists"
 fi

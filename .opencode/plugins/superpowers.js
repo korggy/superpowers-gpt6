@@ -118,7 +118,7 @@ const getBootstrapContent = (toolMapping) => {
   if (_bootstrapCache.has(toolMapping)) return _bootstrapCache.get(toolMapping);
 
   // Try to load using-superpowers skill
-  const skillPath = path.join(superpowersSkillsDir, 'using-superpowers', 'SKILL.md');
+  const skillPath = path.join(superpowersSkillsDir, 'using-superpowers', 'references', 'invocation-policy.md');
   if (!fs.existsSync(skillPath)) {
     _bootstrapCache.set(toolMapping, null);
     return null;
@@ -130,7 +130,7 @@ const getBootstrapContent = (toolMapping) => {
   _bootstrapCache.set(toolMapping, `<EXTREMELY_IMPORTANT>
 You have superpowers.
 
-**IMPORTANT: The using-superpowers skill content is included below. It is ALREADY LOADED - you are currently following it. Do NOT use the skill tool to load "using-superpowers" again - that would be redundant.**
+The workflow choice notice below does not invoke a skill. Suggest relevant workflows and wait for acceptance unless already requested.
 
 ${content}
 
@@ -303,6 +303,7 @@ async function setup(ctx) {
         skills.push({
           id: entry.name,
           name: frontmatter.name || entry.name,
+          autoinvoke: false,
           ...(frontmatter.description ? { description: frontmatter.description } : {}),
           // Skill.Info renamed its required file field `location` -> `path`
           // in OpenCode v2.0.4 (upstream commit 199aabe9e2).

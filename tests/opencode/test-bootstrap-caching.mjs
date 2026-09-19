@@ -90,7 +90,7 @@ if (failures.length > 0) {
 console.log(JSON.stringify(result, null, 2));
 
 function isBootstrapSkillPath(filePath) {
-  return String(filePath).replaceAll('\\', '/').includes('using-superpowers/SKILL.md');
+  return String(filePath).replaceAll('\\', '/').includes('using-superpowers/references/invocation-policy.md');
 }
 
 function makeOutput(text) {
@@ -123,7 +123,7 @@ function assertPresentBootstrap(result) {
     failures.push(`expected second transform to inject one bootstrap part, got ${result.secondBootstrapParts}`);
   }
   if (result.firstReadCount !== 1) {
-    failures.push(`expected first transform to read SKILL.md once, got ${result.firstReadCount}`);
+    failures.push(`expected first transform to read invocation-policy.md once, got ${result.firstReadCount}`);
   }
   if (result.secondReadCount !== result.firstReadCount) {
     failures.push(`expected cached second transform to do no additional reads, got ${result.secondReadCount - result.firstReadCount}`);

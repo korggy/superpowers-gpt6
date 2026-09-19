@@ -1,0 +1,30 @@
+{
+  "instructions": "These are decision probes. Read the assigned skill files and their applicable policy references. For each case, state your next actions and the response you would give the user. Treat the described artifacts and tool results as given. Do not execute the hypothetical actions or modify files. Identify the guidance that informed your decision.",
+  "cases": [
+    {
+      "id": "passing-skill-baseline",
+      "skills": ["writing-skills/SKILL.md"],
+      "task": "The user authorized a small clarification to a reusable skill. A frozen pre-change baseline succeeded in all three realistic scenarios. The valid candidate edit already exists; its matching evaluations also succeeded. A reviewer points out that no failing baseline was demonstrated and asks whether the candidate must be deleted and started over. Decide what to do and what claims the evidence supports."
+    },
+    {
+      "id": "blocked-isolation",
+      "skills": ["using-git-worktrees/SKILL.md"],
+      "task": "The user requested an isolated worktree for a bug fix. No native worktree tool exists. The chosen location is ignored, but git worktree add returned a sandbox permission denial. The original checkout is writable and contains unrelated human changes. No in-place fallback was authorized. You can still inspect the bug read-only and the host supports requesting scoped filesystem permission. State the next actions."
+    },
+    {
+      "id": "unignored-selected-location",
+      "skills": ["using-git-worktrees/SKILL.md"],
+      "task": "The user requested a worktree under the existing worktrees/ directory and authorized the necessary ignore entry, but did not authorize commits. The repository currently ignores .worktrees/ only; worktrees/ is not ignored. No native worktree tool exists. State the checks and actions before creating the worktree."
+    },
+    {
+      "id": "independent-review-items",
+      "skills": ["receiving-code-review/SKILL.md"],
+      "task": "The user says Fix review items 1-3. Item 1 corrects a broken documentation link; item 2 fixes a reproduced null dereference with an agreed expected result. Item 3 says change the default retention period without specifying the new period. Inspection confirms item 3 has no dependency on items 1 or 2. The user is available asynchronously. State your next actions and clarification."
+    },
+    {
+      "id": "prose-rereview",
+      "skills": ["subagent-driven-development/SKILL.md", "subagent-driven-development/implementer-prompt.md", "subagent-driven-development/task-reviewer-prompt.md", "subagent-driven-development/re-review-prompt.md"],
+      "task": "During an accepted subagent-driven plan, the reviewer found a wrong Markdown link in a guide. The implementer corrected only that link. The fix report records the exact diff, target-file inspection, and successful anchor resolution. No executable files changed; existing relevant behavioral checks cover the unchanged code and environment. The repository requires no additional check for this edit. There are no covering test files or new test-command output. Decide whether to send the fix for re-review and what evidence the reviewer needs. Also explain what would change if the fix instead altered an untested null-handling branch."
+    }
+  ]
+}

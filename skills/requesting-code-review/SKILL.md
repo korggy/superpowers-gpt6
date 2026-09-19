@@ -1,7 +1,10 @@
 ---
 name: requesting-code-review
-description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+description: Suggest for substantive review against requirements and correctness risks. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Requesting Code Review
 
@@ -23,26 +26,36 @@ Dispatch a code reviewer subagent to catch issues before they cascade. The revie
 
 ## How to Request
 
-**1. Get git SHAs:**
-```bash
-BASE_SHA=$(git rev-parse HEAD~1)  # or: git merge-base origin/main HEAD
-HEAD_SHA=$(git rev-parse HEAD)
-```
+**1. Establish review scope and evidence:**
+
+Use [review evidence](../subagent-driven-development/review-evidence.md).
+Identify the accepted requirements, Decision Record, starting state, and actual
+changes. For committed work, use the correct base-to-head range. For uncommitted
+or mixed work, include staged, unstaged, and relevant new-file contents, keeping
+unrelated pre-existing changes separate. Do not create a commit just to review.
 
 **2. Dispatch code reviewer subagent:**
 
-Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)
+Use an available, authorized worker with [code-reviewer.md](code-reviewer.md).
+Pass a bounded task and the evidence; follow current host model/fork rules.
+If delegation is unavailable, perform and label a separate self-review.
 
 **Placeholders:**
-- `{DESCRIPTION}` - Brief summary of what you built
-- `{PLAN_OR_REQUIREMENTS}` - What it should do
-- `{BASE_SHA}` - Starting commit
-- `{HEAD_SHA}` - Ending commit
+- `[DESCRIPTION]` — what was built
+- `[PLAN_OR_REQUIREMENTS]` — accepted requirements
+- Reviewed state — commit range or identified working-tree snapshot
+- `[REVIEW_PACKAGE]` — package covering the actual changes
+- `[DECISION_RECORD]` — current authority, retained checkpoints, and rulings
 
 **3. Act on feedback:**
-- Fix Critical issues immediately
-- Fix Important issues before proceeding
-- Note Minor issues for later
+- Distinguish substantiated correctness defects, unresolved product choices,
+  and optional improvements against the accepted scope and Decision Record
+- Fix Critical and Important defects within existing authority
+- Present material product choices with evidence, options, and a recommendation;
+  resolve them through existing delegation or the human before affected work
+- Continue independent authorized fixes while a choice is pending; do not mark
+  required unresolved decisions complete
+- Note optional Minor improvements for later
 - Push back if reviewer is wrong (with reasoning)
 
 ## Example
@@ -58,17 +71,18 @@ HEAD_SHA=$(git rev-parse HEAD)
 [Dispatch code reviewer subagent]
   DESCRIPTION: Added verifyIndex() and repairIndex() with 4 issue types
   PLAN_OR_REQUIREMENTS: Task 2 from docs/superpowers/plans/deployment-plan.md
-  BASE_SHA: a7981ec
-  HEAD_SHA: 3df7661
+  Reviewed state: committed range a7981ec..3df7661
+  REVIEW_PACKAGE: <package covering that range>
+  DECISION_RECORD: <current approved/delegated decisions>
 
 [Subagent returns]:
   Strengths: Clean architecture, real tests
   Issues:
-    Important: Missing progress indicators
+    Important: Failed repair overwrites the valid index
     Minor: Magic number (100) for reporting interval
-  Assessment: Ready to proceed
+  Assessment: Ready after the required fix is verified
 
-You: [Fix progress indicators]
+You: [Fix failed-repair handling and verify the original index is preserved]
 [Continue to Task 3]
 ```
 
@@ -76,7 +90,7 @@ You: [Fix progress indicators]
 
 | Excuse | Reality |
 |--------|---------|
-| "I'll just review the diff myself instead of dispatching a reviewer" | You're the coordinator — reviewing the diff inline burns the context window you need to keep driving the work. Dispatch a reviewer subagent: the diff and the evaluation live in its context, and only the findings come back to you. |
+| "I'll skip the selected independent review" | Use the authorized reviewer when available. If the host cannot delegate, label the separate self-review and its limitation. |
 | "The reviewer needs my whole session history to understand the change" | Hand it precisely crafted context, never your session's history. That keeps the reviewer on the work product, not your thought process. |
 
 ## Red Flags
@@ -84,7 +98,8 @@ You: [Fix progress indicators]
 **Never:**
 - Skip review because "it's simple"
 - Ignore Critical issues
-- Proceed with unfixed Important issues
+- Treat a reviewer's severity label as authority for a new product requirement
+- Declare work complete with unresolved required behavior or material decisions
 - Argue with valid technical feedback
 
 **If reviewer wrong:**

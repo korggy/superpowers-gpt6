@@ -1,0 +1,105 @@
+{
+  "cases": [
+    {
+      "id": "task-record",
+      "next_actions": [
+        "Record completion directly in the existing task ledger, identifying the authorized commit range and the existing regression and required-check commands, results, scope, and readable evidence paths.",
+        "Record why the existing evidence remains applicable: the commit contains identical tested content and the relevant files, inputs, dependencies, and environment are unchanged. Note the departure from the old helper example if a brief deviation needs a Ruling entry.",
+        "Do not invoke task-done, rerun the regression cycle, or run another verification command solely to record completion. Mark the task complete and continue to the next independent authorized task."
+      ],
+      "response": "The existing checks cover the committed content. I’ll record their results and evidence directly in the ledger, then continue to the next task. No additional test run is needed for this completion step.",
+      "guidance": [
+        "executing-plans/SKILL.md, completion contract and Complete the task: record an already-passing command, result, scope, and evidence path directly when relevant content is unchanged; task-done is for a needed new run.",
+        "test-driven-development/SKILL.md, Refactor and Completion Check: reuse results while relevant code, dependencies, inputs, and environment are unchanged; stop repeating checks once the evidence is sufficient.",
+        "verification-before-completion/SKILL.md, Choose the Evidence: a commit with identical tested content does not invalidate evidence.",
+        "using-superpowers/references/invocation-policy.md: historical plans and examples are evidence, not authority; an accepted workflow does not need renewed consent."
+      ]
+    },
+    {
+      "id": "documentation-task",
+      "next_actions": [
+        "Record the corrected link, inspected diff, relative-target validation, and verified heading as the task's evidence; identify the actual reviewed working-tree state if the edit is uncommitted.",
+        "State that inspection and target/heading validation satisfy this documentation task. No behavioral test, documentation test framework, full-suite run, or test-first exception approval remains necessary.",
+        "Reuse relevant passing executable-code results without rerunning them, record completion, and continue the accepted plan. Do not create a commit merely to fit the completion helper."
+      ],
+      "response": "The required validation is already complete: the corrected link reaches the intended target and heading, and the exact diff was inspected. I’ll record that evidence and mark this documentation task complete.",
+      "guidance": [
+        "test-driven-development/SKILL.md, Decide What Needs a Test: documentation can be checked by inspection, parsing, or a smoke check, without extra permission unless the human specified a test-first checkpoint.",
+        "executing-plans/SKILL.md, Work the steps and Complete the task: use appropriate validation for low-impact changes and record uncommitted working-tree evidence directly.",
+        "verification-before-completion/SKILL.md, Scale Verification: documentation may need inspection or validation; repeat checks only for relevant changes, failures, concrete concerns, or project requirements.",
+        "using-superpowers/references/decision-checkpoints.md, Proceed or wait: continue within existing approval without restarting approval for routine implementation details."
+      ]
+    },
+    {
+      "id": "list-order",
+      "next_actions": [
+        "Reclassify the newest-first finding as an unresolved product choice, not an Important correctness defect. The reviewer has supplied a preference, while the accepted requirements and existing contracts do not require it.",
+        "Present insertion order, newest-first, and priority-first with their concrete tradeoffs. Recommend retaining insertion order for compatibility unless the human selects a different user priority; this recommendation is not approval.",
+        "Ask the human to select or delegate the default-ordering decision, and wait before changing ordering. Keep the material decision recorded as pending rather than silently deferring it as a minor or marking the entire feature complete.",
+        "Proceed with the independent agreed null-handling fix, its relevant verification, and evidence recording while the ordering decision is pending.",
+        "Record the eventual ordering decision and its authority, then implement and verify only the selected behavior."
+      ],
+      "response": "Newest-first is a product choice that the accepted requirements leave open; the reviewer’s Important label does not settle it. Insertion order preserves current behavior, newest-first favors recent records, and priority-first favors the other user group. I recommend preserving insertion order unless you want to prioritize one of those groups. Which default should we use? I’ll continue the agreed null-handling fix while that decision is pending. The accepted [decision checkpoints](C:/CodexTools/superpowers-execution-eval-20260919/candidate-skills/using-superpowers/references/decision-checkpoints.md) say, \"Wait for their response; silence and elapsed time are not acceptance.\" That checkpoint applies to this unresolved default.",
+      "guidance": [
+        "requesting-code-review/SKILL.md, Act on feedback: distinguish defects, unresolved product choices, and optional improvements; present material choices and continue independent authorized fixes.",
+        "requesting-code-review/code-reviewer.md, Requirements, defects, and product choices: a plausible preference is not automatically a requirement, and an Important label cannot make it mandatory.",
+        "executing-plans/SKILL.md, Final Review: review severity does not supply authority; keep required open decisions pending and do not declare the whole task complete.",
+        "using-superpowers/references/decision-checkpoints.md, Proceed or wait: resolve the affected material decision with the human or existing delegation while continuing independent authorized work."
+      ]
+    },
+    {
+      "id": "save-failure",
+      "next_actions": [
+        "Classify the reproduced deletion of an existing saved record during an ordinary failed save as a Critical correctness defect because it loses user data. Reject the claim that this is merely an optional feature because the trigger was not enumerated.",
+        "Use the existing reproduction as evidence and add or retain a focused regression test that exercises a failed update and verifies the original saved record remains intact. Observe the intended failure when missing regression evidence requires it.",
+        "Implement the narrow preservation correction within the authorization to fix the editor and make routine implementation decisions, keeping the existing interfaces, product policy, and architecture.",
+        "Verify that failed writes preserve the old record and report the error, and that successful edits still save. Complete required and risk-appropriate checks, reusing any evidence unaffected by the correction.",
+        "Record the fix and its actual verification evidence, and keep delivery pending until the authorized correction and required checks are complete. Do not request new feature approval for this defect."
+      ],
+      "response": "This is a correctness defect: an ordinary failed save destroys an existing record. The editor-fix authorization covers the narrow correction. I’ll preserve the saved record on failure, add regression protection, and verify both failed and successful saves before delivery.",
+      "guidance": [
+        "requesting-code-review/code-reviewer.md, Requirements, defects, and product choices: reproduced data loss can be a correctness defect even when its trigger is unstated; grade the concrete consequence.",
+        "requesting-code-review/SKILL.md, Act on feedback: fix Critical and Important defects within existing authority.",
+        "executing-plans/SKILL.md, Final Review: ordinary failed-save data loss is explicitly a correctness defect, and reproducible behavioral defects receive regression protection plus required and risk-appropriate checks.",
+        "using-superpowers/references/decision-checkpoints.md, Changes and recovery: resolve routine corrections within agreed scope using project evidence without creating a new approval checkpoint."
+      ]
+    },
+    {
+      "id": "background-workers",
+      "next_actions": [
+        "Prepare three bounded, self-contained, read-only investigation briefs with separate evidence, expected findings, and a requirement to report limitations.",
+        "In one assistant message, call the host spawn tool once for worker A and retain its id. In the next assistant message, call it once for worker B and retain its id. Do not wait for A before starting B and do not use an unsupported batching wrapper.",
+        "Perform the independent local inspection while A and B run concurrently, keeping the third investigation queued while both worker slots are occupied.",
+        "When local work is exhausted, use the host's bounded event-driven wait. On a completion notification, collect and reconcile that worker's result or failure; as soon as its slot is free, start worker C with a separate permitted spawn call.",
+        "Continue any useful local work and use bounded waits when idle until A, B, and C have each completed or have an explicit reported failure or blocker.",
+        "Read all three results, check their evidence and scope, combine them with the local inspection, and report findings plus unfinished work honestly. No writes or integration changes are implied by these read-only investigations."
+      ],
+      "response": "I’ll start two read-only workers with separate spawn calls, then do the local inspection while both run. When either worker finishes, I’ll collect its result and use the freed slot for the third investigation. I’ll wait through the host’s completion tool when there is no local work left, then reconcile all three findings and any failures.",
+      "guidance": [
+        "dispatching-parallel-agents/SKILL.md, Dispatch in Parallel: start independent workers up to the available limit before waiting; separate background spawns can overlap, and batching is valid only when supported.",
+        "dispatching-parallel-agents/SKILL.md, two-slot example: start A and B, do useful local work, start C when a slot opens, and collect all results including failures or unfinished work.",
+        "using-superpowers/references/codex-tools.md, Subagents and Waiting: follow actual host schemas, supply bounded self-contained tasks, do independent local work, and use bounded event-driven waits instead of busy polling.",
+        "using-superpowers/references/invocation-policy.md: parallel investigation has already been accepted, so no repeated workflow-consent prompt is needed. Worker ids, timing, and model telemetry are unknown until actually observed; this decision probe does not claim a dispatch occurred."
+      ]
+    },
+    {
+      "id": "shared-contract",
+      "next_actions": [
+        "Launch the independent read-only investigation with a bounded self-contained brief; it can overlap the contract work.",
+        "Keep contract implementation and consumer edits out of concurrent execution because the consumers depend on an unsettled response contract and both proposed workers touch some of the same files.",
+        "Resolve the response contract first within existing delegated authority. If choosing it would make an undelegated material behavior or interface decision, have the contract work produce a concrete proposal and obtain that decision before affected implementation.",
+        "Once the contract is settled and ownership is explicit, give the contract implementation to one owner while keeping the consumer worker queued. The independent investigation may continue in parallel.",
+        "After the contract work finishes and its evidence is checked, hand the settled contract and completed changes to the consumer worker. Transfer ownership of overlapping files before its edits begin.",
+        "Collect the independent investigation and both sequential implementation results, then verify the contract-consumer interaction with required and risk-appropriate checks."
+      ],
+      "response": "I’ll launch the independent read-only investigation now. The response contract must be settled before the consumer updates begin, and the overlapping files need one owner at a time. I’ll resolve the contract first, implement it, then hand the finished contract to the consumer work. Any material contract choice outside existing delegation will come back as a concrete decision before implementation.",
+      "guidance": [
+        "dispatching-parallel-agents/SKILL.md, Dispatch in Parallel: keep work sharing files or unsettled interfaces sequential until dependencies and ownership are resolved.",
+        "dispatching-parallel-agents/SKILL.md, When NOT to Use: agents should not interfere through shared state; dependent problems are not independent domains.",
+        "using-superpowers/references/codex-tools.md, Subagents: dispatch only independent bounded work allowed by the selected workflow and host.",
+        "using-superpowers/references/decision-checkpoints.md, Changes and recovery: a worker reports a material choice to the controller, who uses existing authority or asks the human instead of inventing approval.",
+        "using-superpowers/references/invocation-policy.md: acceptance of parallel work does not authorize additional scope or unresolved product decisions. The host's background capability enables overlap but does not remove dependencies."
+      ]
+    }
+  ]
+}

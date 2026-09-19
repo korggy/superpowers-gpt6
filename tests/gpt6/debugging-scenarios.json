@@ -1,0 +1,30 @@
+{
+  "instructions": "These are decision probes within an already accepted systematic-debugging workflow. Read the assigned skill and its applicable policy and supporting references. For each case, state the next actions and the response you would give the user. Treat described artifacts and tool results as given. Do not execute hypothetical actions or change production files. Identify the guidance that informed your decision.",
+  "skills": ["systematic-debugging/SKILL.md", "test-driven-development/SKILL.md", "verification-before-completion/SKILL.md", "using-superpowers/references/invocation-policy.md"],
+  "cases": [
+    {
+      "id": "shipment-retry",
+      "task": "The user asked you to fix an incorrect shipment status and authorized routine implementation choices. Three earlier narrow fixes failed; each was reverted. A newly captured trace now identifies a deterministic off-by-one error in a loop, consistent with the source and a working neighboring implementation. A focused regression test fails on exactly that error. The one-line correction stays within the requested behavior and changes no interfaces or architecture. The user says Please keep going, I am in meetings. State the next actions."
+    },
+    {
+      "id": "delivery-retry",
+      "task": "The user asked you to fix duplicate deliveries and an unrelated broken help link. Repeated fixes exposed that delivery acknowledgment and billing commit independently. A durable redesign requires choosing between rejecting potentially valid retries or retaining an idempotency record containing customer identifiers for a new period. The requirements and existing preferences settle neither choice. The two choices materially change behavior and retention policy. The help-link target is known and independent. The user is available asynchronously and says I need this finished quickly. State the next actions and user response."
+    },
+    {
+      "id": "signing-boundary",
+      "task": "A CI signing job crosses workflow, build, and signing components. Existing sanitized logs, the failing exit code, a focused reproduction, and comparison with the working job conclusively show a misspelled configuration key at the build-to-signing boundary. The user authorized correcting the key. Relevant parser and signing smoke checks are available; the repository requires them after a configuration edit. No other boundary remains unexplained. State the diagnostics, change, and verification you would perform."
+    },
+    {
+      "id": "guide-link",
+      "task": "The user asks you to fix a broken relative Markdown link. Inspection confirms a one-character typo; the target file and heading exist. This repository requires no test suite for documentation-only changes and has no covering test framework. The user did not require test-first work. The executable code and its valid test evidence are unchanged. State the correction, checks, and completion response."
+    },
+    {
+      "id": "empty-result",
+      "task": "The user asks you to fix a reproduced null dereference when a service returns no records. The agreed behavior is an empty result, not an exception. Source tracing confirms the missing null handling; no covering test exists. A focused behavioral test can use the existing test framework. The user explicitly says Show me the failing test before changing production code; I want to review it first. State your next actions and response at that checkpoint."
+    },
+    {
+      "id": "intermittent-result",
+      "task": "An API occasionally returns a stale result. It crosses a cache and database boundary, but current logs lack correlation and the failure has not been reproduced. No evidence identifies which boundary is responsible. The user says Just add a retry, it is probably the database; fix the stale result today. You can inspect source, read sanitized logs, and add bounded local diagnostics, but cannot change production logging or deploy. State the next actions and response."
+    }
+  ]
+}

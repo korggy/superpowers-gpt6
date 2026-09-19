@@ -1,0 +1,5 @@
+interface:
+  display_name: "Diagnosing Superpowers"
+  short_description: "Suggest when the human wants evidence about a problematic Superpowers session"
+policy:
+  allow_implicit_invocation: false

@@ -39,7 +39,7 @@ def _strip_frontmatter(content: str) -> str:
 
 def _build_bootstrap(skills_dir: str) -> str:
     with open(
-        os.path.join(skills_dir, "using-superpowers", "SKILL.md"),
+        os.path.join(skills_dir, "using-superpowers", "references", "invocation-policy.md"),
         encoding="utf-8",
     ) as f:
         body = _strip_frontmatter(f.read())
@@ -54,9 +54,8 @@ def _build_bootstrap(skills_dir: str) -> str:
         f"<EXTREMELY_IMPORTANT>\n"
         f"{BOOTSTRAP_MARKER}\n\n"
         f"You have superpowers.\n\n"
-        f"The using-superpowers skill content is included below and is already "
-        f"loaded for this Hermes session. Follow it now. "
-        f"Do not try to load using-superpowers again.\n\n"
+        f"The workflow choice notice below does not invoke a skill. "
+        f"Suggest relevant workflows and wait for acceptance unless already requested.\n\n"
         f"{body}\n\n"
         f"## Loading Superpowers Skills on Hermes\n\n"
         f"Superpowers skills are registered with Hermes' native skill loader: "

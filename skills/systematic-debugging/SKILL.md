@@ -1,7 +1,10 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: Suggest for unexplained failures requiring root-cause investigation. Invoke only when requested or accepted.
 ---
+
+Follow the [invocation policy](../using-superpowers/references/invocation-policy.md).
+Apply this workflow only when requested or accepted, including its stated supporting steps.
 
 # Systematic Debugging
 
@@ -43,7 +46,9 @@ Use for ANY technical issue:
 
 ## The Four Phases
 
-You MUST complete each phase before proceeding to the next.
+Use these phases to establish the cause, choose a supported correction, and
+verify the result. Reuse relevant evidence already available; do not repeat a
+phase or add diagnostics merely to satisfy the sequence.
 
 ### Phase 1: Root Cause Investigation
 
@@ -71,17 +76,18 @@ You MUST complete each phase before proceeding to the next.
 
    **WHEN system has multiple components (CI → build → signing, API → service → database):**
 
-   **BEFORE proposing fixes, add diagnostic instrumentation:**
+   Start with existing logs, traces, reproductions, and configuration. If they
+   already identify the failing boundary and cause, investigate that component
+   directly. Otherwise, add the smallest diagnostic that distinguishes the
+   remaining hypotheses, within the task's logging and environment permissions:
    ```
-   For EACH component boundary:
-     - Log what data enters component
-     - Log what data exits component
-     - Verify environment/config propagation
-     - Check state at each layer
+   At the boundary still in question:
+     - Compare relevant inputs and outputs
+     - Check environment/config propagation or state as needed
 
-   Run once to gather evidence showing WHERE it breaks
-   THEN analyze evidence to identify failing component
-   THEN investigate that specific component
+   Gather evidence that locates the failure
+   Investigate the identified component
+   Expand diagnostics only if a specific uncertainty remains
    ```
 
    **Example (multi-layer system):**
@@ -169,12 +175,11 @@ You MUST complete each phase before proceeding to the next.
 
 **Fix the root cause, not the symptom:**
 
-1. **Create Failing Test Case**
-   - Simplest possible reproduction
-   - Automated test if possible
-   - One-off test script if no framework
-   - MUST have before fixing
-   - Use the `superpowers:test-driven-development` skill for writing proper failing tests
+1. **Choose Evidence That Demonstrates the Fix**
+   - For behavioral defects, use a focused regression test or reproducible demonstration that distinguishes the failure from the expected behavior. Use `superpowers:test-driven-development` for that cycle.
+   - Documentation and low-impact configuration may be checked by inspection, parsing, or a focused smoke check. Do not invent tests that merely repeat the implementation.
+   - Reuse relevant existing reproductions and results. Preserve valid implementation that already exists; add missing regression protection without deleting it solely because the test came later.
+   - Honor an explicitly retained test-first or human-review checkpoint. Otherwise choose the appropriate check within existing authority, without asking for an exception.
 
 2. **Implement Single Fix**
    - Address the root cause identified
@@ -183,33 +188,34 @@ You MUST complete each phase before proceeding to the next.
    - No bundled refactoring
 
 3. **Verify Fix**
-   - Test passes now?
-   - No other tests broken?
-   - Issue actually resolved?
+   - Does the selected evidence show that the original failure is resolved?
+   - Run checks affected by the change and all required repository checks.
+   - Reuse results while relevant code, inputs, dependencies, and environment are unchanged. Broaden or repeat checks for a concrete concern, new change, failure, or project requirement.
    - Use the `superpowers:verification-before-completion` skill before claiming success
 
 4. **If Fix Doesn't Work**
-   - STOP
-   - Count: How many fixes have you tried?
-   - If < 3: Return to Phase 1, re-analyze with new information
-   - **If ≥ 3: STOP and question the architecture (step 5 below)**
-   - DON'T attempt Fix #4 without architectural discussion
+   - Stop stacking speculative fixes. Compare the result with the hypothesis and record what the failure rules out.
+   - Revisit the relevant investigation with the new evidence; distinguish implementation, dependency, environment, and design causes.
+   - Continue with a supported next hypothesis and a bounded check within existing authority. Attempt count alone does not establish an architectural defect or require human approval.
 
-5. **If 3+ Fixes Failed: Question Architecture**
+5. **When Evidence Raises a Design Decision**
 
-   **Pattern indicating architectural problem:**
+   **Signals worth investigating:**
    - Each fix reveals new shared state/coupling/problem in different place
    - Fixes require "massive refactoring" to implement
    - Each fix creates new symptoms elsewhere
 
-   **STOP and question fundamentals:**
+   **Reassess the evidence and fundamentals:**
    - Is this pattern fundamentally sound?
    - Are we "sticking with it through sheer inertia"?
    - Should we refactor architecture vs. continue fixing symptoms?
 
-   **Discuss with your human partner before attempting more fixes**
-
-   This is NOT a failed hypothesis - this is a wrong architecture.
+   These signals suggest a possible design problem; they do not prove one.
+   If the correction requires a material choice not settled by the request or
+   established preferences, present the evidence, options, and recommendation
+   to your human partner before affected implementation. Continue independent
+   authorized work while that decision is pending. Proceed without repeating
+   approval when the evidence supports a correction already within scope.
 
 ## Red Flags - STOP and Follow Process
 
@@ -217,18 +223,18 @@ If you catch yourself thinking:
 - "Quick fix for now, investigate later"
 - "Just try changing X and see if it works"
 - "Add multiple changes, run tests"
-- "Skip the test, I'll manually verify"
+- "Skip evidence that distinguishes the failure from the fix"
 - "It's probably X, let me fix that"
 - "I don't fully understand but this might work"
 - "Pattern says X but I'll adapt it differently"
 - "Here are the main problems: [lists fixes without investigation]"
 - Proposing solutions before tracing data flow
-- **"One more fix attempt" (when already tried 2+)**
+- **"One more fix attempt" without new evidence or a distinct hypothesis**
 - **Each fix reveals new problem in different place**
 
-**ALL of these mean: STOP. Return to Phase 1.**
-
-**If 3+ fixes failed:** Question the architecture (see Phase 4.5)
+**These mean:** Stop speculative changes and revisit the relevant investigation.
+Use Phase 4.5 when evidence raises an unresolved design decision; the number of
+attempts alone is not an approval gate.
 
 ## your human partner's Signals You're Doing It Wrong
 
@@ -248,11 +254,11 @@ If you catch yourself thinking:
 | "Issue is simple, don't need process" | Simple issues have root causes too. Process is fast for simple bugs. |
 | "Emergency, no time for process" | Systematic debugging is FASTER than guess-and-check thrashing. |
 | "Just try this first, then investigate" | First fix sets the pattern. Do it right from the start. |
-| "I'll write test after confirming fix works" | Untested fixes don't stick. Test first proves it. |
+| "It looks fixed, so no evidence is needed" | Use meaningful regression evidence for behavior and suitable inspection or validation for low-impact changes. Preserve any explicit test-first checkpoint. |
 | "Multiple fixes at once saves time" | Can't isolate what worked. Causes new bugs. |
 | "Reference too long, I'll adapt the pattern" | Partial understanding guarantees bugs. Read it completely. |
 | "I see the problem, let me fix it" | Seeing symptoms ≠ understanding root cause. |
-| "One more fix attempt" (after 2+ failures) | 3+ failures = architectural problem. Question pattern, don't fix again. |
+| "One more fix attempt" without new evidence | Reassess the failed hypothesis. Continue when evidence supports a bounded correction; ask about unresolved material choices, not the attempt count. |
 
 ## Quick Reference
 
@@ -261,7 +267,7 @@ If you catch yourself thinking:
 | **1. Root Cause** | Read errors, reproduce, check changes, gather evidence | Understand WHAT and WHY |
 | **2. Pattern** | Find working examples, compare | Identify differences |
 | **3. Hypothesis** | Form theory, test minimally | Confirmed or new hypothesis |
-| **4. Implementation** | Create test, fix, verify | Bug resolved, tests pass |
+| **4. Implementation** | Choose evidence, fix, verify | Original failure resolved; relevant and required checks pass |
 
 ## When Process Reveals "No Root Cause"
 

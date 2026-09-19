@@ -1,0 +1,5 @@
+interface:
+  display_name: "Systematic Debugging"
+  short_description: "Suggest for unexplained failures requiring root-cause investigation"
+policy:
+  allow_implicit_invocation: false

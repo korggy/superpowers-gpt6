@@ -1,0 +1,5 @@
+interface:
+  display_name: "Subagent Driven Development"
+  short_description: "Suggest for executing an accepted plan with independent task reviews"
+policy:
+  allow_implicit_invocation: false

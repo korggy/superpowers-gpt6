@@ -1,0 +1,5 @@
+interface:
+  display_name: "Verification Before Completion"
+  short_description: "Suggest when work needs an evidence-based completion check"
+policy:
+  allow_implicit_invocation: false

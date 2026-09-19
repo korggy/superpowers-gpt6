@@ -1,0 +1,96 @@
+{
+  "cases": [
+    {
+      "id": "shipment-retry",
+      "next_actions": [
+        "Reuse the deterministic trace, source comparison, and focused failing regression test; the new evidence supports a distinct hypothesis despite three reverted attempts.",
+        "Apply the authorized one-line loop correction, then run the focused regression and affected or repository-required checks.",
+        "Inspect the results and report the supported outcome; do not request approval solely because earlier attempts failed."
+      ],
+      "response": "The new trace and failing regression test identify the loop boundary error. I’ll apply the one-line correction and verify the shipment behavior and required checks while you’re in meetings.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Four Phases and Phase 4.4-4.5: reuse evidence; attempt count alone is neither an architectural diagnosis nor an approval gate; proceed with a supported correction within scope.",
+        "test-driven-development/SKILL.md, GREEN: implement the smallest correct change and verify focused and required checks.",
+        "verification-before-completion/SKILL.md, Scale Verification: stop once sufficient relevant evidence exists.",
+        "using-superpowers/references/invocation-policy.md: accepted workflows include stated supporting skills without repeated consent."
+      ]
+    },
+    {
+      "id": "delivery-retry",
+      "next_actions": [
+        "Explain the independent acknowledgment and billing commits and document the two material behavior and retention choices.",
+        "Ask asynchronously whether to reject uncertain retries or retain an idempotency record, including the approved retention duration; recommend idempotency if retaining those identifiers is acceptable because it preserves valid retries.",
+        "Pause only the delivery implementation dependent on that answer; do not treat urgency or silence as a policy decision.",
+        "Correct the independent help link, verify its target and relevant required checks, and report that progress while the decision is pending."
+      ],
+      "response": "Delivery acknowledgment and billing commit separately, so the durable correction needs a policy choice. I recommend retaining an idempotency record to preserve valid retries, if retaining the customer identifiers is acceptable. Should uncertain retries be rejected, or may those records be retained—and for how long? I’ll fix and verify the independent help link while you decide.\n\nThe accepted [systematic-debugging guidance](C:/CodexTools/superpowers-debugging-eval-20260919/candidate-skills/systematic-debugging/SKILL.md) requires presenting unresolved material choices \"before affected implementation.\" These alternatives change delivery behavior and customer-data retention, which the existing request does not settle.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Phase 4.5: present evidence, options, and a recommendation for unresolved material choices before affected implementation; continue independent authorized work.",
+        "using-superpowers/references/invocation-policy.md: ask about missing decisions, not repeated approval; acceptance does not expand scope.",
+        "verification-before-completion/SKILL.md: verify the independent link correction with appropriate evidence and distinguish completed work from the pending delivery decision."
+      ]
+    },
+    {
+      "id": "signing-boundary",
+      "next_actions": [
+        "Reuse the sanitized logs, exit code, reproduction, and working-job comparison as sufficient diagnosis of the misspelled key; add no redundant boundary instrumentation.",
+        "Correct the authorized configuration key at the build-to-signing boundary.",
+        "Run the repository-required parser and signing smoke checks, inspect their outputs, and report exactly what they establish; expand diagnosis only if a concrete failure or uncertainty appears."
+      ],
+      "response": "The existing evidence isolates the misspelled build-to-signing configuration key. I’ll correct it and run the required parser and signing smoke checks, then report their results.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Phase 1.4: when existing evidence identifies the boundary and cause, investigate that component directly; add diagnostics only for remaining uncertainty.",
+        "systematic-debugging/SKILL.md, Phase 4.1-4.3: configuration can use parsing or focused smoke checks; perform all required repository checks.",
+        "verification-before-completion/SKILL.md: reuse valid evidence and limit completion claims to inspected results."
+      ]
+    },
+    {
+      "id": "guide-link",
+      "next_actions": [
+        "Correct the one-character relative Markdown-link typo.",
+        "Inspect the final diff and verify that the corrected path resolves from the document and its fragment matches the existing heading.",
+        "Use those documentation checks as completion evidence; add no test framework or implementation-mirroring test and do not rerun unchanged executable checks."
+      ],
+      "response": "Corrected the link typo and verified the relative target and heading. The documentation checks passed; the existing executable-code test evidence remains valid and was not rerun.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Phase 4.1: documentation may be checked by inspection without asking for an exception.",
+        "test-driven-development/SKILL.md, Decide What Needs a Test, and writing-good-tests.md, Behavior, not text: human prose does not need an implementation-mirroring test.",
+        "verification-before-completion/SKILL.md, Choose the Evidence and Scale Verification: unchanged relevant code and environment preserve evidence; run only missing or invalidated checks.",
+        "The completion response applies after the listed documentation checks succeed."
+      ]
+    },
+    {
+      "id": "empty-result",
+      "next_actions": [
+        "Add a focused test through the real service consumer using the existing framework, arrange the no-records boundary response, and assert an empty result without an exception.",
+        "Run that test against unchanged production code and confirm it fails because of the reproduced null dereference rather than setup or environment.",
+        "Show the exact test diff, command, and actual failure output to the user; preserve production code unchanged until the requested review is complete."
+      ],
+      "response": "The focused test expects an empty result when the service returns no records and fails on the reproduced null dereference. Here are the test diff and actual command output for your review. Production code is unchanged; I’m waiting at the review checkpoint you requested.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Phase 4.1: honor an explicitly retained test-first or human-review checkpoint.",
+        "test-driven-development/SKILL.md, RED: exercise the relevant production behavior and confirm the intended failure.",
+        "test-driven-development/writing-good-tests.md: derive the empty-result expectation independently, test the real consumer, and mock only a necessary boundary.",
+        "using-superpowers/references/invocation-policy.md: preserve accepted checkpoints and the human's current instructions.",
+        "The checkpoint response must include the actual newly produced diff and failure output; none is fabricated in this decision probe."
+      ]
+    },
+    {
+      "id": "intermittent-result",
+      "next_actions": [
+        "Treat the database explanation as an unconfirmed hypothesis; inspect source, recent relevant changes, cache read/write/invalidation paths, and existing sanitized logs.",
+        "Add the smallest bounded local diagnostics needed to correlate one request with cache hit or miss, cached version, database version, and relevant operation ordering, without exposing customer data.",
+        "Attempt a controlled local reproduction that distinguishes cache staleness, database staleness, and boundary ordering; expand diagnostics only for a specific remaining uncertainty.",
+        "Choose a correction only after evidence identifies the cause, then add a focused regression and required checks. Do not add a speculative retry, change production logging, or deploy; report any reproduction or evidence gap honestly."
+      ],
+      "response": "The available evidence does not yet identify the database as the cause. I’ll correlate the cache and database paths with bounded local diagnostics and try to reproduce the stale response, then use that evidence to choose and verify the correction. A retry currently has no demonstrated connection to the failure.",
+      "guidance": [
+        "systematic-debugging/SKILL.md, Iron Law and Phase 1.2: investigate the root cause first; gather data when the failure is not reproducible.",
+        "systematic-debugging/SKILL.md, Phase 1.4 and Phase 3: use the smallest diagnostic that distinguishes remaining hypotheses within logging and environment permissions; test one supported hypothesis at a time.",
+        "systematic-debugging/root-cause-tracing.md: trace the stale value back to its originating source.",
+        "verification-before-completion/SKILL.md: report unresolved evidence gaps and do not claim a fix without reproducing and correcting the failure.",
+        "using-superpowers/references/invocation-policy.md: acceptance does not authorize external actions or work beyond scope."
+      ]
+    }
+  ]
+}

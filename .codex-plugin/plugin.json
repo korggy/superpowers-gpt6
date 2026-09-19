@@ -21,11 +21,11 @@
     "workflow"
   ],
   "skills": "./skills/",
-  "hooks": {},
+  "hooks": "./.codex-plugin/hooks.json",
   "interface": {
     "displayName": "Superpowers",
     "shortDescription": "Planning, TDD, debugging, and delivery workflows for coding agents",
-    "longDescription": "Use Superpowers to guide agent work through brainstorming, implementation planning, test-driven development, systematic debugging, parallel execution, code review, and finish-the-branch workflows.",
+    "longDescription": "Use Superpowers to guide agent work through brainstorming, implementation planning, test-driven development, systematic debugging, parallel execution, and code review.",
     "developerName": "Jesse Vincent",
     "category": "Developer Tools",
     "capabilities": [

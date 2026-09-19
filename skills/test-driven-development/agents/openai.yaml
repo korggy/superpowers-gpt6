@@ -1,0 +1,5 @@
+interface:
+  display_name: "Test Driven Development"
+  short_description: "Suggest for new behavior or reproducible defects needing regression protection"
+policy:
+  allow_implicit_invocation: false

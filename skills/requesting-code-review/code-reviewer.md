@@ -20,25 +20,40 @@ Subagent (general-purpose):
 
     [PLAN_OR_REQUIREMENTS]
 
-    ## Git Range to Review
+    ## Evidence to Review
 
-    **Base:** [BASE_SHA]
-    **Head:** [HEAD_SHA]
+    **Reviewed state:** [commit range or working-tree snapshot]
+    **Review package:** [REVIEW_PACKAGE]
+    **Decision Record:** [DECISION_RECORD]
 
-    ```bash
-    git diff --stat [BASE_SHA]..[HEAD_SHA]
-    git diff [BASE_SHA]..[HEAD_SHA]
-    ```
+    Read the supplied package and accepted requirements, decisions, and rulings.
+    Use the review-evidence.md contract from subagent-driven-development.
+    A fully committed scope can use a BASE..HEAD diff. Uncommitted or mixed
+    scope requires current tracked changes and relevant new-file contents,
+    separated from pre-existing unrelated work. Do not substitute an empty
+    commit range or infer that HEAD identifies uncommitted revisions.
+    If evidence is missing, request the correct package or inspect the named
+    current files read-only; report any coverage limitation.
 
-    ## The spec is a vision document
+    ## Requirements, defects, and product choices
 
-    The spec says what the software must do. It does not enumerate every
-    input, environment, or condition the software will meet. For behavior
-    the spec is silent on, judge by what a reasonable person using this
-    software would expect: a reasonable person's expectation is a
-    requirement, and a spec's silence is not permission. Grade such
-    findings by their effect on that person, not by whether the spec
-    mentions the trigger.
+    Use the accepted requirements, existing contracts, and Decision Record to
+    establish scope. The spec need not enumerate every failure: reproduced data
+    loss, broken requested behavior, and violations of existing contracts can
+    be correctness defects even when their trigger is unstated. Cite the
+    concrete failure and grade its consequence.
+
+    A plausible preference is not automatically a requirement. If an observation
+    requires choosing a new feature, default, policy, or tradeoff that the human
+    has not settled or delegated, identify it as a product decision. Present the
+    evidence, options, and recommendation separately from defects. Do not turn
+    it into a mandatory fix merely by assigning an Important severity label.
+    Honor explicit exclusions and decisions already recorded.
+
+    Distinguish optional improvements from unresolved decisions needed to finish
+    the agreed work. Report required open decisions as pending; the controller
+    resolves them with the human or existing authority while independent fixes
+    continue. Review alone does not authorize new requirements.
 
     ## Declined to judge
 
@@ -101,7 +116,7 @@ Subagent (general-purpose):
     If you find significant deviations from the plan, flag them specifically
     so the implementer can confirm whether the deviation was intentional.
     If you find issues with the plan itself rather than the implementation,
-    say so.
+    say so and distinguish a correctness defect from a material product choice.
 
     ## Output Format
 
@@ -114,7 +129,7 @@ Subagent (general-purpose):
     [Bugs, security issues, data loss risks, broken functionality]
 
     #### Important (Should Fix)
-    [Architecture problems, missing features, poor error handling, test gaps]
+    [Architecture defects, missing required behavior, poor error handling, test gaps]
 
     #### Minor (Nice to Have)
     [Code style, optimization opportunities, documentation polish]
@@ -127,6 +142,10 @@ Subagent (general-purpose):
 
     ### Recommendations
     [Improvements for code quality, architecture, or process]
+
+    ### Decisions Needed
+    [Unresolved product choices, their evidence and options, your recommendation,
+    and whether each blocks agreed work. State none when there are no such choices.]
 
     ### Assessment
 
@@ -154,10 +173,12 @@ Subagent (general-purpose):
 **Placeholders:**
 - `[DESCRIPTION]` — brief summary of what was built
 - `[PLAN_OR_REQUIREMENTS]` — what it should do (plan file path, task text, or requirements)
-- `[BASE_SHA]` — starting commit
-- `[HEAD_SHA]` — ending commit
+- Reviewed state — commit range or identified working-tree snapshot
+- `[REVIEW_PACKAGE]` — artifact covering the actual change under
+  [review-evidence.md](../subagent-driven-development/review-evidence.md)
+- `[DECISION_RECORD]` — current approval/delegation, retained checkpoints, and rulings
 
-**Reviewer returns:** Strengths, Issues (Critical / Important / Minor), Recommendations, Assessment
+**Reviewer returns:** Strengths, Issues (Critical / Important / Minor), Recommendations, Decisions Needed, Assessment
 
 ## Example Output
 
@@ -170,15 +191,15 @@ Subagent (general-purpose):
 ### Issues
 
 #### Important
-1. **Missing help text in CLI wrapper**
-   - File: index-conversations:1-31
-   - Issue: No --help flag, users won't discover --concurrency
-   - Fix: Add --help case with usage examples
+1. **Failed repair overwrites valid index data**
+   - File: indexer.ts:80-94
+   - Issue: A failed replacement write leaves the existing index empty
+   - Fix: Preserve the valid index until its replacement is successfully written
 
-2. **Date validation missing**
+2. **Documented invalid-date error is not returned**
    - File: search.ts:25-27
-   - Issue: Invalid dates silently return no results
-   - Fix: Validate ISO format, throw error with example
+   - Issue: The accepted API contract requires INVALID_DATE; invalid dates instead return a successful empty result
+   - Fix: Return the agreed validation error before executing the query
 
 #### Minor
 1. **Progress indicators**
@@ -190,9 +211,14 @@ Subagent (general-purpose):
 - Add progress reporting for user experience
 - Consider config file for excluded projects (portability)
 
+These are optional improvements outside this correction's accepted scope.
+
+### Decisions Needed
+None. The reported defects can be corrected within the existing requirements.
+
 ### Assessment
 
 **Ready to merge: With fixes**
 
-**Reasoning:** Core implementation is solid with good architecture and tests. Important issues (help text, date validation) are easily fixed and don't affect core functionality.
+**Reasoning:** Fix the failed-repair data loss and date-validation defect before integration. The optional improvements do not block this correction.
 ```

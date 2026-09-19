@@ -1,0 +1,50 @@
+{
+  "model": "unknown",
+  "effort": "unknown",
+  "cases": [
+    {
+      "id": "independent-review-items",
+      "next_actions": [
+        "Ask asynchronously for the intended retention period, including its unit; hold item 3 until answered.",
+        "Proceed with independent, authorized items 1 and 2.",
+        "Verify the documentation link and add meaningful regression coverage for the reproduced null dereference, checking the agreed expected result.",
+        "Report items 1 and 2 separately from pending item 3."
+      ],
+      "user_response": "What should the new default retention period be, including the unit? I’ll correct the documentation link and fix the reproduced null dereference while that decision is pending.",
+      "guidance_used": [
+        "Frozen receiving-code-review/SKILL.md: verify feedback against the codebase, understand requirements, and verify each fix.",
+        "Frozen using-superpowers/references/invocation-policy.md: developer instructions remain binding and take precedence over skill defaults.",
+        "Developer instructions: continue independent authorized work while clarification is pending."
+      ],
+      "conflicts_or_uncertainty": [
+        "The frozen receiving-code-review skill says: \"IF any item is unclear: STOP - do not implement anything yet\" and repeatedly requires clarifying all items first. That conflicts with the higher-priority instruction to continue independent authorized work. Because independence is explicitly established, only item 3 waits.",
+        "The retention value and unit remain unspecified; neither may be invented."
+      ]
+    },
+    {
+      "id": "prose-rereview",
+      "next_actions": [
+        "Send the corrected link for scoped re-review without requiring new executable test output.",
+        "Supply the original finding, current task brief and applicable decisions, exact prior and current reviewed states, fix diff, and appended fix report.",
+        "Include the target-file inspection and successful anchor-resolution evidence, plus the scope of existing behavioral checks and why they remain applicable.",
+        "Have the reviewer independently verify the corrected link and inspect the fix diff for new problems; require a finding verdict and scoped review verdict.",
+        "If the fix instead changes an untested null-handling branch, obtain a focused behavioral regression test covering the null case and expected result. Record its command and results, including a demonstrated pre-fix failure when feasible, and run required affected checks before sending the corrected implementation for re-review."
+      ],
+      "user_response": "The link correction is ready for scoped re-review. The reviewer needs the original finding, exact fix diff, target-file inspection, and anchor-resolution evidence. No new executable test run is warranted for this edit. A change to an untested null-handling branch would instead require focused behavioral coverage and recorded results before re-review.",
+      "guidance_used": [
+        "Frozen subagent-driven-development/SKILL.md: every fix round ends with scoped re-review; preserve the actual reviewed state.",
+        "Frozen subagent-driven-development/implementer-prompt.md: reuse relevant evidence for unchanged code rather than rerunning because a review boundary passed.",
+        "Frozen subagent-driven-development/task-reviewer-prompt.md: verify report claims against the diff and run a focused check only for an unanswered concrete doubt.",
+        "Frozen subagent-driven-development/re-review-prompt.md: verdict the original findings and inspect only the fix diff for new breakage.",
+        "Frozen subagent-driven-development/review-evidence.md: identify prior and current snapshots and provide the actual fix package.",
+        "Frozen using-superpowers/references/decision-checkpoints.md and invocation-policy.md: preserve accepted authority and follow binding host instructions.",
+        "Developer instructions: do not add tests for reversible, low-impact changes or repeat passing checks without a material reason."
+      ],
+      "conflicts_or_uncertainty": [
+        "The frozen SDD fix-loop gate requires covering tests, a command, and output before reviewer dispatch. Its implementer and re-review templates repeat that assumption without a prose-only exception.",
+        "Applying that gate literally would block this scenario despite adequate relevant evidence. Higher-priority developer instructions and the unchanged-code evidence rule support proceeding with scoped re-review and explicitly documenting why new executable tests are unnecessary.",
+        "Existing checks for unchanged code cannot establish correctness of a newly changed, previously untested null-handling branch."
+      ]
+    }
+  ]
+}

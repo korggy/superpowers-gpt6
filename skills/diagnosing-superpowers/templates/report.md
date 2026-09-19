@@ -66,8 +66,10 @@ A dimension with nothing to report says `none found — checked: <what was check
 
 not indicated | possible | likely
 
-Evidence lines: <path:line list>. This section states involvement only. It
-does not name a defect and does not propose a change.
+Evidence lines: <path:line list>. Separate observed behavior, likely causes,
+and untested hypotheses. When supported or requested, name the implicated
+skill instruction, its source lines, a proposed correction, and how to
+validate it. Recommendations do not imply implementation or publication.
 
 ## 8. Coverage notes (REQUIRED)
 

@@ -24,10 +24,15 @@ def assert_present(text, needle, label):
 assert_equal(manifest.get("name"), "superpowers", "plugin name")
 assert_equal(manifest.get("skills"), "./skills/", "skills path")
 assert_equal(
-    manifest.get("sessionStart", {}).get("skill"),
-    "using-superpowers",
-    "sessionStart.skill",
+    manifest.get("sessionStart"),
+    None,
+    "no automatic session-start skill invocation",
 )
+assert_equal(manifest.get("systemPromptPath"),
+             "./skills/using-superpowers/references/invocation-policy.md",
+             "notice-only system prompt")
+if not (manifest_path.parents[1] / manifest["systemPromptPath"]).is_file():
+    raise AssertionError("Kimi invocation notice must ship")
 
 instructions = manifest.get("skillInstructions")
 if not isinstance(instructions, str) or not instructions.strip():

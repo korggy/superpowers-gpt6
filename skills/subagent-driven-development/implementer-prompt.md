@@ -5,8 +5,8 @@ Use this template when dispatching an implementer subagent.
 ```
 Subagent (general-purpose):
   description: "Implement Task N: [task name]"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
+  model: [Optional supported override, chosen per SKILL.md Model Selection;
+          otherwise inherit the host default and follow its fork rules]
   prompt: |
     You are implementing Task N: [task name]
 
@@ -17,35 +17,40 @@ Subagent (general-purpose):
 
     ## Context
 
-    [Scene-setting: where this fits, dependencies, architectural context]
+    [Where this fits, dependencies, architectural context, and the Decision Record:
+     approved/delegated choices and their sources, implementation authority,
+     pending material decisions, and retained human checkpoints]
 
     ## Before You Begin
 
-    If you have questions about:
-    - The requirements or acceptance criteria
-    - The approach or implementation strategy
-    - Dependencies or assumptions
-    - Anything unclear in the task description
-
-    **Ask them now.** Raise any concerns before starting work.
+    Read the brief and decision record. Resolve routine details from repository
+    evidence within your assigned scope. If requirements, acceptance criteria,
+    cost, risk, or approach would change beyond delegated discretion, report the
+    concrete choice and consequences to the controller before affected work.
+    The controller can use existing authority or ask the human. Complete
+    independent authorized parts of your assignment while awaiting that decision.
 
     ## Your Job
 
     Once you're clear on requirements:
     1. Implement exactly what the task specifies
-    2. Write tests (following TDD if task says to)
-    3. Verify implementation works
-    4. Commit your work
+    2. Add meaningful regression coverage for behavioral changes (follow TDD if required)
+    3. Verify the change using checks appropriate to its scope and risk
+    4. Commit only when authorized; otherwise preserve and report the working diff
     5. Self-review (see below)
     6. Report back
 
     Work from: [directory]
 
-    **While you work:** If you encounter something unexpected or unclear, **ask questions**.
-    It's always OK to pause and clarify. Don't guess or make assumptions.
+    **While you work:** Record routine assumptions and their evidence. Escalate
+    material uncertainty with options; do not invent authority or restart review
+    of decisions already settled. A retained checkpoint still applies.
 
-    While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    While iterating, verify what you're changing: use focused tests for behavior,
+    or inspection/parsing for low-impact prose and metadata. Complete required
+    project checks and risk-appropriate integration checks before finishing.
+    Reuse relevant evidence for unchanged code; do not rerun because a
+    message, review, or commit boundary passed.
 
     ## You Do Not Dispatch Subagents
 
@@ -78,9 +83,9 @@ Subagent (general-purpose):
     no work. You will not be penalized for escalating.
 
     **STOP and escalate when:**
-    - The task requires architectural decisions with multiple valid approaches
+    - The task requires an architectural decision outside your delegated scope
     - You need to understand code beyond what was provided and can't find clarity
-    - You feel uncertain about whether your approach is correct
+    - Material uncertainty remains after a bounded investigation
     - The task involves restructuring existing code in ways the plan didn't anticipate
     - You've been reading file after file trying to understand the system without progress
 
@@ -108,28 +113,33 @@ Subagent (general-purpose):
     - Did I only build what was requested?
     - Did I follow existing patterns in the codebase?
 
-    **Testing:**
-    - Do tests actually verify behavior (not just mock behavior)?
+    **Verification:**
+    - Does the evidence cover the changed scope and its risks?
+    - For behavioral changes, do tests verify behavior (not just mock behavior)?
     - Did I follow TDD if required?
-    - Are tests comprehensive?
-    - Is the test output pristine (no stray warnings or noise)?
+    - Are relevant edge cases covered?
+    - Are failures and relevant warnings explained, including baseline or environment limitations?
 
     If you find issues during self-review, fix them now before reporting.
 
     ## After Review Findings
 
     If the task review finds issues, you will be resumed with the findings.
-    Fix them, re-run the tests that cover the amended code, and append a fix
-    report to your report file: what you changed, the covering tests you
-    ran, the command, and the output. Reviewers will not re-run tests for
-    you — your report is the test evidence. Then reply with the same short
-    status contract as your first report.
+    Fix them, verify the amended scope, and append a fix report to your report
+    file: what changed, the verification method, evidence, and result. Include
+    commands and relevant output for executed checks; for inspection, identify
+    the artifact, what you checked, and the observed result. Reuse results that
+    still cover unchanged code, configuration, and environment. A prose-only fix
+    does not require invented test files or a new test run. Behavioral fixes
+    still need meaningful regression coverage and required project checks.
+    Reviewers assess this evidence against the diff. Then reply with the same
+    short status contract as your first report.
 
     ## Report Format
 
     Write your full report to [REPORT_FILE]:
     - What you implemented (or what you attempted, if blocked)
-    - What you tested and test results
+    - Verification scope, method, evidence, and results (including reused evidence)
     - **TDD Evidence** (if TDD was required for this task):
       - RED: command run, relevant failing output before implementation, and why the failure was expected
       - GREEN: command run and relevant passing output after implementation
@@ -141,7 +151,7 @@ Subagent (general-purpose):
     report file):
     - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
     - Commits created (short SHA + subject)
-    - One-line test summary (e.g. "14/14 passing, output pristine")
+    - One-line verification summary with scope and any material limitations
     - Your concerns, if any
     - The report file path
 
