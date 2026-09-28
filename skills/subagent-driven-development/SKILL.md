@@ -74,7 +74,10 @@ digraph when_to_use {
 ## Setup
 
 Preserve the named checkout and branch. Use superpowers:using-git-worktrees
-when isolation is requested or included in the accepted workflow. Follow
+when isolation is requested or included in the accepted workflow. Use Codex's
+native worktree tools and the location configured in Settings. If a required
+native tool is unavailable or fails, stop the affected work and ask the user;
+do not choose a directory or fall back to shell creation or deletion. Follow
 repository restrictions and existing authorization before changing Git state.
 
 Conversation memory does not survive compaction. In real sessions,

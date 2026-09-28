@@ -53,10 +53,27 @@ Inspect `git rev-parse --git-dir`, `--git-common-dir`,
 `--show-superproject-working-tree`, and `git branch --show-current`.
 Distinguish a linked worktree from a submodule before deciding it is isolated.
 
-Detached HEAD describes Git state, not sandbox permissions. Use native
-workspace tools when available and when isolation is authorized. Preserve
-the named checkout and branch. Follow real tool errors and permissions
-instead of assuming branch creation or network operations are impossible.
+Detached HEAD describes Git state, not sandbox permissions. Preserve the
+named checkout and branch. For authorized isolation, inspect `list_artifacts`
+first and reuse a suitable active worktree when existing work and processes
+permit it. Use its absolute workspace path explicitly and verify or prepare the
+authorized branch and intended base before setup, preserving existing work.
+If a new checkout is needed, use native `create_worktree` with
+`allowAsync: true`, a short name, and an explicit verified starting `ref`.
+Codex Settings controls the directory; never prescribe or override a path.
+When creation is pending, wait for `get_worktree_creation_status` to return
+the completed workspace path before editing. Use that returned path explicitly:
+the chat's working directory is unchanged and uncommitted changes are not copied.
+If only registration failed, preserve the returned checkout instead of creating
+a duplicate. If a required native tool is unavailable or fails, stop the affected
+work and ask the user how to proceed; do not create a manual worktree or clone.
+
+When an authorized managed worktree is no longer needed, inspect its attachment
+and active use, preserve needed ignored files, and use native `archive_worktree`
+with its exact listed identity. Do not delete a managed checkout through the shell.
+An unavailable or failed native lifecycle operation requires stopping and asking,
+not choosing another mechanism. Use `restore_worktree` only for recovery of
+specific prior work, not routine creation of a new task's workspace.
 
 Carry out authorized integration using current tools. If a necessary action
 is blocked, preserve the work, report the exact limitation, and describe the

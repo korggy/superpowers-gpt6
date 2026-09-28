@@ -64,7 +64,7 @@ Subagent (general-purpose):
 
     ## Read-Only Review
 
-    Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If you need a working copy of a different revision, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
+    Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If a separate checkout is necessary and authorized, inspect `list_artifacts` for a suitable active worktree, then use Codex's native `create_worktree` with the reviewed ref when creation is needed. Settings controls placement; wait for a completed returned workspace path and use it explicitly. Before reuse, verify that the separate checkout is at the reviewed ref; otherwise ask the controller to prepare it or obtain a suitable checkout. Never move HEAD on this checkout or create a worktree through the shell. If the native tool is unavailable or fails, stop the affected review and ask the controller to resolve it with the user. Retire an authorized, no-longer-needed managed checkout with native `archive_worktree`, not shell deletion; an unavailable or failed archive also requires stopping and asking.
 
     ## You Do Not Dispatch Subagents
 

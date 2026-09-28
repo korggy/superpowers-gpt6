@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Regression check: Superpowers should not route new worktrees through the old
-# global worktree directory.
+# Regression check: worktree placement comes from native Codex Settings.
 
 set -euo pipefail
 
@@ -49,7 +48,7 @@ echo ""
 assert_not_contains "$USING_SKILL" "~/.config/superpowers/worktrees" "using-git-worktrees does not mention old global path"
 assert_not_contains "$USING_SKILL" "global legacy" "using-git-worktrees does not use unclear global legacy shorthand"
 assert_not_contains "$USING_SKILL" "Global path" "using-git-worktrees has no global path quick-reference row"
-assert_contains "$USING_SKILL" 'default to `.worktrees/` at the project root' "using-git-worktrees defaults new manual worktrees to .worktrees/"
+assert_contains "$USING_SKILL" 'worktree location configured in Settings' "using-git-worktrees delegates placement to native Codex Settings"
 
 assert_not_contains "$ROTOTILL_SPEC" "~/.config/superpowers/worktrees" "rototill spec does not preserve old global path policy"
 assert_not_contains "$ROTOTILL_PLAN" "~/.config/superpowers/worktrees" "rototill plan does not preserve old global path policy"
