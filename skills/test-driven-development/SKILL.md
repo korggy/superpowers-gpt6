@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: Use when your human partner requests test-driven development, or an accepted workflow requires TDD for a behavior change or regression fix.
 ---
 
 # Test-Driven Development (TDD)
@@ -15,18 +15,20 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 ## When to Use
 
-**Always:**
+**Within an accepted TDD workflow, cover meaningful behavior:**
 - New features
 - Bug fixes
 - Refactoring
 - Behavior changes
 
-**Exceptions (ask your human partner):**
-- Throwaway prototypes
-- Generated code
-- Configuration files
-
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+Use the red-green cycle below for behavior that needs regression
+protection. Do not add tests that merely mirror implementation or restate
+static content. Reversible, low-impact edits such as documentation
+formatting do not need a unit test; inspect or validate the changed
+artifact instead. Generated output and throwaway prototypes use the
+checks appropriate to the authorized task. Preserve explicit repository
+test requirements, and test configuration behavior when it creates a
+real regression risk.
 
 ## The Iron Law
 
@@ -175,22 +177,21 @@ npm test path/to/test.test.ts
 
 Confirm:
 - Test passes
-- Other tests still pass
-- Output pristine (no errors, warnings)
+- Affected tests and required project checks pass
+- Failures and warnings are understood and reported
 
 **Test fails?** Fix code, not test.
 
-**Other tests fail?** Fix now.
+**Other tests fail?** Investigate, fix failures caused by your change,
+and report unrelated failures without expanding scope automatically.
 
-**"Other tests" means the project's suite, not just your file.** A
-green run of the test you wrote is not a green suite. Before you call
-the change done, run the project's test command (bare `pytest`,
-`npm test`, `cargo test` — whatever the repo uses) even when your task
-named only one test file. A scope statement in your task bounds the
-deliverable, not your verification. Any failure that run shows —
-including one you didn't cause — goes in your report by name; a red
-test you watched scroll past and didn't mention is a report falsified
-by omission.
+Run the affected tests and checks required by the repository and task.
+A focused pass supports a focused claim, not "the full suite passes."
+Use the full suite when required or when the change's integration risk
+warrants it. Once appropriate checks pass, broaden or repeat only for
+relevant changes, failures, or unresolved concerns. Inspect existing
+results and reuse them when the covered code, inputs, and environment
+are unchanged. Report any observed failures and any unverified scope.
 
 ### REFACTOR - Clean Up
 
@@ -223,7 +224,7 @@ When writing or changing any test, read [writing-good-tests.md](writing-good-tes
 
 | Excuse | Reality |
 |--------|---------|
-| "Too simple to test" | Simple code breaks. Test takes 30 seconds. |
+| "Too simple to test" | Judge the behavior's regression risk, not its line count. Do not invent a unit test for a low-impact static edit. |
 | "I'll test after" | Tests written after pass immediately — which proves nothing. They may test the wrong thing, test the implementation instead of the behavior, or miss the edge case you forgot. You never watched it fail, so you never proved it can catch the bug. Test-first forces that failure. |
 | "Tests after achieve same goals (spirit not ritual)" | Tests-after answer "what does this do?"; tests-first answer "what should this do?" Tests written after are biased by the code you already wrote — you verify the cases you remembered, not the ones you'd have discovered. Coverage without proof the tests work. |
 | "Already manually tested" | Manual testing is ad-hoc: no record of what you covered, no way to re-run it when the code changes, easy to forget cases under pressure. "Worked when I tried it" ≠ comprehensive. Automated tests run the same way every time. |
@@ -294,12 +295,12 @@ Extract validation for multiple fields if needed.
 
 Before marking work complete:
 
-- [ ] Every new function/method has a test
+- [ ] Changed behavior with regression risk has meaningful coverage
 - [ ] Watched each test fail before implementing
 - [ ] Each test failed for expected reason (feature missing, not typo)
 - [ ] Wrote minimal code to pass each test
-- [ ] All tests pass
-- [ ] Output pristine (no errors, warnings)
+- [ ] Affected tests and required checks pass; claims name their scope
+- [ ] Failures, warnings, and unverified scope are reported
 - [ ] Tests use real code (mocks only if unavoidable)
 - [ ] Edge cases and errors covered
 
@@ -327,4 +328,5 @@ Production code → test exists and failed first
 Otherwise → not TDD
 ```
 
-No exceptions without your human partner's permission.
+Apply this cycle to the behavior covered by the accepted TDD workflow.
+The task's authorized scope and explicit test requirements remain binding.

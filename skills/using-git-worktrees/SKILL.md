@@ -1,6 +1,6 @@
 ---
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback
+description: Use when your human partner requests worktree isolation, or an accepted implementation workflow explicitly includes an isolated workspace.
 ---
 
 # Using Git Worktrees
@@ -34,7 +34,13 @@ git rev-parse --show-superproject-working-tree 2>/dev/null
 
 Report with branch state:
 - On a branch: "Already in isolated workspace at `<path>` on branch `<name>`."
-- Detached HEAD: "Already in isolated workspace at `<path>` (detached HEAD, externally managed). Branch creation needed at finish time."
+- Detached HEAD: "Already in isolated workspace at `<path>` (detached HEAD; no branch checked out)."
+
+Detached HEAD does not identify the workspace owner or imply a sandbox
+restriction. Use host records or the session's creation record to establish
+provenance, and current tools and permissions to establish available actions.
+Create a branch if the authorized work or integration needs one; Git state
+alone does not authorize committing, publishing, or cleanup.
 
 **If `GIT_DIR == GIT_COMMON` (or in a submodule):** You are in a normal repo checkout.
 

@@ -1,6 +1,6 @@
 ---
 name: subagent-driven-development
-description: Use when executing implementation plans with independent tasks in the current session
+description: Use when your human partner chooses plan execution with delegated implementers and task reviews, or an accepted workflow explicitly selects this execution mode.
 ---
 
 # Subagent-Driven Development
@@ -133,6 +133,11 @@ controllers that lost their place have re-dispatched entire completed task
 sequences — the single most expensive failure observed. Track progress in
 a ledger file, not only in todos.
 
+On Windows, prefer the native PowerShell equivalents in
+[plan helper commands](references/plan-helpers.md). That reference covers
+workspace, brief, and review-package calls throughout this skill and its
+prompt templates; the Bash examples below are for Bash environments.
+
 - Each plan owns a workspace: at skill start, run this skill's
   `bash scripts/sdd-workspace PLAN_FILE` — it prints the plan's git-ignored
   directory (under `<repo-root>/.superpowers/sdd/`), home to
@@ -232,16 +237,15 @@ Everything you paste into a dispatch prompt — and everything a subagent
 prints back — stays resident in your context for the rest of the session
 and is re-read on every later turn. Hand artifacts over as files.
 
-**Waiting on dispatched subagents:** never poll a wait interface with
-short timeouts, and never sit in one silent, open-ended wait either.
-While you have local work — ledger updates, packaging the next review,
-reading reports — keep working; child results arrive on their own.
-When you are genuinely idle, wait in bounded stretches (five to ten
-minutes, where your platform allows), and between stretches post one
-line of status and reconcile your live children: list them, and chase
-any that finished without reporting. A bounded stretch keeps nearly
-all of a long wait's efficiency while guaranteeing a stuck or lost
-child is noticed within minutes, not at the end of the session.
+**Waiting on dispatched subagents:** while you have independent work —
+ledger updates, packaging the next review, reading reports — keep working.
+When genuinely idle, use the platform's event wait with a timeout bounded
+by its supported range, the host's blocking-call limit, and the time
+remaining until your next required user update. If no supported wait fits
+before that update, give the due update first. Avoid repeated short polls
+without new information to act on. Handle results on wake; on timeout,
+give any due update and investigate missing reports or stalled children
+when warranted. Follow the active host's cadence, not a fixed duration.
 
 ### 1. Dispatch the implementer
 

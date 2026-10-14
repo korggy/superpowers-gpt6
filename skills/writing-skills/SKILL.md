@@ -1,6 +1,6 @@
 ---
 name: writing-skills
-description: Use when creating new skills, editing existing skills, or verifying skills work before deployment
+description: Use when your human partner requests skill authoring or behavior evaluation, or applicable project guidance requires this workflow for skill changes.
 ---
 
 # Writing Skills

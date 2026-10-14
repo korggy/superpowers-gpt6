@@ -11,6 +11,11 @@ Live in `tests/`. Currently:
 
 - `tests/brainstorm-server/` — node test suite for the brainstorm server JS code.
 - `tests/opencode/` — bash tests for OpenCode plugin loading, bootstrap caching, and tool registration.
+- `tests/powershell/test-plan-helpers.ps1` — native plan-helper integration tests
+  with disposable Git fixtures, literal command arguments, failure propagation,
+  task briefs, ledgers, and review packages. Run with
+  `pwsh -NoProfile -File tests/powershell/test-plan-helpers.ps1` (PowerShell 7+
+  and Git, no Bash or Pester required).
 - `tests/codex-plugin-sync/` — bash sync verification.
 - `tests/kimi/` — bash/Python checks for Kimi plugin manifest wiring.
 - `tests/claude-code/test-helpers.sh`, `analyze-token-usage.py` — utilities used by remaining bash tests.
@@ -23,6 +28,19 @@ Live in `tests/`. Currently:
 Run plugin tests via the relevant directory's `run-*.sh` or `npm test`.
 
 ## Skill behavior evals
+
+The local [Astra compatibility campaign](../tests/skill-behavior/astra-compatibility/README.md)
+records repeated original/control/candidate decision microtests and bounded
+tool-use probes. These are separate from the full coding-agent CLI eval lab
+below and do not establish end-to-end compatibility across harnesses.
+
+The [Astra follow-up campaign](../tests/skill-behavior/astra-followup/README.md)
+checks the later corrections to verification evidence, waits, detached HEAD
+handling, and contributor acceptance criteria against separate source snapshots.
+
+The [cleanup and verification follow-up](../tests/skill-behavior/astra-cleanup-verification/README.md)
+covers native worktree cleanup outcomes, conditional branch deletion, and
+verification matched to the type of final-review fix.
 
 Live in `evals/` (the [superpowers-evals](https://github.com/prime-radiant-inc/superpowers-evals/) eval lab, since renamed from Drill). Quorum is the harness CLI — one part of the system: it drives real coding-agent CLIs through a Gauntlet QA agent and grades them against each scenario's acceptance criteria plus deterministic post-checks. Scenarios live at `evals/scenarios/<name>/`. See `evals/README.md` for setup, the container runtime, and the safety model. Quick start (local break-glass run):
 

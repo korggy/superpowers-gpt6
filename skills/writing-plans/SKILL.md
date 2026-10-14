@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
+description: Use when your human partner requests a durable implementation plan, or an accepted design workflow reaches its planning step.
 ---
 
 # Writing Plans

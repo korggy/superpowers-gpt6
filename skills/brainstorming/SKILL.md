@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, modifying behavior, or planning anything new, in software or out of it (a talk, a business, a renovation)."
+description: Use when your human partner requests or accepts brainstorming to resolve design questions, or an accepted workflow explicitly calls for it.
 ---
 
 # Brainstorming
@@ -80,9 +80,11 @@ time...", "If it could only do one of these well, which?", "What would
 make you wince if I got it wrong?" A guess they can correct ("I'm
 guessing this is because X keeps biting you?") often beats a question.
 
-**Offer recon.** Once you have a bit of grounding and looking would help,
-offer to go look: their codebase or project, their own files and data,
-or the web. Say what you'd look for. They decide whether you go.
+**Gather grounding.** When looking would help, inspect the relevant
+codebase, files, or references already within the authorized scope. Say
+what you are checking and why. Ask about missing access or a material
+scope decision; do not ask again for read-only inspection already
+authorized by the request. Continue independent inspection while waiting.
 
 **Think wide privately.** Before you propose anything, come up with
 several ideas and drop the weak ones, including any that fight what

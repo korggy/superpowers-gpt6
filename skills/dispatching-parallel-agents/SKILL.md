@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+description: Use when your human partner requests parallel agent work, or an accepted workflow calls for independent investigations without shared writes.
 ---
 
 # Dispatching Parallel Agents
@@ -81,7 +81,7 @@ Multiple dispatch calls in one response = parallel execution. One per response =
 When agents return:
 - Read each summary
 - Verify fixes don't conflict
-- Run full test suite
+- Run affected integration checks and required project checks
 - Integrate all changes
 
 ## Agent Prompt Structure
@@ -163,5 +163,5 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 After agents return:
 1. **Review each summary** - Understand what changed
 2. **Check for conflicts** - Did agents edit same code?
-3. **Run full suite** - Verify all fixes work together
+3. **Verify integration** - Inspect existing evidence and run missing or invalidated affected checks. Use the full suite when required or justified by integration risk.
 4. **Spot check** - Agents can make systematic errors

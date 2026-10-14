@@ -1,6 +1,6 @@
 # Superpowers
 
-Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.
+Superpowers is a software development methodology for your coding agents, built from composable, opt-in workflow skills.
 
 ## Table of Contents
 
@@ -35,15 +35,19 @@ Superpowers is a complete software development methodology for your coding agent
 
 ## How it works
 
-It starts from the moment you fire up your coding agent. As soon as it sees that you're building something, it *doesn't* just jump into trying to write code. Instead, it steps back and asks you what you're really trying to do. 
+Request a workflow by name, accept an agent's suggestion, or establish a
+standing preference. An ordinary coding request does not select a workflow.
+The agent continues authorized independent work while a workflow choice or
+clarification is pending.
 
-Once it's teased a spec out of the conversation, it shows it to you in chunks short enough to actually read and digest. 
+For unresolved design, brainstorming develops an agreed description. Planning
+can turn it into implementation steps, then execution can happen inline or
+through delegated implementers and reviewers. An accepted workflow includes
+its stated supporting steps and preserves its design and execution checkpoints.
+It does not authorize unrelated work, publication, or deployment.
 
-After you've signed off on the design, your agent puts together an implementation plan that's clear enough for an enthusiastic junior engineer with poor taste, no judgement, no project context, and an aversion to testing to follow. It emphasizes true red/green TDD, YAGNI (You Aren't Gonna Need It), and DRY. 
-
-Next up, once you say "go", it launches a *subagent-driven-development* process, having agents work through each engineering task, inspecting and reviewing their work, and continuing forward. It's not uncommon for your agent to work autonomously for a couple hours at a time without deviating from the plan you put together.
-
-There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
+Verification covers the changed behavior and required project checks. Results
+remain usable when the code, inputs, and environment they cover are unchanged.
 
 ## Commercial Services
 
@@ -280,7 +284,8 @@ turn loses the bootstrap — start a fresh session if skills stop triggering.
 
 ### Muse
 
-Superpowers is available as a native Muse plugin — same repo, same skills, all harnesses. The `using-superpowers` bootstrap is injected via the native `SessionStart` hook alongside Claude Code, Codex, Cursor, Gemini, Pi, and the rest — no per-session opt-in.
+Superpowers is available as a native Muse plugin. Its `SessionStart` hook
+introduces workflow choices; workflows remain opt-in, as on every harness.
 
 - Install from a local checkout:
 
@@ -303,25 +308,32 @@ Superpowers is available as a native Muse plugin — same repo, same skills, all
   muse plugins update superpowers
   ```
 
-Restart any active Muse sessions after installing so the `SessionStart` hook takes effect — skills are active immediately, hooks require approval on first install. To verify, start a fresh session and send `Let's make a react todo list` — a working install auto-triggers `brainstorming` before any code is written. Version is tracked in `.version-bump.json` so `scripts/bump-version.sh` keeps it in sync.
+Restart active Muse sessions after installing so the `SessionStart` hook
+takes effect; hooks require approval on first install. To verify, request
+`Use brainstorming to design a React todo list` in a fresh session and check
+that it preserves design approval before implementation. Version is tracked
+in `.version-bump.json` so `scripts/bump-version.sh` keeps it in sync.
 
 ## The Basic Workflow
 
-1. **brainstorming** - Activates before building anything. Draws out what you actually want, and why, through questions that get you describing it, then plays its understanding back for correction. Small changes get agreed in chat; projects get a written design document a builder could plan from.
+Choose the steps that fit; these are available workflows, not automatic gates.
 
-2. **using-git-worktrees** - Activates after design approval. Creates isolated workspace on new branch, runs project setup, verifies clean test baseline.
+1. **brainstorming** - Resolves design questions and develops an agreed description. Small changes can be agreed in chat; projects can use a written design document.
 
-3. **writing-plans** - Activates with approved design. Breaks work into bite-sized tasks (2-5 minutes each). Every task has exact file paths, complete code, verification steps.
+2. **using-git-worktrees** - Provides an isolated workspace when requested or included in an accepted workflow, with setup and baseline checks.
 
-4. **subagent-driven-development** or **executing-plans** - Activates with plan. Either dispatches a fresh subagent per task with a review after each (most thorough), or implements every task inline in the current session with one fresh review of the whole branch at the end (cheapest).
+3. **writing-plans** - Turns an agreed design into tasks with file paths, implementation details, and verification steps.
 
-5. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit. Deletes code written before tests.
+4. **subagent-driven-development** or **executing-plans** - Executes an accepted plan through delegated implementers and task reviews, or inline with a final review.
 
-6. **requesting-code-review** - Activates between tasks. Reviews against plan, reports issues by severity. Critical issues block progress.
+5. **test-driven-development** - Uses RED-GREEN-REFACTOR for meaningful behavior and regression protection, with checks appropriate to the change.
 
-7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
+6. **requesting-code-review** - Reviews against the requirements and reports issues by severity at the requested checkpoint.
 
-**The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
+7. **finishing-a-development-branch** - Checks verification evidence, presents integration choices, and performs the selected integration and cleanup steps.
+
+Explicit instructions and host permissions remain binding. Loading the plugin
+makes these workflows available; it does not select them for you.
 
 ## When Something Goes Wrong
 

@@ -1,6 +1,6 @@
 ---
 name: executing-plans
-description: Use when executing an implementation plan in the current session as the implementer yourself — your human partner chose inline execution, or no subagent tool is available
+description: Use when your human partner chooses inline execution of an implementation plan, or an accepted workflow explicitly selects execution without delegated implementers.
 ---
 
 # Executing Plans
@@ -77,13 +77,13 @@ digraph process {
         "Plan wrong? Rule and ledger. Code wrong? systematic-debugging" [shape=box];
         "Commit as the plan's commit steps say" [shape=box];
         "Completion contract met?" [shape=diamond];
-        "task-done: run tests, ledger the result; mark todo complete" [shape=box];
+        "Record applicable verification evidence; mark todo complete" [shape=box];
     }
 
     "Setup: worktree, workspace + ledger, read plan + spec, pre-flight scan" [shape=box];
     "More tasks remain?" [shape=diamond];
     "Final whole-branch review (fresh reviewer if you have one)" [shape=box];
-    "Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger" [shape=box];
+    "Re-grade, then: Critical/Important → ONE fix pass, verify each fix appropriately; Minor → ledger" [shape=box];
     "Final review clean: delete this plan's workspace" [shape=box];
     "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
@@ -95,12 +95,12 @@ digraph process {
     "Step output matches plan's Expected?" -> "Commit as the plan's commit steps say" [label="yes, last step"];
     "Commit as the plan's commit steps say" -> "Completion contract met?";
     "Completion contract met?" -> "Work the steps in order: TDD, run every verification, read every output" [label="no - finish the task"];
-    "Completion contract met?" -> "task-done: run tests, ledger the result; mark todo complete" [label="yes"];
-    "task-done: run tests, ledger the result; mark todo complete" -> "More tasks remain?";
+    "Completion contract met?" -> "Record applicable verification evidence; mark todo complete" [label="yes"];
+    "Record applicable verification evidence; mark todo complete" -> "More tasks remain?";
     "More tasks remain?" -> "task-start: brief + BASE; read the brief" [label="yes"];
     "More tasks remain?" -> "Final whole-branch review (fresh reviewer if you have one)" [label="no"];
-    "Final whole-branch review (fresh reviewer if you have one)" -> "Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger";
-    "Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger" -> "Final review clean: delete this plan's workspace";
+    "Final whole-branch review (fresh reviewer if you have one)" -> "Re-grade, then: Critical/Important → ONE fix pass, verify each fix appropriately; Minor → ledger";
+    "Re-grade, then: Critical/Important → ONE fix pass, verify each fix appropriately; Minor → ledger" -> "Final review clean: delete this plan's workspace";
     "Final review clean: delete this plan's workspace" -> "Use superpowers:finishing-a-development-branch";
 }
 ```
@@ -118,12 +118,16 @@ failure as a controller re-dispatching them, paid for in your own context.
 Track progress in a ledger file, not only in todos. Harness todos are a
 live view; the ledger is the record.
 
+On Windows, use the native PowerShell commands in
+[plan helper commands](../subagent-driven-development/references/plan-helpers.md)
+for setup and every later helper call.
+
 The workspace and ledger are shared with superpowers:subagent-driven-development
 — same directory, same format — so a plan can change executors mid-flight
 and the new one resumes from the same ledger.
 
 - Each plan owns a workspace: at skill start, run
-  `../subagent-driven-development/scripts/sdd-workspace PLAN_FILE` — it
+  `bash ../subagent-driven-development/scripts/sdd-workspace PLAN_FILE` — it
   prints the plan's git-ignored directory
   (`<repo-root>/.superpowers/sdd/<plan-basename>/`), home to every
   artifact for THIS plan: ledger, briefs, review packages. Another plan's
@@ -163,13 +167,16 @@ its brief, not here.
 
 ## The Task Loop
 
+The Bash examples below require an explicit `bash` interpreter; use the
+corresponding `.ps1` helper in PowerShell as linked above.
+
 Everything you print, and every tool result, stays resident in your
 context for the rest of the session. Redirect long test output to a file
 in the workspace and read its tail; read a brief, not the whole plan.
 
 ### 1. Take the task
 
-- Run this skill's `scripts/task-start PLAN_FILE N`. It prints the brief
+- Run this skill's `bash scripts/task-start PLAN_FILE N`. It prints the brief
   path and BASE (the commit the task's range is cut from) in one call.
   Read the brief for every task, including ones you remember from setup:
   what you remember is a summary, the brief has the exact values,
@@ -206,13 +213,14 @@ is fine; BASE is what the review range is cut from, never `HEAD~1`.
 
 ### 3. The completion contract
 
-Before a task's ledger line, all of the following are true, with evidence
-in this session — not inferred from the diff looking right:
+Before a task's ledger line, all of the following are true, with inspected
+evidence for the current code, inputs, and environment:
 
-- Every test the brief names exists and ran in this task, and you read
-  the output.
-- The final test run for the task passed — `task-done` is that run, and
-  it writes the command and result into the ledger line.
+- Every test the brief requires exists and has applicable passing results,
+  and you read the output. Record a ruling for a required check that cannot
+  run; do not claim that requirement is verified.
+- The affected tests and required checks passed after the last relevant
+  change. Reuse recorded evidence when nothing has invalidated it.
 - Every `Expected:` line in the brief was compared against real output.
 - Every deviation from the brief has a `Ruling:` line in the ledger.
 
@@ -221,19 +229,29 @@ the claim. If any item is missing, the task is not complete: finish it.
 
 ### 4. Complete the task
 
-Run this skill's `scripts/task-done PLAN_FILE N BASE -- <test command>`
-with the test command the brief names for the whole task. It runs the
-tests, keeps the full output in the workspace, prints the tail, and — only
-if they pass — appends the completion line to the ledger:
+Inspect the evidence against the completion contract. If every required
+check has passing results covering the final code, inputs, and environment,
+append the completion line directly without rerunning those checks. Include
+the evidence file paths, commands, exit statuses, and covered code state:
 
 `Task <N>: complete (commits <base7>..<head7>, tests: <command> → <result>)`
 
-A failing run records nothing; the task is not complete. When it records,
-mark the todo complete and take the next task.
+If a required check is missing or its results were invalidated, run that
+check. When other completion requirements are already met, use this skill's
+`bash scripts/task-done PLAN_FILE N BASE -- <test command>` for the final
+required test run. It keeps the full output in the workspace, prints the
+tail, and appends the completion line only if the command passes. Record
+the other applicable evidence alongside that result. Do not duplicate an
+identical run just to use the helper.
+
+A failing run appends no completion line; investigate and report the
+failure. Do not use a dummy passing command with `task-done` to manufacture
+evidence. Once the completion contract is met and recorded, mark the todo
+complete and take the next task.
 
 ## Final Review
 
-Run `../subagent-driven-development/scripts/review-package PLAN_FILE MERGE_BASE HEAD`
+Run `bash ../subagent-driven-development/scripts/review-package PLAN_FILE MERGE_BASE HEAD`
 (MERGE_BASE = the commit the branch started from, e.g.
 `git merge-base main HEAD`) and review from the file it prints.
 
@@ -275,14 +293,30 @@ because the spec was silent has graded the spec, not the effect. Then:
   conflict, not a note that you declined a polish suggestion.
 
 Fix the Critical and Important findings yourself — you are the
-implementer here — in ONE pass. Each fix is verified by TDD, not by a
-second reviewer: write the test that reproduces the finding, watch it
-fail, make it pass, then run the whole suite. Record each in the ledger as
-`Final: fixed <finding> — <test name> RED→GREEN, suite <N>/<N>`. A fix
-without a test that failed first is not verified; a suite that is not
-green after the pass means the pass is not over. Do not dispatch a
-re-review: it would re-read a diff whose covering tests already answer
-"addressed" and whose suite run already answers "broke nothing".
+implementer here — in ONE pass. Choose verification by what changed:
+
+- **Production behavior or a regression:** use TDD to reproduce the
+  finding, observe the expected failure, make it pass, then run affected
+  tests and required project checks.
+- **Documentation or a static artifact:** inspect or validate the changed
+  artifact against the finding and complete required checks. Do not
+  manufacture a failing unit test that merely repeats its text.
+- **Behavior-shaping instructions or skills:** use the applicable behavior
+  evaluation workflow, such as superpowers:writing-skills. Record actual
+  baseline and candidate results; if both pass, report no demonstrated
+  behavioral improvement rather than inventing a RED result.
+
+Record each in the ledger as
+`Final: fixed <finding> — <verification method>, <scope>, <observed result>, <evidence path>`.
+Include RED→GREEN evidence for behavioral regression tests. Evidence must
+cover the final code or artifact, inputs, and environment; reuse results
+that remain applicable. Missing or failing required checks leave the fix
+unverified and must be reported.
+
+Do not dispatch a routine re-review once the evidence answers the finding
+and the relevant regression risks. A specific unresolved concern calls
+for the appropriate focused validation or review; do not claim it was
+resolved merely because unrelated tests passed.
 
 A finding you decide not to fix is a ruling — `Final: Ruling: <finding> —
 <why the code stands> — <cost if wrong>` — and reaches your human partner
@@ -309,7 +343,7 @@ Use superpowers:finishing-a-development-branch.
 |--------|---------|
 | "I remember what Task N says" | You remember a summary. The brief has the exact values. Read it. |
 | "The plan's code is right, skip watching the test fail" | A test you never saw fail proves nothing. It is one step. Run it. |
-| "I'll run the full suite at the end instead of per step" | Per-step runs are how you learn which step broke it. The end-of-task run is the contract, not a substitute. |
+| "I'll run the full suite at the end instead of per step" | Per-step runs are how you learn which step broke it. At completion, inspect evidence for the final state; run missing or invalidated checks and reuse applicable results. |
 | "The plan is wrong here, I'll just do the right thing" | Do the right thing and ledger the ruling. Unledgered deviation is a decision made in secret. |
 | "I'll write the ledger lines after a few tasks" | Compaction does not wait for a convenient moment. One line per task, in the same message as the commit. |
 | "Let me check in before the next task" | They chose inline to spend less. Progress prompts spend their time instead. Only the four stops stop you. |
@@ -317,8 +351,8 @@ Use superpowers:finishing-a-development-branch.
 | "Tests should pass, the change was trivial" | "Should" is not evidence. The contract requires the command and its output. |
 | "Subagents are slow and expensive, I'll skip the final review too" | Inline already removed the per-task reviewers. One review of the whole branch is the floor, not the ceiling. |
 | "The reviewer said Minor, so it's Minor" | The label graded the spec's silence. Grade what the person gets. Re-grade, then gate. |
-| "The fix is obvious, no need for a failing test first" | The failing test is the only proof the finding was real and is now gone. Without it you have a diff and a hope. |
-| "I'll fix the minors too while I'm in there" | Every minor you fix is a test, a fix, and a suite run your partner did not ask for. Ledger them; your partner decides. |
+| "The fix is obvious, no need to verify it" | Behavior regressions need RED→GREEN evidence; static artifacts need appropriate inspection or validation; instruction changes need behavior evaluation. A diff alone is not verification. |
+| "I'll fix the minors too while I'm in there" | Every minor you fix adds a change and verification your partner did not ask for. Ledger them; your partner decides. |
 
 ## Example Workflow
 

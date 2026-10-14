@@ -16,11 +16,13 @@ disagree.
 
 - **Spawning:** give children a clean context with
   `spawn_agent {fork_turns: "none"}`; the default `"all"` copies your
-  entire transcript into the child. On Codex 0.145+, role files under
-  `~/.codex/agents/` attach to isolated forks via `agent_type`.
-  Full-history forks accept `model` and `reasoning_effort` overrides
-  (only `agent_type` is refused there) — isolated forks are the SDD
-  default for context hygiene, not because overrides require them.
+  entire transcript into the child. Full-history forks inherit the
+  parent's model and reasoning effort: omit `model` and
+  `reasoning_effort` when `fork_turns` is `"all"`. Overrides require
+  `fork_turns: "none"` and must be permitted by the current tool contract
+  and the user's or applicable workflow's instructions. Put the role
+  and task in `message`; use an `agent_type` field only if the actual
+  tool exposes it.
 - **Fix rounds:** resume the implementer with `followup_task` — it
   delivers your message, triggers a turn, and transparently reloads a
   child the harness evicted. Never dispatch a fresh implementer on the
@@ -38,34 +40,33 @@ disagree.
 
 ## Waiting on children
 
-`wait_agent` is an event subscription, not a poll: a long wait wakes
-the moment a child produces mailbox activity, with the same latency as
-a short one. Short-timeout polling buys nothing and costs a tool call —
-and a context rebill — per poll. In measured sessions, roughly
-two-thirds of all wait calls were short polls that timed out.
+Use the current wait tool's event behavior and timeout limits. An event
+wait can wake on child activity; avoid repeated short polls when no new
+information or action is expected.
 
 - While you still have local work, do not wait at all. A completed
   child's final answer is pushed into your mailbox and arrives with
   your next turn.
-- When you are genuinely idle with children outstanding, wait in
-  bounded stretches: `wait_agent` with `timeout_ms` 300000-600000
-  (5-10 minutes). After each stretch — wake or timeout — post one
-  status line, run `list_agents`, and chase any child that finished
-  without reporting. Never stack polls shorter than five minutes; the
-  event subscription wakes a bounded stretch just as fast as a short
-  one.
-- Completion mail cannot wake an idle controller (it is delivered
-  without triggering a turn); covering that idle window is
-  `wait_agent`'s only job. A stretch that times out with no activity
-  is your cue to reconcile, not to shorten the next stretch.
+- When genuinely idle, choose a bounded wait that fits the tool's
+  supported range, any host limit on blocking calls, and the time
+  remaining before the next required user update. For example, with a
+  60-second update cadence and 45 seconds already elapsed, wait at most
+  15 seconds if the tool permits. If too little time remains for a
+  supported wait, give the due update before waiting again.
+- On wake, handle new results and resume useful work. On timeout,
+  provide any due update and check child status when there is evidence
+  of a missing report or stalled task. A timeout alone does not require
+  another status-list call. Keep future waits within the same bounds;
+  there is no fixed minimum wait duration imposed by this skill.
 
 ## Model routing on spawns
 
-Every `spawn_agent` you issue — including when you are yourself a
-spawned child running a fan-out — sets `model` AND `reasoning_effort`
-explicitly, per the Model Selection rules of the skill you are
-executing. Setting `model` alone is a trap: the child's effort
-silently resets to that model's default, not to yours.
+When a requested workflow calls for a particular model tier, dispatch an
+isolated fork (`fork_turns: "none"`) with both `model` and
+`reasoning_effort`, using values allowed by the current tool. Do not
+assume that setting a model preserves the parent's effort. When no
+override is called for, inherit the session settings. A full-history
+fork always inherits them; never combine it with either override.
 
 Ask your human partner to add a machine-level backstop to
 `~/.codex/config.toml` so any spawn that slips through still routes to
@@ -89,20 +90,55 @@ GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
 BRANCH=$(git branch --show-current)
 ```
 
-- `GIT_DIR != GIT_COMMON` → already in a linked worktree (skip creation)
-- `BRANCH` empty → detached HEAD (cannot branch/push/PR from sandbox)
+- `GIT_DIR != GIT_COMMON` → check the submodule guard in
+  `using-git-worktrees` Step 0; if linked, reuse the existing worktree.
+- `BRANCH` empty → detached HEAD: no branch is currently checked out.
+  This does not establish who created the workspace, what the sandbox
+  permits, or whether publication is authorized.
+
+Determine provenance from the host's worktree records or the session's
+creation record. Determine capabilities from current tool descriptions,
+permissions, and observed results. Determine authorized actions from the
+human's request and applicable instructions, independently of Git state.
 
 See `using-git-worktrees` Step 0 and `finishing-a-development-branch`
-Step 1 for how each skill uses these signals.
+Step 2 for how each skill uses these signals.
 
 ## Codex App Finishing
 
-When the sandbox blocks branch/push operations (detached HEAD in an
-externally managed worktree), the agent commits all work and informs
-the user to use the App's native controls:
+A detached HEAD can be given a branch before an authorized integration
+or publication step, using the available native controls or Git commands
+permitted by the host. Honor an integration choice the human already
+made; detached state does not require asking them to choose it again.
 
-- **"Create branch"** — names the branch, then commit/push/PR via App UI
-- **"Hand off to local"** — transfers work to the user's local checkout
+If a required operation is actually blocked, report the specific
+limitation and available native branch or handoff options. Do not infer
+a sandbox denial from detached state, or commit, stage, push, or create a
+PR merely because this fallback is being discussed. Continue authorized
+verification and preparation; preserve work when the requested action
+cannot be completed.
 
-The agent can still run tests, stage files, and output suggested branch
-names, commit messages, and PR descriptions for the user to copy.
+### Native worktree cleanup
+
+For authorized cleanup of a Codex-managed worktree, use the app's native
+worktree tools. With the current `codex_app` tools:
+
+1. Call `list_artifacts` and identify this task's active worktree. Retain
+   its exact `identityKey`; do not derive the identity from a directory
+   name or detached HEAD.
+2. Preserve needed ignored files separately before archiving. The tool
+   saves a recoverable Git snapshot of local changes, unpushed commits,
+   and non-ignored untracked files; ignored files are not included.
+3. Call `archive_worktree` with that `identityKey` as `root`, then inspect
+   the result. Only confirmed archiving completes workspace cleanup.
+   It keeps the chat open and does not modify GitHub PRs.
+4. From a surviving checkout, inspect the remaining branch and worktree
+   state before applying `finishing-a-development-branch` Step 7. A
+   successful archive does not by itself prove the branch was deleted
+   or is unused elsewhere.
+
+Use the current tool contract if capabilities change. Primary, pinned,
+shared, or otherwise ineligible worktrees may be refused. If the tool
+is unavailable or refuses, preserve the checkout and branch and report
+the limitation; do not bypass it with Git or filesystem deletion. Do
+not archive the chat as a substitute for archiving its worktree.

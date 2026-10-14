@@ -45,7 +45,9 @@ Subagent (general-purpose):
     It's always OK to pause and clarify. Don't guess or make assumptions.
 
     While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    affected tests and required project checks before committing. Reuse
+    applicable recorded results for unchanged code and environment;
+    broaden or repeat only for relevant changes, failures, or concerns.
 
     ## You Do Not Dispatch Subagents
 

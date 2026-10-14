@@ -71,24 +71,30 @@ PRs containing multiple unrelated changes will be closed. Split them into separa
 
 ## New Harness Support
 
-If your PR adds support for a new harness (IDE, CLI tool, agent runner), you MUST include a session transcript proving the integration works end-to-end.
+If your PR adds support for a new harness (IDE, CLI tool, agent runner), you MUST include complete session transcripts proving the integration works end-to-end.
 
-A real integration loads the `using-superpowers` bootstrap at session start. The bootstrap is what causes skills to auto-trigger at the right moments. Without it, the skills are dead weight — present on disk but never invoked.
+A real integration exposes skills through the harness's supported discovery mechanism so the agent can load a requested workflow. If the harness provides a session-start bootstrap, it introduces the available workflow choices and their opt-in boundary. Files merely present on disk without working discovery do not establish an integration.
 
-**The acceptance test.** Open a clean session in the new harness and send exactly this user message:
+**The acceptance tests.** Use two separate clean sessions with no standing workflow preference. In the first, send exactly this user message:
 
 > Let's make a react todo list
 
-A working integration auto-triggers the `brainstorming` skill before any code is written. Paste the complete transcript in the PR.
+A working integration does not adopt brainstorming merely because this is a coding request. It may offer a relevant workflow and continues independently authorized work while respecting any unresolved material design decisions.
+
+In the second session, send exactly this user message:
+
+> Use brainstorming to design a React todo list. Do not implement until I approve the design.
+
+The agent must discover and load `brainstorming`, follow its design process, and stop before implementation until the design is approved. Requesting the workflow is not approval of the resulting design. Paste both complete transcripts in the PR; the first alone does not prove that skill discovery works.
 
 **These are not real integrations and will be closed:**
 
-- Manually copying skill files into the harness
+- Manually copying skill files without registering them through a supported discovery mechanism
 - Wrapping with `npx skills` or similar at-runtime shims
-- Anything that requires the user to opt in to skills per-session
-- Anything where `brainstorming` does not auto-trigger on the acceptance test above
+- Anything that requires per-session installation or manual file loading to make skills discoverable
+- Anything that forces a workflow on the plain coding request or fails to load the explicitly requested workflow
 
-If you are not sure whether your integration loads the bootstrap at session start, it does not.
+Workflow opt-in is supported on every harness. Verify native discovery and the approval boundary through the transcripts rather than treating automatic workflow adoption as proof of integration.
 
 ## Skill Changes Require Evaluation
 

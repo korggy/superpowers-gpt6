@@ -1,6 +1,6 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: Use when your human partner requests systematic debugging of an unexplained failure, or an accepted workflow calls for root-cause investigation.
 ---
 
 # Systematic Debugging

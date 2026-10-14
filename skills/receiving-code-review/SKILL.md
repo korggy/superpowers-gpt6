@@ -1,6 +1,6 @@
 ---
 name: receiving-code-review
-description: Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation
+description: Use when your human partner requests structured assessment of review feedback, or an accepted workflow calls for receiving-code-review.
 ---
 
 # Code Review Reception
@@ -41,10 +41,11 @@ WHEN receiving code review feedback:
 
 ```
 IF any item is unclear:
-  STOP - do not implement anything yet
-  ASK for clarification on unclear items
+  ASK for the missing decision before implementing that item
+  CHECK whether other items depend on that decision
+  CONTINUE clear, independent work already authorized
 
-WHY: Items may be related. Partial understanding = wrong implementation.
+WHY: Related items need a shared decision; independent items do not.
 ```
 
 **Example:**
@@ -52,8 +53,8 @@ WHY: Items may be related. Partial understanding = wrong implementation.
 your human partner: "Fix 1-6"
 You understand 1,2,3,6. Unclear on 4,5.
 
-❌ WRONG: Implement 1,2,3,6 now, ask about 4,5 later
-✅ RIGHT: "I understand items 1,2,3,6. Need clarification on 4 and 5 before proceeding."
+❌ WRONG: Guess what 4,5 mean, or stop all work without checking dependencies
+✅ RIGHT: Ask about 4,5 now; implement 1,2,3,6 if they are independent.
 ```
 
 ## Source-Specific Handling
@@ -77,7 +78,9 @@ IF suggestion seems wrong:
   Push back with technical reasoning
 
 IF can't easily verify:
-  Say so: "I can't verify this without [X]. Should I [investigate/ask/proceed]?"
+  Investigate within the authorized scope. If a decision or access is
+  still missing, state the limitation and ask about that item. Continue
+  independent work.
 
 IF conflicts with your human partner's prior decisions:
   Stop and discuss with your human partner first
@@ -101,8 +104,8 @@ IF reviewer suggests "implementing properly":
 
 ```
 FOR multi-item feedback:
-  1. Clarify anything unclear FIRST
-  2. Then implement in this order:
+  1. Ask about unclear items and identify dependent work
+  2. Implement clear, authorized, independent items in this order:
      - Blocking issues (breaks, security)
      - Simple fixes (typos, imports)
      - Complex fixes (refactoring, logic)
@@ -170,7 +173,7 @@ State the correction factually and move on.
 | Batch without testing | One at a time, test each |
 | Assuming reviewer is right | Check if breaks things |
 | Avoiding pushback | Technical correctness > comfort |
-| Partial implementation | Clarify all items first |
+| Guessing unclear requirements | Ask about the unclear item; continue independent authorized fixes |
 | Can't verify, proceed anyway | State limitation, ask for direction |
 
 ## Real Examples
@@ -197,7 +200,7 @@ Reviewer: "Implement proper metrics tracking with database, date filters, CSV ex
 ```
 your human partner: "Fix items 1-6"
 You understand 1,2,3,6. Unclear on 4,5.
-✅ "Understand 1,2,3,6. Need clarification on 4 and 5 before implementing."
+✅ Ask about 4 and 5; explain that independent items 1,2,3,6 are proceeding.
 ```
 
 ## GitHub Thread Replies

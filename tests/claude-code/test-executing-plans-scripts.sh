@@ -154,6 +154,33 @@ PLAN
         echo "    ledger:"; sed 's/^/      /' "$ledger" 2>/dev/null || echo "      (missing)"
     fi
 
+    # Marketplace ZIP extraction can strip exec bits. Enter both outer
+    # scripts with bash, then exercise every nested helper with that mode.
+    # Spaces also ensure the relocated helper paths remain quoted.
+    local stripped="$TEST_ROOT/package with spaces/skills"
+    mkdir -p "$stripped/executing-plans/scripts" "$stripped/subagent-driven-development/scripts"
+    cp "$EP_SCRIPTS/task-start" "$EP_SCRIPTS/task-done" "$stripped/executing-plans/scripts/"
+    cp "$REPO_ROOT/skills/subagent-driven-development/scripts/task-brief" \
+       "$REPO_ROOT/skills/subagent-driven-development/scripts/sdd-workspace" \
+       "$stripped/subagent-driven-development/scripts/"
+    chmod -x "$stripped"/*/scripts/*
+    rc=0
+    out="$(cd "$repo" && bash "$stripped/executing-plans/scripts/task-start" plan.md 1 2>&1)" || rc=$?
+    if [[ "$rc" -eq 0 && "$out" == *"brief: $repo/.superpowers/sdd/plan/task-1-brief.md"* ]]; then
+        pass "task-start invokes nested helpers through bash after exec bits are stripped"
+    else
+        fail "task-start invokes nested helpers through bash after exec bits are stripped (rc=$rc)"
+        echo "    got: $out"
+    fi
+    rc=0
+    out="$(cd "$repo" && bash "$stripped/executing-plans/scripts/task-done" plan.md 3 "$head2" -- sh -c 'echo packaged-pass' 2>&1)" || rc=$?
+    if [[ "$rc" -eq 0 && "$out" == *"ledger: Task 3: complete"* ]]; then
+        pass "task-done invokes nested helpers through bash after exec bits are stripped"
+    else
+        fail "task-done invokes nested helpers through bash after exec bits are stripped (rc=$rc)"
+        echo "    got: $out"
+    fi
+
     echo
     if [[ "$FAILURES" -eq 0 ]]; then
         echo "PASS"
