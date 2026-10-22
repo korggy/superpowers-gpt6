@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "name": "superpowers",
-  "displayName": "Superpowers",
-  "version": "7.0.1",
-  "description": "Core skills library for Muse: TDD, debugging, collaboration patterns, and proven techniques",
+  "name": "superpowers-gpt6",
+  "displayName": "Superpowers GPT-6 — BetterGood",
+  "version": "7.0.1-gpt6.1",
+  "description": "BetterGood GPT-6 workflows based on Superpowers 7.0.1: opt-in planning, TDD, debugging, review, and delivery.",
   "compat": {
     "source": "native",
     "manifestDir": ".muse-plugin"

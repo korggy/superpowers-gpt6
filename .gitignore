@@ -17,3 +17,6 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# Local release candidates; source and exact hashes are recorded in each package.
+dist/

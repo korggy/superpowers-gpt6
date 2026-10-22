@@ -19,13 +19,14 @@ base=$2
 head=$3
 [ -f "$plan" ] || { echo "no such plan file: $plan" >&2; exit 2; }
 
-git rev-parse --verify --quiet "$base" >/dev/null || { echo "bad BASE: $base" >&2; exit 2; }
-git rev-parse --verify --quiet "$head" >/dev/null || { echo "bad HEAD: $head" >&2; exit 2; }
+base_commit=$(git rev-parse --verify --quiet --end-of-options "$base^{commit}") || { echo "bad BASE: $base" >&2; exit 2; }
+head_commit=$(git rev-parse --verify --quiet --end-of-options "$head^{commit}") || { echo "bad HEAD: $head" >&2; exit 2; }
+range="${base_commit}..${head_commit}"
 
 # Range guards (exit 3): a wrong-branch HEAD yields a range that is empty or
 # not rooted at BASE; either would silently produce a bogus review package.
-git merge-base --is-ancestor "$base" "$head" || { echo "HEAD is not a descendant of BASE: ${base}..${head}" >&2; exit 3; }
-[ "$(git rev-list --count "${base}..${head}")" -gt 0 ] || { echo "empty commit range: ${base}..${head}" >&2; exit 3; }
+git merge-base --is-ancestor "$base_commit" "$head_commit" || { echo "HEAD is not a descendant of BASE: ${base}..${head}" >&2; exit 3; }
+[ "$(git rev-list --count "$range")" -gt 0 ] || { echo "empty commit range: ${base}..${head}" >&2; exit 3; }
 
 if [ $# -eq 4 ]; then
   out=$4
@@ -33,21 +34,21 @@ else
   # Invoke via bash rather than direct exec: some extractors (Python zipfile)
   # strip Unix exec bits when unpacking marketplace packages (#2040).
   dir=$("${BASH:-bash}" "$(cd "$(dirname "$0")" && pwd)/sdd-workspace" "$plan")
-  out="$dir/review-$(git rev-parse --short "$base")..$(git rev-parse --short "$head").diff"
+  out="$dir/review-$(git rev-parse --short "$base_commit")..$(git rev-parse --short "$head_commit").diff"
 fi
 
 {
   echo "# Review package: ${base}..${head}"
   echo
   echo "## Commits"
-  git log --oneline "${base}..${head}"
+  git log --oneline "$range"
   echo
   echo "## Files changed"
-  git diff --stat "${base}..${head}"
+  git diff --no-ext-diff --no-textconv --stat "$range"
   echo
   echo "## Diff"
-  git diff -U10 "${base}..${head}"
+  git diff --no-ext-diff --no-textconv -U10 "$range"
 } > "$out"
 
-commits=$(git rev-list --count "${base}..${head}")
+commits=$(git rev-list --count "$range")
 echo "wrote ${out}: ${commits} commit(s), $(wc -c < "$out" | tr -d ' ') bytes"

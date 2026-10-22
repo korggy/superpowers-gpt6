@@ -1,3 +1,4 @@
+<!-- GPT-6 fork: retained adapter guidance; consult docs/GPT6-VALIDATION.md for current test coverage. -->
 # Superpowers for OpenCode
 
 Complete guide for using Superpowers with [OpenCode.ai](https://opencode.ai).
@@ -12,7 +13,7 @@ Use the existing V1 plugin configuration:
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
+  "plugin": ["superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git"]
 }
 ```
 
@@ -22,7 +23,7 @@ Use the V2 plugin configuration:
 
 ```json
 {
-  "plugins": ["superpowers@git+https://github.com/obra/superpowers.git"]
+  "plugins": ["superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git"]
 }
 ```
 
@@ -111,7 +112,7 @@ V1 `plugin` key and the V2 `plugins` key):
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git#v7.0.1"]
+  "plugin": ["superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git#<reviewed-fork-commit>"]
 }
 ```
 
@@ -202,7 +203,7 @@ the plugin, try installing with system npm and pointing OpenCode at the local
 package:
 
 ```powershell
-npm install superpowers@git+https://github.com/obra/superpowers.git --prefix "$HOME\.config\opencode"
+npm install superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git --prefix "$HOME\.config\opencode"
 ```
 
 Then use the absolute path of the installed package in `opencode.json` for your
@@ -213,7 +214,7 @@ package name, not a local directory.
 
 ```json
 {
-  "plugin": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers"]
+  "plugin": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers-gpt6"]
 }
 ```
 
@@ -221,7 +222,7 @@ package name, not a local directory.
 
 ```json
 {
-  "plugins": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers"]
+  "plugins": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers-gpt6"]
 }
 ```
 

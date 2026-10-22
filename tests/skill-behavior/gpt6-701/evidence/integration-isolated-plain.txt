@@ -1,0 +1,70 @@
+The workspace is read-only, and command execution was blocked, so I couldn’t create files. Here’s a ready-to-use `src/App.jsx`:
+
+```jsx
+import { useState } from "react";
+
+export default function App() {
+  const [tasks, setTasks] = useState([]);
+  const [text, setText] = useState("");
+
+  function addTask(event) {
+    event.preventDefault();
+    const title = text.trim();
+    if (!title) return;
+
+    setTasks([...tasks, { id: crypto.randomUUID(), title, done: false }]);
+    setText("");
+  }
+
+  function toggleTask(id) {
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, done: !task.done } : task
+    ));
+  }
+
+  return (
+    <main style={{ maxWidth: 480, margin: "60px auto", padding: 24, fontFamily: "system-ui" }}>
+      <h1>My tasks</h1>
+      <p>{tasks.filter(task => !task.done).length} tasks remaining</p>
+
+      <form onSubmit={addTask} style={{ display: "flex", gap: 8 }}>
+        <input
+          aria-label="New task"
+          placeholder="What needs doing?"
+          value={text}
+          onChange={event => setText(event.target.value)}
+          style={{ flex: 1, padding: 10 }}
+        />
+        <button disabled={!text.trim()}>Add task</button>
+      </form>
+
+      {tasks.length === 0 && <p>No tasks yet. Add your first one above.</p>}
+
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {tasks.map(task => (
+          <li key={task.id} style={{ display: "flex", gap: 12, padding: "12px 0" }}>
+            <label style={{ flex: 1 }}>
+              <input
+                type="checkbox"
+                checked={task.done}
+                onChange={() => toggleTask(task.id)}
+              />{" "}
+              <span style={{ textDecoration: task.done ? "line-through" : "none" }}>
+                {task.title}
+              </span>
+            </label>
+            <button
+              aria-label={`Delete ${task.title}`}
+              onClick={() => setTasks(tasks.filter(item => item.id !== task.id))}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+```
+
+Supports adding, completing, and deleting tasks. Tasks reset on refresh. I couldn’t run or test it in this environment.

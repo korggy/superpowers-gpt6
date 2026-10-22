@@ -1,0 +1,31 @@
+=== Test: executing-plans scripts ===
+warning: in the working copy of 'plan.md', LF will be replaced by CRLF the next time Git touches it
+  [PASS] task-start without a task number errors with exit 2
+  [PASS] task-start prints the brief path under the plan's workspace
+  [PASS] task-start prints BASE as the current HEAD
+  [PASS] task-start writes the brief file
+warning: in the working copy of 'work.txt', LF will be replaced by CRLF the next time Git touches it
+  [PASS] task-done appends the completion line with commit range and test result
+  [PASS] task-done prints the tail of the test output
+  [PASS] task-done keeps the full test output in the workspace
+  [PASS] task-done exits non-zero when the test command fails
+  [PASS] task-done does not record a failing task as complete
+  [PASS] task-done shows the failing output
+warning: in the working copy of 'work2.txt', LF will be replaced by CRLF the next time Git touches it
+  [PASS] task-done exits 0 when a passing test command prints nothing
+  [PASS] task-done records a passing task that printed no output
+  [PASS] unknown task prevents command side effects
+  [PASS] invalid task ID prevents command side effects
+  [PASS] option-like revision prevents command side effects
+  [PASS] task extraction handles indented, tilde, and longer code fences
+  [PASS] missing task preserves existing output
+  [PASS] command argv is literal and preserves empty arguments
+  [PASS] argument newlines do not split ledger records
+  [PASS] recorded evidence avoids a dummy verification command
+  [PASS] evidence for another HEAD cannot complete a task
+  [PASS] recorded failure propagates without ledger completion
+  [PASS] task-start works with nested execute bits stripped
+  [PASS] task-done works with nested execute bits stripped
+  [PASS] workspace I/O failure exits instead of looping on collisions
+
+PASS

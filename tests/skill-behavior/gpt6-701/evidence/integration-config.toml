@@ -1,0 +1,12 @@
+model = "gpt-6-astra"
+model_reasoning_effort = "medium"
+[features]
+apps = false
+remote_plugin = false
+
+[marketplaces.bettergood]
+source_type = "local"
+source = '\\?\C:\Visual Studio Projects\superpowers-gpt6\dist\validation-2\bettergood'
+
+[plugins."superpowers-gpt6@bettergood"]
+enabled = true

@@ -7,11 +7,15 @@ code quality.
 **Purpose:** Verify one task's implementation matches its requirements (nothing
 more, nothing less) and is well-built (clean, tested, maintainable)
 
+Inherit session model and reasoning settings unless an override is authorized.
+Map the role and task to the current tool's supported message field. For Codex,
+full-history forks omit both overrides; an authorized override uses a clean
+fork with both supported settings. Follow the
+[current Codex contracts](../using-superpowers/references/codex-tools.md).
+
 ```
 Subagent (general-purpose):
   description: "Review Task N (spec + quality)"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
   prompt: |
     You are reviewing one task's implementation: first whether it matches its
     requirements, then whether it is well-built. This is a task-scoped gate,
@@ -35,13 +39,19 @@ Subagent (general-purpose):
     **Head:** [HEAD_SHA]
     **Diff file:** [DIFF_FILE]
 
-    Read the diff file once — it contains the commit list, a stat summary,
-    and the full diff with surrounding context, and it is your view of the
-    change. The diff's context lines ARE the changed files: do not Read a
+    Read the supplied package first: commit range where relevant, a stat
+    summary, and full task diff with context. For uncommitted work it must
+    also cover staged/unstaged changes, new-file contents, and exact candidate
+    file hashes. BASE..HEAD alone cannot represent those changes. Confirm
+    the package identifies the candidate you are reviewing; do not silently
+    substitute a commit-only diff for missing working-tree evidence.
+
+    The diff's context lines ARE the changed files: do not Read a
     changed file separately unless a hunk you must judge is cut off
     mid-function — and say so in your report. Do not re-run git commands.
-    If the diff file is missing, fetch the diff yourself:
-    `git diff --stat [BASE_SHA]..[HEAD_SHA]` and `git diff [BASE_SHA]..[HEAD_SHA]`.
+    If the package is missing or stale, use read-only Git/file inspection to
+    establish the actual assigned changes, including uncommitted/new files,
+    or report the evidence gap when the task boundary cannot be recovered.
     Do not crawl the broader codebase. Inspect code outside the diff only
     to evaluate a concrete risk you can name — one focused check per named
     risk, and name both the risk and what you checked in your report.
@@ -51,6 +61,10 @@ Subagent (general-purpose):
 
     Your review is read-only on this checkout. Do not mutate the working
     tree, the index, HEAD, or branch state in any way.
+    Inspect history with read-only Git commands. If a separate checkout is
+    needed, use it only when isolation is authorized and follow the native
+    worktree lifecycle; a review request alone does not authorize creating
+    or deleting worktrees. Report any validation that cannot fit this scope.
 
     ## You Do Not Dispatch Subagents
 
@@ -70,19 +84,25 @@ Subagent (general-purpose):
     implementer grading their own work. Judge the code on its merits — a
     stated rationale never downgrades a finding's severity.
 
-    ## Tests
+    ## Verification Evidence
 
-    The implementer already ran the tests and reported results with TDD
-    evidence for exactly this code. Do not re-run the suite to confirm their
-    report. Run a test only when reading the code raises a specific doubt
-    that no existing run answers — and then a focused test, never a
-    package-wide suite, race detector run, or repeated/high-count loop. If
-    heavy validation seems warranted, recommend it in your report instead of
-    running it. If you cannot run commands in this environment, name the
-    test you would run.
+    Inspect the implementer's actual evidence and its covered candidate,
+    inputs, and environment. Reuse applicable results; a worker or message
+    boundary does not invalidate them. Behavior changes need affected tests
+    and required project checks, with RED-to-GREEN evidence when TDD applies.
+    Static artifacts use inspection/validation; behavior-shaping skills use
+    behavior evaluations. Do not invent a unit test for a static text edit.
 
-    Warnings or other noise in the implementer's reported test output are
-    findings — test output should be pristine.
+    Run missing or invalidated checks only within the review's read-only
+    scope and host permissions. Use focused validation for a specific doubt;
+    broaden when required or justified by integration risk. If a needed
+    check requires writes or is unavailable, report exactly what remains
+    unverified for the controller. Do not rerun a suite merely to confirm an
+    applicable inspected result or imply that a focused pass is a full pass.
+
+    Report observed failures and relevant warnings accurately, including
+    unrelated failures; judge their effect instead of treating every warning
+    as a new code defect.
 
     Evidence you cannot see is not evidence that doesn't exist. If the
     report or its test evidence looks truncated, or you cannot locate the
@@ -120,9 +140,10 @@ Subagent (general-purpose):
     - DRY without premature abstraction?
     - Edge cases handled?
 
-    **Tests:**
-    - Do the new and changed tests verify real behavior, not mocks?
-    - Are the task's edge cases covered?
+    **Verification:**
+    - Does the evidence suit the artifact and cover required checks?
+    - Do any new or changed tests verify real behavior, not mocks or prose?
+    - Are the task's relevant edge cases and evidence gaps addressed?
 
     **Structure:**
     - Does each file have one clear responsibility with a well-defined interface?
@@ -188,7 +209,6 @@ Subagent (general-purpose):
 ```
 
 **Placeholders:**
-- `[MODEL]` — REQUIRED: reviewer model per SKILL.md Model Selection
 - `[BRIEF_FILE]` — REQUIRED: the task brief file (`bash scripts/task-brief PLAN N`
   prints the path; same file the implementer worked from)
 - `[GLOBAL_CONSTRAINTS]` — the binding requirements copied verbatim from
@@ -198,10 +218,11 @@ Subagent (general-purpose):
 - `[REPORT_FILE]` — REQUIRED: the file the implementer wrote its detailed
   report to
 - `[BASE_SHA]` — commit before this task
-- `[HEAD_SHA]` — current commit
+- `[HEAD_SHA]` — current commit; not the identity of an uncommitted candidate
 - `[DIFF_FILE]` — REQUIRED: the path the controller wrote the review
   package to (`bash scripts/review-package PLAN_FILE BASE HEAD` prints the unique
-  path it wrote; the package never enters the controller's context)
+  path for committed changes). Include uncommitted diffs, new files, and
+  candidate hashes when applicable; the package is read directly by the reviewer.
 
 **Reviewer returns:** Spec Compliance verdict (✅/❌/⚠️), Strengths, Issues
 (Critical/Important/Minor), Task quality verdict

@@ -377,7 +377,7 @@ async function setup(ctx) {
  * server() is exported for V1 compatibility.
  */
 export default {
-  id: 'superpowers',
+  id: 'superpowers-gpt6',
   server: SuperpowersPlugin,
   setup,
 };

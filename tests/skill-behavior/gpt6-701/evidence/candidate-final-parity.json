@@ -1,0 +1,67 @@
+[
+  {
+    "path": "skills/using-superpowers/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/brainstorming/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/receiving-code-review/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/verification-before-completion/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/test-driven-development/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/executing-plans/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/dispatching-parallel-agents/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/subagent-driven-development/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/using-superpowers/references/codex-tools.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/using-git-worktrees/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/finishing-a-development-branch/SKILL.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/executing-plans/references/final-review.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  },
+  {
+    "path": "skills/subagent-driven-development/references/review-snapshot.md",
+    "sourceMatches": true,
+    "validation3Matches": true
+  }
+]

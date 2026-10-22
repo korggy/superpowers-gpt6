@@ -1,0 +1,55 @@
+  [PASS] native helper exists: task-start.ps1
+  [PASS] native helper exists: task-done.ps1
+  [PASS] native helper exists: sdd-workspace.ps1
+  [PASS] native helper exists: task-brief.ps1
+  [PASS] native helper exists: review-package.ps1
+warning: in the working copy of 'plan with spaces.md', LF will be replaced by CRLF the next time Git touches it
+  [PASS] task-start requires a task number
+  [PASS] missing plan errors before creating artifacts
+  [PASS] task number cannot escape the workspace
+  [PASS] task-start handles spaced paths and reports HEAD
+  [PASS] task extraction respects fences and exact task boundaries
+  [PASS] tilde, indented, and longer fences do not introduce false task boundaries
+  [PASS] task-only extraction retains the controller-supplied global-context contract
+  [PASS] missing task returns exit 3
+  [PASS] missing task does not create an empty brief
+  [PASS] missing task cannot truncate an explicit output file
+  [PASS] task-brief honors an explicit output path
+  [PASS] absolute and relative plan spellings reuse the same workspace
+  [PASS] workspace marker uses the repository-relative plan path
+  [PASS] workspace artifacts are self-ignoring
+  [PASS] same-basename plans receive distinct workspaces
+  [PASS] existing workspace ignore rules are preserved
+warning: in the working copy of 'work.txt', LF will be replaced by CRLF the next time Git touches it
+  [PASS] passing native command appends the task and commit range
+  [PASS] full stdout and stderr are captured
+  [PASS] task-done prints only the log tail plus ledger result
+  [PASS] failed test exit status is propagated
+  [PASS] failed test leaves the completion ledger unchanged
+  [PASS] failure output is retained
+  [PASS] PowerShell script command and silent success are supported
+  [PASS] invalid BASE prevents test execution
+  [PASS] invalid plan prevents test execution
+  [PASS] nonexistent task prevents command side effects
+  [PASS] invalid task ID prevents command side effects
+  [PASS] option-like BASE cannot become a Git option or run the command
+  [PASS] non-commit BASE prevents command side effects
+  [PASS] missing test executable reports exit 127
+  [PASS] native argv preserves empty strings, spaces, quotes, metacharacters, and boundaries
+  [PASS] test arguments are never evaluated as shell expressions
+  [PASS] direct .ps1 invocation preserves literal argv too
+  [PASS] newlines in arguments cannot split the ledger record
+  [PASS] Windows batch wrappers are rejected without shell evaluation
+  [PASS] applicable recorded evidence closes a task without a dummy test command
+  [PASS] recorded evidence for a different HEAD cannot mark completion
+  [PASS] recorded failure preserves its exit status and cannot mark completion
+  [PASS] review package contains commits, stat, and full task diff
+  [PASS] review package honors an explicit output path
+  [PASS] review package rejects invalid BASE
+  [PASS] review package rejects invalid HEAD
+  [PASS] review package rejects empty commit ranges
+  [PASS] review package rejects a range not rooted at BASE
+  [PASS] invalid review revision preserves existing output
+  [PASS] ambiguous duplicate tasks preserve existing output
+  [PASS] a HEAD change during verification cannot record completion
+Checks: 52; failures: 0

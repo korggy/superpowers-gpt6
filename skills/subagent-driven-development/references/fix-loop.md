@@ -1,6 +1,6 @@
 # The Fix Loop
 
-Part of superpowers:subagent-driven-development. The task review reported
+Part of superpowers-gpt6:subagent-driven-development. The task review reported
 spec ❌, a Critical or Important finding, or a ⚠️ item you confirmed as a real
 gap.
 
@@ -17,31 +17,34 @@ Before the loop starts, two routes leave it immediately:
   ledger the ruling before you act on it. Do not dismiss the finding because
   the plan mandates it, and do not dispatch a fix that contradicts the plan
   without a recorded ruling.
-Everything else enters the loop. A fix round is one fix dispatch plus one
-scoped re-review. Five rounds maximum per task:
+Everything else enters the loop. A round fixes the finding and inspects
+applicable evidence. Preserve mandatory review gates; a scoped re-review
+resolves remaining specific concerns, not routine bookkeeping. Five rounds
+maximum per task:
 
 **Rounds 1-3 — resume the original implementer.** Send it the open findings
-verbatim. Its context is intact: it knows the task, the code, and its own
+verbatim through the supported follow-up tool (Codex: followup_task). Its context is intact: it knows the task, the code, and its own
 choices. If your harness cannot send another message to a live subagent,
 dispatch a fresh implementer carrying the brief path, the report-file path,
 and the findings — the report file is the persistent memory either way.
 
-**Rounds 4-5 — dispatch a fresh implementer on a more capable model** (per
+**Rounds 4-5 — use fresh context when the failure warrants it.** Model
+overrides require authorization and the current tool contract (per
 SKILL.md's Model Selection), with the brief path, the report-file path, the open
 findings, and this framing: "A prior implementer attempted this task
 [N] times; you own it now. Read the report file for what was tried." A loop
 that survives three resumes usually means the implementer cannot see its
 own problem — fresh eyes and a capability bump in one move.
 
-**Every round, either way:** the implementer fixes, re-runs the tests
-covering the amended code, appends its fix report to the same report file,
-and returns the short contract. Before re-dispatching the reviewer, confirm
-the fix report contains the covering tests, the command run, and the
-output; dispatch the re-review once all three are present. Name the
-covering test files in the fix message — a one-line fix does not need the
-whole suite.
+**Every round, either way:** the implementer fixes and verifies the affected
+artifact: meaningful regression tests for code in accepted TDD scope,
+inspection/validation for static artifacts, and behavior evaluations for
+skill instructions. Run required checks and reuse applicable unchanged
+evidence. Append the method, covered state, command or inspection, results,
+and evidence paths to the same report file. Inspect that evidence before
+deciding whether unresolved concerns need a scoped re-review.
 
-**The re-review is scoped.** Run `bash scripts/review-package PLAN_FILE FIX_BASE HEAD`
+**The re-review is scoped.** Use [review-snapshot.md](review-snapshot.md) to compare actual committed or uncommitted candidates. For a nonempty committed-only fix range, run `bash scripts/review-package PLAN_FILE FIX_BASE HEAD`
 where FIX_BASE is the head the previous review saw, and dispatch
 [re-review-prompt.md](../re-review-prompt.md) with the findings list, the
 brief, the report file, and the printed diff path. The re-reviewer verdicts
@@ -53,8 +56,8 @@ minors — they never extend the loop.
 **After each round,** append to the ledger:
 `Task <N>: fix round <R>/5 (<X> addressed, <Y> open — <finding one-liners>; commits <a7>..<b7>)`
 
-Never fix findings yourself in the controller session — your context stays
-clean for coordination, and controller fixes skip review.
+Prefer resuming the implementer. A controller integration fix still needs
+appropriate verification and any required review gate.
 
 **The breaker.** When round 5's re-review still leaves findings open, stop
 dispatching. Adjudicate each open finding yourself — you hold the plan and

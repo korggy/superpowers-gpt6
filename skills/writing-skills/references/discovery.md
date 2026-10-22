@@ -1,6 +1,6 @@
 # Writing SKILL.md for Discovery
 
-Part of superpowers:writing-skills: the SKILL.md template and how to name,
+Part of superpowers-gpt6:writing-skills: the SKILL.md template and how to name,
 describe and size a skill so agents find it and read it.
 
 ## SKILL.md Structure
@@ -81,7 +81,7 @@ description: Use for TDD - write test first, watch it fail, write minimal code, 
 description: Use when executing implementation plans with independent tasks in the current session
 
 # ✅ GOOD: Triggering conditions only
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: Use when the human requests TDD or an accepted workflow requires it for a behavior change
 ```
 
 **Content:**
@@ -125,7 +125,7 @@ Use words an agent would search for:
 
 ### 4. Token Efficiency (Critical)
 
-**Problem:** getting-started and frequently-referenced skills load into EVERY conversation. Every token counts.
+**Problem:** skill descriptions enter the catalog, and frequently-referenced skills consume context when selected. Every token counts.
 
 **Target word counts:**
 - getting-started workflows: <150 words each
@@ -193,8 +193,8 @@ wc -w skills/path/SKILL.md
 **When writing documentation that references other skills:**
 
 Use skill name only, with explicit requirement markers:
-- ✅ Good: `**REQUIRED SUB-SKILL:** Use superpowers:test-driven-development`
-- ✅ Good: `**REQUIRED BACKGROUND:** You MUST understand superpowers:systematic-debugging`
+- ✅ Good: `**REQUIRED SUB-SKILL:** Use superpowers-gpt6:test-driven-development`
+- ✅ Good: `**REQUIRED BACKGROUND:** You MUST understand superpowers-gpt6:systematic-debugging`
 - ❌ Bad: `See skills/testing/test-driven-development` (unclear if required)
 - ❌ Bad: `@skills/testing/test-driven-development/SKILL.md` (force-loads, burns context)
 

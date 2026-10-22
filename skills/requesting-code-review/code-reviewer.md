@@ -4,6 +4,12 @@ Use this template when dispatching a code reviewer subagent.
 
 **Purpose:** Review completed work against requirements and code quality standards before it cascades into more work.
 
+Inherit session model and reasoning settings unless an override is authorized.
+Map the role and task to the current tool's supported message field. For Codex,
+full-history forks omit both overrides; an authorized override uses a clean
+fork with both supported settings. Follow the
+[current Codex contracts](../using-superpowers/references/codex-tools.md).
+
 ```
 Subagent (general-purpose):
   description: "Review code changes"
@@ -20,15 +26,24 @@ Subagent (general-purpose):
 
     [PLAN_OR_REQUIREMENTS]
 
-    ## Git Range to Review
+    ## Candidate to Review
 
     **Base:** [BASE_SHA]
     **Head:** [HEAD_SHA]
+    **Review package:** [DIFF_FILE]
+    **Verification evidence:** [EVIDENCE_FILE]
 
-    ```bash
-    git diff --stat [BASE_SHA]..[HEAD_SHA]
-    git diff [BASE_SHA]..[HEAD_SHA]
-    ```
+    Read the supplied package first. It must identify the assigned candidate
+    and include its full diff with context. For committed work, verify the
+    base/head range covers all intended changes; do not assume HEAD~1 does.
+    For uncommitted work, include staged/unstaged changes, new-file contents,
+    and exact candidate file hashes. A BASE..HEAD diff omits those changes.
+    The base commit is not the identity of an uncommitted final candidate.
+
+    If the package is missing or stale, inspect the assigned changes with
+    read-only Git/file tools, or report the coverage gap if the intended
+    boundary cannot be recovered. Do not silently review an empty or partial
+    commit range instead of the actual candidate.
 
     ## The spec is a vision document
 
@@ -49,7 +64,31 @@ Subagent (general-purpose):
 
     ## Read-Only Review
 
-    Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If you need a working copy of a different revision, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
+    Your review is read-only on this checkout. Do not mutate the working
+    tree, index, HEAD, or branch state. Use `git show`, `git diff`, `git log`,
+    and file reads to inspect history and the candidate. If a separate
+    checkout is needed, use it only when isolation is authorized, following
+    native worktree tools and their ownership rules. A review request alone
+    does not authorize creating, attaching, archiving, or deleting worktrees.
+    Never bypass native refusal with manual Git/filesystem operations.
+
+    ## Verification Evidence
+
+    Inspect actual recorded results against the candidate, inputs, and
+    environment. Reuse evidence that still applies, including another
+    worker's inspected results. Entering a review or new message does not
+    invalidate it. Behavior changes need affected tests and required project
+    checks, with RED-to-GREEN evidence when TDD applies. Static artifacts use
+    inspection/validation; behavior-shaping skills use behavior evaluations.
+    Do not manufacture unit tests that merely restate static content.
+
+    Run missing or invalidated checks for specific concerns or requirements
+    only within read-only scope and host permissions. Broaden validation for
+    required checks or justified risk. If execution needs writes or a tool
+    is unavailable, report exactly what remains unverified for the controller.
+    Report observed failures and relevant warnings, including unrelated ones,
+    without treating a focused pass as a full-suite pass. A bare success
+    claim without the underlying results is not verification evidence.
 
     ## You Do Not Dispatch Subagents
 
@@ -80,11 +119,11 @@ Subagent (general-purpose):
     - Security concerns?
     - Integrates cleanly with surrounding code?
 
-    **Testing:**
-    - Tests verify real behavior, not mocks?
-    - Edge cases covered?
-    - Integration tests where they matter?
-    - All tests passing?
+    **Verification:**
+    - Evidence matches the artifact and current candidate?
+    - Tests, where appropriate, verify real behavior rather than mocks or prose?
+    - Relevant edge cases and integration risks covered?
+    - Affected tests and required checks pass, with failures and gaps reported?
 
     **Production readiness:**
     - Migration strategy if schema changed?
@@ -156,6 +195,10 @@ Subagent (general-purpose):
 - `[PLAN_OR_REQUIREMENTS]` — what it should do (plan file path, task text, or requirements)
 - `[BASE_SHA]` — starting commit
 - `[HEAD_SHA]` — ending commit
+- `[DIFF_FILE]` — complete review package, including uncommitted/new files and
+  exact candidate hashes when applicable
+- `[EVIDENCE_FILE]` — report or evidence paths with commands/methods, observed
+  results, covered candidate/inputs/environment, and known limitations
 
 **Reviewer returns:** Strengths, Issues (Critical / Important / Minor), Recommendations, Assessment
 

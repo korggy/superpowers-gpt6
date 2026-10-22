@@ -5,39 +5,68 @@
 # A failing command records nothing: the task is not complete.
 #
 # Usage: task-done PLAN_FILE TASK_NUMBER BASE -- TEST_COMMAND [ARGS...]
+#    or: task-done PLAN_FILE TASK_NUMBER BASE --evidence LOG_FILE HEAD EXIT_CODE COMMAND_LABEL
 #   BASE is the SHA task-start printed; the completion line records BASE..HEAD.
 # Exit: the test command's exit status.
 set -euo pipefail
 
-if [ $# -lt 5 ] || [ "$4" != "--" ]; then
-  echo "usage: task-done PLAN_FILE TASK_NUMBER BASE -- TEST_COMMAND [ARGS...]" >&2
+if [ $# -lt 5 ] || { [ "$4" != "--" ] && [ "$4" != "--evidence" ]; }; then
+  echo "usage: task-done PLAN_FILE TASK_NUMBER BASE -- TEST_COMMAND [ARGS...] | --evidence LOG_FILE HEAD EXIT_CODE COMMAND_LABEL" >&2
   exit 2
 fi
 
 plan=$1
 n=$2
 base=$3
+mode=$4
 shift 4
 sdd="$(cd "$(dirname "$0")/../../subagent-driven-development/scripts" && pwd)"
 
-git rev-parse --verify --quiet "$base" >/dev/null || { echo "bad BASE: $base" >&2; exit 2; }
+[[ "$n" =~ ^[1-9][0-9]*$ ]] || { echo "task number must be a positive integer" >&2; exit 2; }
+base_commit=$(git rev-parse --verify --quiet --end-of-options "$base^{commit}") || { echo "bad BASE: $base" >&2; exit 2; }
+head_commit=$(git rev-parse --verify --quiet --end-of-options 'HEAD^{commit}') || { echo "could not resolve current HEAD" >&2; exit 2; }
+git merge-base --is-ancestor "$base_commit" "$head_commit" || { echo "HEAD is not a descendant of BASE: $base..$head_commit" >&2; exit 3; }
 
-dir=$("$sdd/sdd-workspace" "$plan")
+if [ "$mode" = '--evidence' ]; then
+  [ $# -eq 4 ] || { echo "evidence requires LOG_FILE HEAD EXIT_CODE COMMAND_LABEL" >&2; exit 2; }
+  [[ "$3" =~ ^(0|[1-9][0-9]{0,2})$ ]] && [ "$3" -le 255 ] && [[ "$4" =~ [^[:space:]] ]] || { echo "invalid evidence exit code or command label" >&2; exit 2; }
+  [ -f "$1" ] || { echo "no such evidence log: $1" >&2; exit 2; }
+  evidence_head=$(git rev-parse --verify --quiet --end-of-options "$2^{commit}") || { echo "bad evidence HEAD: $2" >&2; exit 2; }
+  [ "$evidence_head" = "$head_commit" ] || { echo "recorded evidence HEAD differs from current HEAD" >&2; exit 3; }
+fi
+
+# Validate the task before running a command, using the same extraction rules.
+out=$("${BASH:-bash}" "$sdd/task-brief" "$plan" "$n")
+brief=$(printf '%s\n' "$out" | sed -n 's/^wrote \(.*\): [0-9][0-9]* lines$/\1/p')
+[ -n "$brief" ] || { echo "task-brief did not report a path: $out" >&2; exit 2; }
+dir=$(dirname "$brief")
 log="$dir/task-${n}-tests.log"
 ledger="$dir/progress.md"
 
+rc=0
+if [ "$mode" = '--evidence' ]; then
+  # Read via a temporary file so LOG_FILE may already be the workspace log.
+  tmp=$(mktemp)
+  trap 'rm -f -- "$tmp"' EXIT
+  cat "$1" > "$tmp"
+  cat "$tmp" > "$log"
+  rc=$3
+  cmd="recorded evidence '$4' from '$1'"
+else
 # Render the command the way a person would type it, for the ledger line.
 cmd=""
 for a in "$@"; do
   case "$a" in
-    *[[:space:]\"\;\|\&]*) cmd="$cmd '$a'" ;;
+    ''|*[[:space:]\"\;\|\&]*) cmd="$cmd '$a'" ;;
     *) cmd="$cmd $a" ;;
   esac
 done
 cmd=${cmd# }
 
-rc=0
 "$@" > "$log" 2>&1 || rc=$?
+fi
+cmd=${cmd//$'\r'/\\r}
+cmd=${cmd//$'\n'/\\n}
 
 tail -n 5 "$log"
 if [ "$rc" -ne 0 ]; then
@@ -46,7 +75,9 @@ if [ "$rc" -ne 0 ]; then
 fi
 
 last=$(grep -v '^[[:space:]]*$' "$log" | tail -n 1) || last="(no output)"
+current_head=$(git rev-parse --verify --quiet --end-of-options 'HEAD^{commit}') || { echo "could not resolve HEAD after verification" >&2; exit 2; }
+[ "$current_head" = "$head_commit" ] || { echo "HEAD changed during verification; completion NOT recorded" >&2; exit 3; }
 [ -f "$ledger" ] || printf '# SDD ledger — plan: %s\n' "$plan" > "$ledger"
-line="Task $n: complete (commits $(git rev-parse --short=7 "$base")..$(git rev-parse --short=7 HEAD), tests: $cmd → $last)"
+line="Task $n: complete (commits $(git rev-parse --short=7 "$base_commit")..$(git rev-parse --short=7 "$head_commit"), tests: $cmd → $last)"
 printf '%s\n' "$line" >> "$ledger"
 echo "ledger: $line"

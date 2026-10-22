@@ -1,0 +1,4 @@
+[PASS] in-repository plan reuses one workspace across shells
+[PASS] outside plan created by PowerShell is reused by Git Bash
+[PASS] outside plan created by Git Bash is reused by PowerShell
+Checks: 3; failures: 0

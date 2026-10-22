@@ -1,0 +1,83 @@
+[
+  {
+    "trial": "initial",
+    "case": "plain",
+    "discovery": "not-required",
+    "activationGate": "pass",
+    "skillLoad": "not-requested",
+    "endToEnd": "blocked-by-policy",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "initial",
+    "case": "brainstorm",
+    "discovery": "candidate-path-observed",
+    "activationGate": "pass",
+    "skillLoad": "blocked-by-policy",
+    "endToEnd": "blocked-by-policy",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "initial",
+    "case": "namespace",
+    "discovery": "candidate-path-observed",
+    "activationGate": "pass",
+    "skillLoad": "blocked-by-policy",
+    "endToEnd": "blocked-by-policy",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "standalone",
+    "case": "plain",
+    "discovery": "not-required",
+    "activationGate": "pass",
+    "skillLoad": "not-requested",
+    "endToEnd": "blocked-by-policy",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "standalone",
+    "case": "brainstorm",
+    "discovery": "candidate-path-observed",
+    "activationGate": "pass",
+    "skillLoad": "blocked-by-policy",
+    "endToEnd": "blocked-by-policy",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "standalone",
+    "case": "namespace",
+    "discovery": "candidate-path-observed",
+    "activationGate": "pass",
+    "skillLoad": "blocked-by-policy",
+    "endToEnd": "blocked-by-policy",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "windows-elevated-sandbox",
+    "case": "plain",
+    "discovery": "not-required",
+    "activationGate": "observed-no-implementation",
+    "skillLoad": "unverified-read-stalled",
+    "endToEnd": "terminated-shared-sandbox-provisioning-error",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "windows-elevated-sandbox",
+    "case": "brainstorm",
+    "discovery": "candidate-target-selected-read-stalled",
+    "activationGate": "observed-no-implementation",
+    "skillLoad": "unverified-read-stalled",
+    "endToEnd": "terminated-shared-sandbox-provisioning-error",
+    "nativeLifecycle": "not-executed"
+  },
+  {
+    "trial": "windows-elevated-sandbox",
+    "case": "namespace",
+    "discovery": "candidate-target-selected-read-stalled",
+    "activationGate": "observed-no-implementation",
+    "skillLoad": "unverified-read-stalled",
+    "endToEnd": "terminated-shared-sandbox-provisioning-error",
+    "nativeLifecycle": "not-executed"
+  }
+]

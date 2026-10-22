@@ -63,10 +63,23 @@ esac
 # pre-marker legacy one, and either way the plan claims it by writing one.
 owns() {
   if [ -e "$1/plan-path" ]; then
-    [ "$(cat "$1/plan-path")" = "$plan_id" ]
+    owner=$(cat "$1/plan-path") || exit 2
+    case "$OSTYPE" in
+      msys*|cygwin*)
+        # Native PowerShell stores outside-repository markers as C:/...;
+        # preserve either format while comparing Windows paths consistently.
+        owner=${owner%$'\r'}
+        if [[ "$owner" =~ ^([a-zA-Z]):/(.*)$ ]]; then
+          owner="/${BASH_REMATCH[1],,}/${BASH_REMATCH[2]}"
+        fi
+        [ "${owner,,}" = "${plan_id,,}" ] ;;
+      *) [ "$owner" = "$plan_id" ] ;;
+    esac
   else
-    mkdir -p "$1"
-    printf '%s\n' "$plan_id" > "$1/plan-path"
+    # owns is used as a condition, which suppresses errexit inside functions.
+    # An I/O error is fatal, not another slug collision to retry forever.
+    mkdir -p "$1" || exit 2
+    printf '%s\n' "$plan_id" > "$1/plan-path" || exit 2
   fi
 }
 

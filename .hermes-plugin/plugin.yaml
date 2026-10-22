@@ -1,5 +1,5 @@
-name: superpowers
-version: 7.0.1
+name: superpowers-gpt6
+version: 7.0.1-gpt6.1
 description: Superpowers skills and workflow bootstrap for Hermes Agent
 author: obra
 provides_hooks:

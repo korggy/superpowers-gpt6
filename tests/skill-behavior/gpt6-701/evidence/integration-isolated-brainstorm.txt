@@ -1,0 +1,3 @@
+I couldn’t read the brainstorming skill because this session’s access policy blocked the file-read command. I haven’t changed any files and won’t implement until you approve the design.
+
+To begin the design discussion: is this a simple personal todo list, or should it include features like due dates, priorities, and projects?

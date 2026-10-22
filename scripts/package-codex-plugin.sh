@@ -12,6 +12,13 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
+# This retained upstream release path packages a committed upstream ref and
+# imports prior public-directory metadata. It cannot package this fork safely.
+if grep -q '"name": "superpowers-gpt6"' "$REPO_ROOT/.codex-plugin/plugin.json"; then
+  echo 'For the BetterGood fork use: pwsh -File scripts/build-gpt6-package.ps1' >&2
+  exit 2
+fi
+
 REF="HEAD"
 OUTPUT=""
 FORMAT=""

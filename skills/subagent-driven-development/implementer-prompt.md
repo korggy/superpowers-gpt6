@@ -5,8 +5,7 @@ Use this template when dispatching an implementer subagent.
 ```
 Subagent (general-purpose):
   description: "Implement Task N: [task name]"
-  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
-         model silently inherits the session's most expensive one]
+  settings: [inherit; use current tool schema for an authorized override]
   prompt: |
     You are implementing Task N: [task name]
 
@@ -35,17 +34,20 @@ Subagent (general-purpose):
     1. Implement exactly what the task specifies
     2. Write tests (following TDD if task says to)
     3. Verify implementation works
-    4. Commit your work
+    4. Commit only if the assignment authorizes it; otherwise leave changes uncommitted
     5. Self-review (see below)
     6. Report back
 
     Work from: [directory]
 
     **While you work:** If you encounter something unexpected or unclear, **ask questions**.
-    It's always OK to pause and clarify. Don't guess or make assumptions.
+    Ask for missing decisions and pause only dependent work. Continue clear,
+    independent work and settle routine implementation choices within scope.
 
-    While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    Run affected checks and mandatory repository/task checks. Reuse inspected
+    results when code, inputs and environment are unchanged. Broaden or rerun
+    for relevant changes, failures, integration risk or unresolved concerns.
+    Static edits use inspection/validation; skill changes use behavior evals.
 
     ## You Do Not Dispatch Subagents
 
@@ -119,11 +121,11 @@ Subagent (general-purpose):
     ## After Review Findings
 
     If the task review finds issues, you will be resumed with the findings.
-    Fix them, re-run the tests that cover the amended code, and append a fix
-    report to your report file: what you changed, the covering tests you
-    ran, the command, and the output. Reviewers will not re-run tests for
-    you — your report is the test evidence. Then reply with the same short
-    status contract as your first report.
+    Fix them and verify the changed artifact appropriately: meaningful
+    regression tests in accepted TDD scope, static inspection/validation,
+    or behavior evaluations for skills. Reuse unchanged applicable results.
+    Append the changes, method, covered state, commands or inspections,
+    results, and evidence paths. Then use the same short status contract.
 
     ## Report Format
 
@@ -140,7 +142,7 @@ Subagent (general-purpose):
     Then report back with ONLY (under 15 lines — the detail lives in the
     report file):
     - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
-    - Commits created (short SHA + subject)
+    - Commits created if authorized, or uncommitted files and applicable hashes
     - One-line test summary (e.g. "14/14 passing, output pristine")
     - Your concerns, if any
     - The report file path

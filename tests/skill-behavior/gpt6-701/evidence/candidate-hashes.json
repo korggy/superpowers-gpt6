@@ -1,0 +1,50 @@
+[
+  {
+    "path": "skills/using-superpowers/SKILL.md",
+    "sha256": "d05e0bc097cead08bfc4782959f3bd806a5709c842a1c0aab3b2b7cc6d8a2b67"
+  },
+  {
+    "path": "skills/brainstorming/SKILL.md",
+    "sha256": "55d3608c63d0440bf6574fb83ed2de67241704d6be2a0e7320e109f03c0bc0cf"
+  },
+  {
+    "path": "skills/receiving-code-review/SKILL.md",
+    "sha256": "07566ba24d157c4240e1bded40af1506c0b4afcc61c3a699cd8b7bbe0c1240f9"
+  },
+  {
+    "path": "skills/verification-before-completion/SKILL.md",
+    "sha256": "d7d393fbfa10e34f7fb978f04d3f4f6736d6430bd5088d75b186195809f07044"
+  },
+  {
+    "path": "skills/test-driven-development/SKILL.md",
+    "sha256": "8e9294943fd93e50af8b78278cd3f259c4b8717f6b599637faa233332e4a6a6c"
+  },
+  {
+    "path": "skills/executing-plans/SKILL.md",
+    "sha256": "8e5c94680500b975d5d726aeb14bd59f237cf28709dac9f43a396050156e58df"
+  },
+  {
+    "path": "skills/dispatching-parallel-agents/SKILL.md",
+    "sha256": "7e7b5cf6d8c58d973f9fdf2367ccf14986e5746a17a3b7bf1d863660659f41dd"
+  },
+  {
+    "path": "skills/subagent-driven-development/SKILL.md",
+    "sha256": "cc261b9ec6ef8c1452dc34cab4d7bfa98a8f33f8a65035dbcebb7e79ce81672c"
+  },
+  {
+    "path": "skills/using-superpowers/references/codex-tools.md",
+    "sha256": "f1da4ec53b8389bf1c549a279c196efc2d8ed78b547ca51487b9607172a14fac"
+  },
+  {
+    "path": "skills/using-git-worktrees/SKILL.md",
+    "sha256": "6e7a1d6190dff47d8cd3940f44c78df7dcc48c39ffecd4500aa1aa2289d6be02"
+  },
+  {
+    "path": "skills/finishing-a-development-branch/SKILL.md",
+    "sha256": "1364b8563f1d13b826dc272016a96c84938e44efc7894a22015536a479183caa"
+  },
+  {
+    "path": "skills/executing-plans/references/final-review.md",
+    "sha256": "b8ad535446247bff86bbadf892fe211411ad54c264674660fd67144ae0fa31a9"
+  }
+]

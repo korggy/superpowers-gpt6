@@ -1,0 +1,80 @@
+This workspace is read-only, and its policy blocked terminal access, so I can’t create the app here. Here’s a React todo list you can paste into `src/App.jsx` in a React project:
+
+```jsx
+import { useState } from "react";
+
+export default function App() {
+  const [todos, setTodos] = useState([]);
+  const [text, setText] = useState("");
+
+  function addTodo(event) {
+    event.preventDefault();
+    if (!text.trim()) return;
+
+    setTodos((items) => [
+      ...items,
+      { id: crypto.randomUUID(), text: text.trim(), done: false },
+    ]);
+    setText("");
+  }
+
+  function toggleTodo(id) {
+    setTodos((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, done: !item.done } : item
+      )
+    );
+  }
+
+  return (
+    <main style={{ maxWidth: 480, margin: "64px auto", padding: 24,
+      fontFamily: "system-ui" }}>
+      <h1>My todos</h1>
+      <p>{todos.filter((item) => !item.done).length} tasks remaining</p>
+
+      <form onSubmit={addTodo} style={{ display: "flex", gap: 8 }}>
+        <input
+          aria-label="New task"
+          placeholder="What needs doing?"
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          style={{ flex: 1, padding: 12 }}
+        />
+        <button disabled={!text.trim()}>Add</button>
+      </form>
+
+      {todos.length === 0 && <p>Add your first task to get started.</p>}
+
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {todos.map((todo) => (
+          <li key={todo.id} style={{ display: "flex", gap: 12,
+            alignItems: "center", padding: "12px 0" }}>
+            <label style={{ flex: 1 }}>
+              <input
+                type="checkbox"
+                checked={todo.done}
+                onChange={() => toggleTodo(todo.id)}
+              />{" "}
+              <span style={{
+                textDecoration: todo.done ? "line-through" : "none",
+              }}>
+                {todo.text}
+              </span>
+            </label>
+            <button
+              aria-label={`Delete ${todo.text}`}
+              onClick={() =>
+                setTodos((items) => items.filter((item) => item.id !== todo.id))
+              }
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+```
+
+Supports adding, completing, and deleting tasks. Tasks reset on refresh. I couldn’t run or test it in this environment.

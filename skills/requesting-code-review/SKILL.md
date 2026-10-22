@@ -1,9 +1,11 @@
 ---
 name: requesting-code-review
-description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+description: Use when your human partner requests a code review, or an accepted workflow reaches a review checkpoint.
 ---
 
 # Requesting Code Review
+
+**Scope:** This is an opt-in workflow. [Selection and authority](../using-superpowers/SKILL.md) apply, including supporting steps of an accepted workflow.
 
 Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history.
 
@@ -23,21 +25,27 @@ Dispatch a code reviewer subagent to catch issues before they cascade. The revie
 
 ## How to Request
 
-**1. Get git SHAs:**
-```bash
-BASE_SHA=$(git rev-parse HEAD~1)  # or: git merge-base origin/main HEAD
-HEAD_SHA=$(git rev-parse HEAD)
-```
+**1. Establish the complete review snapshot:**
+Use the verified task base from the assignment or ledger and current HEAD.
+Do not guess `HEAD~1` or an integration branch. Supply a diff package with
+all intended changes. For uncommitted work, include its working-tree diff,
+new file contents, exact hashes, and applicable verification evidence;
+a commit range alone cannot represent that candidate.
 
 **2. Dispatch code reviewer subagent:**
 
-Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)
+Fill [code-reviewer.md](code-reviewer.md) and dispatch through the actual
+host schema. Inherit settings by default; authorized overrides follow
+[Codex contracts](../using-superpowers/references/codex-tools.md). With no
+subagent tool, perform and label a separate self-review rather than fabricate
+a dispatch.
 
 **Placeholders:**
 - `{DESCRIPTION}` - Brief summary of what you built
 - `{PLAN_OR_REQUIREMENTS}` - What it should do
 - `{BASE_SHA}` - Starting commit
 - `{HEAD_SHA}` - Ending commit
+- Candidate package, new files, hashes and evidence paths - Required for uncommitted work
 
 **3. Act on feedback:**
 - Fix Critical issues immediately

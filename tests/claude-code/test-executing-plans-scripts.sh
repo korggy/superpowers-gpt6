@@ -8,6 +8,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 EP_SCRIPTS="$REPO_ROOT/skills/executing-plans/scripts"
+SDD_SCRIPTS="$REPO_ROOT/skills/subagent-driven-development/scripts"
 
 FAILURES=0
 TEST_ROOT=""
@@ -43,6 +44,20 @@ main() {
 ## Task 1: First thing
 
 Do the first thing.
+
+   ~~~~markdown
+## Task 2: Fenced fake task
+   ~~~
+## Task 10: Shorter fence does not close the example
+   ~~~~
+Keep after the tilde fence.
+
+````markdown
+## Task 2: Another fenced fake task
+```
+## Task 10: Still in the longer fence
+````
+Keep after the longer fence.
 
 ## Task 2: Second thing
 
@@ -153,6 +168,71 @@ PLAN
         echo "    expected: $expected2"
         echo "    ledger:"; sed 's/^/      /' "$ledger" 2>/dev/null || echo "      (missing)"
     fi
+
+    # Validation must precede command execution and output-file replacement.
+    local marker="$repo/must not run"
+    rc=0
+    (cd "$repo" && bash "$EP_SCRIPTS/task-done" plan.md 99 "$base" -- sh -c 'touch "$1"' sh "$marker" >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 3 && ! -e "$marker" ]]; then pass "unknown task prevents command side effects"; else fail "unknown task prevents command side effects (rc=$rc)"; fi
+    rm -f -- "$marker"
+    rc=0
+    (cd "$repo" && bash "$EP_SCRIPTS/task-done" plan.md ../escape "$base" -- sh -c 'touch "$1"' sh "$marker" >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 2 && ! -e "$marker" ]]; then pass "invalid task ID prevents command side effects"; else fail "invalid task ID prevents command side effects (rc=$rc)"; fi
+    rm -f -- "$marker"
+    rc=0
+    (cd "$repo" && bash "$EP_SCRIPTS/task-done" plan.md 1 --help -- sh -c 'touch "$1"' sh "$marker" >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 2 && ! -e "$marker" ]]; then pass "option-like revision prevents command side effects"; else fail "option-like revision prevents command side effects (rc=$rc)"; fi
+
+    local brief="$repo/.superpowers/sdd/plan/task-1-brief.md"
+    if grep -qF 'Keep after the tilde fence.' "$brief" && grep -qF 'Keep after the longer fence.' "$brief" && ! grep -qF 'Do the second thing.' "$brief"; then
+        pass "task extraction handles indented, tilde, and longer code fences"
+    else fail "task extraction handles indented, tilde, and longer code fences"; fi
+    local explicit="$repo/explicit brief.md"
+    printf 'preserve me\n' > "$explicit"
+    rc=0
+    (cd "$repo" && bash "$SDD_SCRIPTS/task-brief" plan.md 99 "$explicit" >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 3 && "$(cat "$explicit")" == 'preserve me' ]]; then pass "missing task preserves existing output"; else fail "missing task preserves existing output"; fi
+
+    # Argument boundaries, empty strings, and shell metacharacters remain data.
+    local argv=("" "with spaces" 'say "hello"' "single'quote" '; touch should-not-exist' 'a&b|c' '$()' 'trailing\' $'line one\nline two')
+    local expected_args="$repo/expected args"
+    printf '<%s>\n' "${argv[@]}" > "$expected_args"
+    (cd "$repo" && bash "$EP_SCRIPTS/task-done" plan.md 1 "$base" -- printf '<%s>\n' "${argv[@]}" >/dev/null)
+    if cmp -s "$expected_args" "$repo/.superpowers/sdd/plan/task-1-tests.log" && [[ ! -e "$repo/should-not-exist" ]]; then pass "command argv is literal and preserves empty arguments"; else fail "command argv is literal and preserves empty arguments"; fi
+    if ! grep -q '^line two' "$ledger"; then pass "argument newlines do not split ledger records"; else fail "argument newlines do not split ledger records"; fi
+
+    local evidence="$repo/existing evidence.log"
+    printf 'existing checks PASS\n' > "$evidence"
+    rc=0
+    (cd "$repo" && bash "$EP_SCRIPTS/task-done" plan.md 2 "$base" --evidence "$evidence" "$head2" 0 'earlier checks' >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 0 ]] && grep -qF 'recorded evidence' "$ledger"; then pass "recorded evidence avoids a dummy verification command"; else fail "recorded evidence avoids a dummy verification command"; fi
+    local before
+    before=$(cat "$ledger")
+    rc=0
+    (cd "$repo" && bash "$EP_SCRIPTS/task-done" plan.md 2 "$base" --evidence "$evidence" "$base" 0 'stale checks' >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 3 && "$(cat "$ledger")" == "$before" ]]; then pass "evidence for another HEAD cannot complete a task"; else fail "evidence for another HEAD cannot complete a task"; fi
+    rc=0
+    (cd "$repo" && bash "$EP_SCRIPTS/task-done" plan.md 2 "$base" --evidence "$evidence" "$head2" 23 'failed checks' >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 23 && "$(cat "$ledger")" == "$before" ]]; then pass "recorded failure propagates without ledger completion"; else fail "recorded failure propagates without ledger completion"; fi
+
+    # Archive extraction can strip all helper execute bits. Exercise the full
+    # nested chain in an isolated copy, including sdd-workspace and task-brief.
+    local copied="$TEST_ROOT/helpers without executable bits"
+    mkdir -p "$copied/skills"
+    cp -R "$REPO_ROOT/skills/executing-plans" "$REPO_ROOT/skills/subagent-driven-development" "$copied/skills/"
+    chmod -x "$copied/skills/executing-plans/scripts/"* "$copied/skills/subagent-driven-development/scripts/"*
+    rc=0
+    (cd "$repo" && bash "$copied/skills/executing-plans/scripts/task-start" plan.md 1 >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 0 ]]; then pass "task-start works with nested execute bits stripped"; else fail "task-start works with nested execute bits stripped (rc=$rc)"; fi
+    rc=0
+    (cd "$repo" && bash "$copied/skills/executing-plans/scripts/task-done" plan.md 1 "$base" -- printf 'verification PASS\n' >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 0 ]]; then pass "task-done works with nested execute bits stripped"; else fail "task-done works with nested execute bits stripped (rc=$rc)"; fi
+
+    printf '## Task 1: blocked workspace\n' > "$repo/blocked.md"
+    printf 'file prevents workspace directory creation\n' > "$repo/.superpowers/sdd/blocked"
+    rc=0
+    (cd "$repo" && timeout 5 bash "$SDD_SCRIPTS/sdd-workspace" blocked.md >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 2 ]]; then pass "workspace I/O failure exits instead of looping on collisions"; else fail "workspace I/O failure exits instead of looping on collisions (rc=$rc)"; fi
 
     echo
     if [[ "$FAILURES" -eq 0 ]]; then

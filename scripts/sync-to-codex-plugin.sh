@@ -143,6 +143,12 @@ append_git_ignored_file_excludes() {
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 UPSTREAM="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Fork-specific changes must not enter the upstream public-directory sync.
+if grep -q '"name": "superpowers-gpt6"' "$UPSTREAM/.codex-plugin/plugin.json"; then
+  echo 'Upstream sync is disabled for the BetterGood fork. Use the local package builder and docs/GPT6-RELEASE.md.' >&2
+  exit 2
+fi
 BASE="$DEFAULT_BASE"
 DRY_RUN=0
 YES=0

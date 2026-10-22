@@ -1,5 +1,20 @@
 # Testing Superpowers
 
+## BetterGood GPT-6 fork checks
+
+Current candidate results and limitations are in [GPT6-VALIDATION.md](GPT6-VALIDATION.md).
+Run `pwsh -File tests/powershell/test-plan-helpers.ps1` for native helpers and
+`node --test tests/package/test-gpt6-package.mjs` for source metadata. After
+building, set `GPT6_TEST_MARKETPLACE` to the extracted BetterGood directory
+and rerun the latter to validate the catalog and every payload hash.
+Fresh model behavior evidence lives in `tests/skill-behavior/gpt6-701/`.
+
+The upstream public-directory sync and committed-ref packaging scripts reject
+this fork intentionally. Use `scripts/build-gpt6-package.ps1` for its exact
+uncommitted candidate. The old scripts and their upstream fixtures are retained
+for history, not used as this fork's release path or current validation proof.
+The remaining sections describe the upstream test organization.
+
 Superpowers has two distinct kinds of tests, each in its own directory:
 
 - **`tests/`** — does the plugin's non-LLM code work? Bash + node + python integration tests for brainstorm-server JS, OpenCode plugin loading, codex-plugin sync, and analysis utilities.

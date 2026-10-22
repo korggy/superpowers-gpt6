@@ -1,13 +1,13 @@
 {
-  "name": "superpowers",
-  "version": "7.0.1",
-  "description": "An agentic skills framework & software development methodology that works: planning, TDD, debugging, and collaboration workflows.",
+  "name": "superpowers-gpt6",
+  "version": "7.0.1-gpt6.1",
+  "description": "BetterGood GPT-6 workflows based on Superpowers 7.0.1: opt-in planning, TDD, debugging, review, and delivery.",
   "author": {
     "name": "Jesse Vincent",
     "email": "jesse@fsck.com"
   },
-  "homepage": "https://github.com/obra/superpowers",
-  "repository": "https://github.com/obra/superpowers",
+  "homepage": "https://github.com/korggy/superpowers-gpt6",
+  "repository": "https://github.com/korggy/superpowers-gpt6",
   "license": "MIT",
   "keywords": [
     "brainstorming",

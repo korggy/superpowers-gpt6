@@ -1,0 +1,5 @@
+I recommend starting with simple personal tasks: add, edit, complete, delete, and filter, with tasks saved locally.
+
+Would you prefer that scope, daily planning with due dates and priorities, or multiple project lists?
+
+The brainstorming skill file hasn’t loaded because the local tool is stalled. No files have changed, and implementation will wait for your design approval.

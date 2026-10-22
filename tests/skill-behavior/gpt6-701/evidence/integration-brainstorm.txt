@@ -1,0 +1,3 @@
+I couldn’t read the brainstorming skill because the environment blocked access to its `SKILL.md`. Please paste its contents so I can follow the requested workflow.
+
+No files have been changed, and I won’t implement anything until you approve the design.

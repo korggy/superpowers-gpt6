@@ -1,0 +1,32 @@
+[
+  {
+    "arm": "candidate-final",
+    "sample": 1,
+    "completed": true,
+    "toolItems": 0
+  },
+  {
+    "arm": "candidate-final",
+    "sample": 2,
+    "completed": true,
+    "toolItems": 0
+  },
+  {
+    "arm": "candidate-final",
+    "sample": 3,
+    "completed": true,
+    "toolItems": 0
+  },
+  {
+    "arm": "candidate-final",
+    "sample": 4,
+    "completed": true,
+    "toolItems": 0
+  },
+  {
+    "arm": "candidate-final",
+    "sample": 5,
+    "completed": true,
+    "toolItems": 0
+  }
+]

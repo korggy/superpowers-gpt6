@@ -1,6 +1,6 @@
 # Flowcharts in Skills
 
-Part of superpowers:writing-skills.
+Part of superpowers-gpt6:writing-skills.
 
 ## Flowchart Usage
 

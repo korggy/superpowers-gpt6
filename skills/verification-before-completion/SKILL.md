@@ -1,81 +1,85 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: Use when your human partner requests a completion evidence check, or an accepted workflow requires verification before reporting completion.
 ---
 
 # Verification Before Completion
+
+**Scope:** This is an opt-in workflow. [Selection and authority](../using-superpowers/SKILL.md) apply, including supporting steps of an accepted workflow.
 
 ## Overview
 
 **Core principle:** Evidence before claims, always.
 
-**Violating the letter of this rule is violating the spirit of this rule.**
-
 ## The Iron Law
 
 ```
-NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+NO COMPLETION CLAIMS WITHOUT APPLICABLE VERIFICATION EVIDENCE
 ```
 
-If you haven't run the verification command in this message, you cannot claim it passes.
+Evidence must cover the claimed behavior in the current code, inputs, and
+environment. Read the command, exit status, and results. A prior run or a
+worker's recorded results remain valid when those conditions have not
+changed; the message boundary does not invalidate them.
 
 ## The Gate Function
 
 ```
-BEFORE claiming any status or expressing satisfaction:
+BEFORE claiming completion or correctness:
 
-1. IDENTIFY: What command proves this claim?
-2. RUN: Execute the FULL command (fresh, complete)
-3. READ: Full output, check exit code, count failures
+1. IDENTIFY: What evidence and required checks prove this claim?
+2. CHECK: Inspect existing results and the code/environment they covered.
+   RUN missing checks, or rerun affected checks after relevant changes,
+   failures, or a specific unresolved concern.
+3. READ: Inspect output, exit status, and failures for the claimed scope.
 4. VERIFY: Does output confirm the claim?
    - If NO: State actual status with evidence
    - If YES: State claim WITH evidence
 5. ONLY THEN: Make the claim
 
-Skip any step = lying, not verifying
+If evidence is missing or does not apply, state the limitation.
 ```
 
 ## Common Failures
 
 | Claim | Requires | Not Sufficient |
 |-------|----------|----------------|
-| Tests pass | Test command output: 0 failures | Previous run, "should pass" |
-| Linter clean | Linter output: 0 errors | Partial check, extrapolation |
+| Tests pass | Applicable test output: 0 failures, with scope named | "Should pass", results for different code |
+| Linter clean | Applicable linter output: 0 errors | Extrapolating a focused check to the whole project |
 | Build succeeds | Build command: exit 0 | Linter passing, logs look good |
 | Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
 | Regression test works | Red-green cycle verified | Test passes once |
-| Agent completed | VCS diff shows changes | Agent reports "success" |
+| Agent completed | Reviewed diff and applicable recorded check results | Agent reports "success" without evidence |
 | Requirements met | Line-by-line checklist | Tests passing |
 
 ## Red Flags - STOP
 
 - Using "should", "probably", "seems to"
-- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
 - About to commit/push/PR without verification
-- Trusting agent success reports
-- Relying on partial verification
+- Trusting an agent's bare success report
+- Claiming broad success from a narrower check
 - Thinking "just this once"
 - Tired and wanting work over
-- **ANY wording implying success without having run verification**
+- Claiming success without applicable evidence
 
 ## Rationalization Prevention
 
 | Excuse | Reality |
 |--------|---------|
-| "Should work now" | RUN the verification |
+| "Should work now" | Inspect applicable evidence or run the missing check |
 | "I'm confident" | Confidence ≠ evidence |
 | "Just this once" | No exceptions |
 | "Linter passed" | Linter ≠ compiler |
-| "Agent said success" | Verify independently |
+| "Agent said success" | Inspect its diff and actual check results |
 | "I'm tired" | Exhaustion ≠ excuse |
-| "Partial check is enough" | Partial proves nothing |
+| "Focused checks prove everything" | Focused checks support only their tested scope |
 | "Different words so rule doesn't apply" | Spirit over letter |
 
 ## Key Patterns
 
 **Tests:**
 ```
-✅ [Run test command] [See: 34/34 pass] "All tests pass"
+✅ [Inspect applicable test output: 34/34 pass] "All 34 affected tests pass"
 ❌ "Should pass now" / "Looks correct"
 ```
 
@@ -99,22 +103,19 @@ Skip any step = lying, not verifying
 
 **Agent delegation:**
 ```
-✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
+✅ Agent reports success → Check diff and recorded results → Run missing/invalidated checks → Report actual state
 ❌ Trust agent report
 ```
 
-## When To Apply
+## Verification Scope
 
-**ALWAYS before:**
-- ANY variation of success/completion claims
-- ANY expression of satisfaction
-- ANY positive statement about work state
-- Committing, PR creation, task completion
-- Moving to next task
-- Delegating to agents
+Complete checks required by the repository and the accepted task. Choose
+additional checks for the affected behavior and realistic regression risk.
+Once these pass, broaden or repeat only for a relevant change, failure, or
+unresolved concern. A merge or dependency/configuration change can
+invalidate evidence; rereading logs or entering a new message does not.
 
-**Rule applies to:**
-- Exact phrases
-- Paraphrases and synonyms
-- Implications of success
-- ANY communication suggesting completion/correctness
+Report what passed and what remains unverified. An unavailable required
+check prevents claiming that requirement is satisfied; an unavailable
+unrelated suite does not erase valid evidence for the completed scope.
+Verification does not grant permission to commit, publish, or deploy.

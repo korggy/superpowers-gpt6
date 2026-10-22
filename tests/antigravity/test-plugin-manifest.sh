@@ -32,8 +32,8 @@ for field in ["name", "description", "displayName", "logo",
     if not manifest.get(field):
         fail(f"manifest field {field!r} is missing or empty")
 
-if manifest["name"] != "superpowers":
-    fail(f"name must be 'superpowers', got {manifest['name']!r}")
+if manifest["name"] != "superpowers-gpt6":
+    fail(f"name must be 'superpowers-gpt6', got {manifest['name']!r}")
 if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", manifest["name"]):
     fail("name is not kebab-case")
 
@@ -75,14 +75,13 @@ if not any(entry.get("path") == ".antigravity-plugin/plugin.json"
            for entry in version_config.get("files", [])):
     fail(".version-bump.json does not register .antigravity-plugin/plugin.json")
 
-# --- Bootstrap: agy lists each skill's description, and using-superpowers'
-# description is what gets the model to load it at the start of a session.
+# --- Discovery metadata: the fork selects workflows on request. Validate
+# usable metadata here; behavior evaluations cover opt-in activation.
 skill_md = (root / "skills" / "using-superpowers" / "SKILL.md").read_text(encoding="utf-8")
 frontmatter = re.match(r"---\n(.*?)\n---\n", skill_md, re.DOTALL)
 description = frontmatter and re.search(r"^description:(.*)$", frontmatter.group(1), re.MULTILINE)
-if not description or "Use when starting any conversation" not in description.group(1):
-    fail("using-superpowers description no longer says 'Use when starting any "
-         "conversation'; Antigravity relies on it to bootstrap")
+if not description or not description.group(1).strip():
+    fail("using-superpowers needs a nonempty discovery description")
 
 # --- Layout agy depends on -------------------------------------------------
 # A root plugin.json would be read instead of .antigravity-plugin/plugin.json,

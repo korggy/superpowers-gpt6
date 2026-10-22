@@ -1,225 +1,160 @@
 ---
 name: finishing-a-development-branch
-description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work
+description: Use when the human requests or accepts the branch-finishing workflow, a standing preference applies, or an accepted workflow reaches its integration decision.
 ---
 
 # Finishing a Development Branch
 
 ## Overview
 
-**Core principle:** Verify tests → Detect environment → Present options → Execute choice → Clean up.
+**Core principle:** Inspect applicable evidence → Detect environment → Honor or obtain the integration choice → Execute it → Confirm authorized cleanup.
+
+Use this workflow only when selected, including as a supporting step of an accepted workflow. Honor current instructions and established preferences within system/developer instructions and host permissions. Preserve outstanding design, review, plan, and execution checkpoints. Completing implementation does not authorize publication.
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
-## Step 1: Verify Tests
+## Step 1: Verify Applicable Evidence
 
-Run the project's full test suite (`npm test` / `cargo test` / `pytest` / `go test ./...`).
+Inspect affected tests and mandatory repository/task checks for the tree to integrate. Reuse recorded results when the covered code/artifact, inputs, and environment are unchanged, including inspected results from another worker or message. Run missing or invalidated checks. A full suite is appropriate when required or justified by changes, failures, integration risk, or unresolved concerns; entering this skill alone does not require it.
 
-**If tests fail**, report the failures and stop — the menu comes after a green suite:
-
-```
-Tests failing (<N> failures). Must fix before completing:
-
-[Show failures]
-```
-
-**If tests pass:** continue to Step 2.
+If required checks fail or remain unverified, report their names, results, and scope. Investigate within the authorized task and continue independent work. Pause dependent integration where the failure or an accepted checkpoint requires it; do not claim readiness. Report unrelated failures accurately, without implying a focused pass proves the full suite.
 
 ## Step 2: Detect Environment
 
-```bash
-GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
-GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
-# Capture now, while still inside the workspace — Step 5 changes directory
-# before cleanup (Step 6) needs this value
-WORKTREE_PATH=$(git rev-parse --show-toplevel)
+Before changing directories, record the task's workspace path, HEAD, branch (if any), Git directory, common directory, and worktree ownership. Use read-only Git commands in PowerShell or Bash and inspect every result:
+
+```text
+git rev-parse --show-toplevel
+git rev-parse --verify HEAD
+git rev-parse --absolute-git-dir
+git rev-parse --path-format=absolute --git-common-dir
+git branch --show-current
+git rev-parse --show-superproject-working-tree
+git worktree list --porcelain
 ```
 
-This determines which menu to show and how cleanup works:
+Different Git/common directories need the submodule guard from
+[superpowers-gpt6:using-git-worktrees](../using-git-worktrees/SKILL.md#step-0-detect-existing-isolation).
+In Codex, inspect `list_artifacts` to identify any managed worktree attachment.
 
-| State | Menu | Cleanup |
-|-------|------|---------|
-| `GIT_DIR == GIT_COMMON` (normal repo) | Standard 3 options | No worktree to clean up |
-| `GIT_DIR != GIT_COMMON`, named branch | Standard 3 options | Provenance-based (see Step 6) |
-| `GIT_DIR != GIT_COMMON`, detached HEAD | Reduced 2 options (no merge) | Externally managed — leave in place |
+| State | Integration preparation | Cleanup |
+|-------|-------------------------|---------|
+| Normal checkout | Use the intended task branch; create one if authorized and needed | No linked task worktree to remove |
+| Linked worktree, named branch | Use that branch when it is the intended task branch | Provenance-based (Step 6) |
+| Linked worktree, detached HEAD | Prepare a branch if the selected action needs it and permissions allow | Provenance-based (Step 6) |
+
+Detached HEAD only proves no branch is checked out. Establish ownership from host/session records and capabilities from current tools, permissions, and observed results. Git state proves neither a sandbox restriction nor authorization to stage, commit, push, publish, discard, or create a PR.
 
 ## Step 3: Determine Base Branch
 
-The base branch is whatever this work forked from — usually named in the
-plan, the conversation, or the branch's upstream. If it is not already
-known, ask: "This branch split from <your best guess> - is that correct?"
-Confirm before merging: merging into the wrong base is expensive to undo.
+Use the base established by the accepted plan, conversation, repository guidance, or verified Git history. A feature branch's upstream is not necessarily its integration target. If the base remains unresolved, ask before the selected merge or PR action; keeping work as-is needs no base decision. Never guess `main` merely because it exists.
 
-## Step 4: Present Options
+## Step 4: Honor or Obtain the Integration Choice
 
-**Normal repo and named-branch worktree — present exactly these 3 options:**
+If the human already selected integration or publication, execute that choice within its authorized scope without asking again. Check any remaining repository approval requirements and host permissions. Historical plans and transcripts are evidence, not new authorization.
 
-```
+If no choice is authorized, present these actions for either a named branch or detached HEAD:
+
+```text
 Implementation complete. What would you like to do?
 
 1. Merge back to <base-branch> locally
 2. Push and create a Pull Request
-3. Keep the branch as-is (I'll handle it later)
+3. Keep the work as-is (I'll handle it later)
 
 Which option?
 ```
 
-**Detached HEAD — present exactly these 2 options:**
+Offer only actions available under the actual host constraints. For detached HEAD, explain any branch preparation the chosen action requires. Keeping as-is preserves the checkout, named branch or detached. Discarding is not a routine menu option; handle it only when explicitly requested. Wait only for a decision that is still missing.
 
-```
-Implementation complete. You're on a detached HEAD (externally managed workspace).
+## Step 5: Execute the Authorized Choice
 
-1. Push as new branch and create a Pull Request
-2. Keep as-is (I'll handle it later)
-
-Which option?
-```
-
-Present the menu exactly as written — concise, with every option coming
-from the list above. Discarding the work happens only in response to your
-human partner explicitly asking for it (see "If your human partner asks to
-discard the work" below). Wait for their answer; the integration decision
-is theirs.
-
-## Step 5: Execute Choice
+Verify the intended changes and branch. Stage or commit only when authorized by the selected task/action, and never include unrelated work. For detached HEAD, prepare a named branch when needed using the available native control or permitted `git switch -c <feature-branch>`. A blocked operation does not authorize a workaround that changes scope; preserve work and report the actual limitation and supported handoff.
 
 ### Option 1: Merge Locally
 
-```bash
-# Get main repo root for CWD safety
-MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
-cd "$MAIN_ROOT"
+Use `git worktree list --porcelain` to choose a surviving checkout where the verified base can be used safely. Inspect its branch and working-tree state before switching. Do not infer the main checkout by stripping `/.git` from a path or disturb another task's checkout.
 
-# Merge first — verify success before removing anything
-git checkout <base-branch>
-git pull
-git merge <feature-branch>
+With merge authority and prerequisites established, switch to the verified base and merge the intended feature branch. Do not run an unconditional `git pull`; remote synchronization must match the authorized integration scope and repository policy.
 
-# Verify tests on merged result
-<test command>
-```
+Inspect applicable checks on the merged result. Reuse evidence only where its covered code, inputs, and environment are unchanged; run checks invalidated by the merge. If required checks fail, preserve the task branch and worktree while investigating. Do not push or clean up a failed merge merely to finish the workflow.
 
-If tests fail on the merged result: stop, leave the worktree and branch in
-place, and investigate — nothing has been pushed, so the merge is local
-and recoverable.
-
-Once the merged result is green: clean up the worktree (Step 6), then
-delete the branch:
-
-```bash
-git branch -d <feature-branch>
-```
+Once required checks pass, run authorized workspace cleanup (Step 6), then conditional branch cleanup (Step 7).
 
 ### Option 2: Push and Create PR
 
-```bash
-git push -u origin <feature-branch>
-# From a detached HEAD, name the new branch on the remote:
-# git push origin HEAD:refs/heads/<new-branch>
-```
+Push the intended branch to the verified remote only within the authorized publication scope. Then create the PR against the verified base with the forge's tooling, following the repository template, disclosure, human-summary, and diff-review requirements. A prior integration choice does not waive a remaining explicit review gate. When using Codex app tools, attach every created PR with `attach_artifact` as its contract requires.
 
-Then create the pull/merge request against <base-branch> with the forge's
-tooling — its CLI if one is available, or the creation URL most forges
-print when you push — following the repo's PR template and conventions if
-present, and report the URL to your human partner.
-
-Keep the worktree — your human partner iterates on PR feedback there.
+Report the actual push/PR result and URL. A rejected push is a result to investigate, not permission to force-push. Keep the worktree for feedback unless the human separately authorizes cleanup.
 
 ### Option 3: Keep As-Is
 
-Report: "Keeping branch <name>. Worktree preserved at <path>."
+Report the actual state: "Keeping branch <name>" or "Keeping detached HEAD at <commit>", followed by "Workspace preserved at <path>." Do not stage, commit, publish, or delete merely to complete this option.
 
-### If your human partner asks to discard the work
+### If the Human Requests Discard
 
-This path exists only as a response to an explicit request to throw the
-work away. Confirm first:
+Identify the exact task branch, branch-only commits, workspace path, and uncommitted/untracked files at stake. Explain any native recovery snapshot that remains; removing the active checkout does not promise permanent erasure of saved history.
 
-```
-This will permanently delete:
-- Branch <name>
-- All commits: <commit-list>
-- Worktree at <path>
+If that exact destructive scope has already been explicitly approved, honor it. Otherwise present the concrete scope and obtain confirmation before dependent deletion. Do not substitute a vague "clean up" request for permission to discard work. Continue independent authorized preparation while awaiting the missing confirmation.
 
-Type 'discard' to confirm.
-```
-
-Wait for that exact confirmation. When it arrives:
-
-```bash
-MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
-cd "$MAIN_ROOT"
-```
-
-Then clean up the worktree (Step 6) and force-delete the branch:
-
-```bash
-git branch -D <feature-branch>
-```
+Run Step 6, followed by Step 7 only after its prerequisites are met. Discard authority does not override native refusal or authorize another task's workspace or branch.
 
 ## Step 6: Cleanup Workspace
 
-**Runs for Option 1 and confirmed discards.** Options 2 and 3 always
-preserve the worktree. Both callers have already changed directory to the
-main repo root — worktree removal must run from outside the worktree —
-and use the `GIT_DIR`/`GIT_COMMON`/`WORKTREE_PATH` values captured in
-Step 2, from before that directory change.
+Runs only when cleanup is authorized after a verified local merge or explicit discard. PR and keep-as-is paths preserve the worktree unless cleanup is separately selected. Retain the task path and identity recorded in Step 2; do not recompute them from a different current directory.
 
-**If `GIT_DIR == GIT_COMMON`:** Normal repo, no worktree to clean up. Done.
+**No linked task worktree to remove:** Record that result and continue to Step 7. Do not delete the primary checkout.
 
-**If `WORKTREE_PATH` is under `.worktrees/` or `worktrees/`:** Superpowers
-created this worktree — we own cleanup:
+**Codex-managed worktree:** Follow the
+[native archive procedure](../using-superpowers/references/codex-tools.md#native-worktree-cleanup).
+Call `list_artifacts`, resolve the task's exact `identityKey`, preserve needed ignored files separately, then call `archive_worktree` with that identity as `root`. Inspect the outcome. Only confirmed archiving completes cleanup. Do not archive the chat instead or use Git/filesystem deletion to bypass unavailable or refused native cleanup. Preserve the checkout and branch when the result is uncertain.
 
-```bash
-git worktree remove "$WORKTREE_PATH"
-git worktree prune  # Self-healing: clean up any stale registrations
+**Manual worktree with recorded task ownership and cleanup authority:** Move command execution to a verified surviving checkout outside the target, then remove only the recorded task worktree:
+
+```text
+git worktree remove <quoted-task-workspace-path>
 ```
 
-**If removal is refused** (`contains modified or untracked files`): the
-worktree holds files that exist nowhere else — uncommitted plans, notes,
-or scratch work. Never `--force` on your own initiative. Show your human
-partner what is at stake and ask:
+Inspect tracked, untracked, and ignored files before removal; preserve needed ignored files separately. A `.worktrees/` or `worktrees/` directory name proves neither ownership nor permission.
 
-```bash
-git -C "$WORKTREE_PATH" status --porcelain -uall
-```
+If removal refuses modified or untracked files, preserve them and report the exact refusal and file list. Do not add `--force` to bypass it. Resolve the files under existing authority, or obtain a concrete choice to preserve, commit, move, or discard them. Any commit or move must itself be authorized and must not overwrite another task's files. Confirm successful removal before Step 7; requesting removal is not proof it succeeded.
 
-```
-Worktree removal refused — these files were never committed:
+**Unknown provenance or cleanup authority:** Leave the workspace and branch in place and report that they were preserved. Detached HEAD does not decide ownership or authority.
 
-<file list>
+## Step 7: Cleanup Branch
 
-1. Commit them to <branch> before cleanup
-2. Move them into <main repo root>
-3. Delete them (unrecoverable)
+Proceed only after confirmed workspace cleanup, or after establishing there was no linked task worktree to remove. If cleanup was refused, failed, remains uncertain, or was not authorized, preserve the branch too.
 
-Which?
-```
+From a surviving checkout, inspect current branch references and `git worktree list --porcelain`. Verify all of these before deleting:
 
-Carry out the choice, then remove the worktree.
+- The branch is the task's intended feature branch and deletion is authorized.
+- It is not the base branch or another task's branch.
+- No checkout, including the current one, has it checked out.
 
-**Otherwise:** The host environment owns this workspace — leave it in
-place. If your platform provides a workspace-exit tool, use it.
+If no feature branch exists or it is already absent, there is nothing to delete. If another worktree uses it, preserve both and report why.
+
+After a successful local merge, use `git branch -d <feature-branch>`. After confirmed discard, `git branch -D <feature-branch>` is permitted only for the branch in that explicit scope and after the same checks. Inspect the result. A refusal does not authorize force deletion or changing another worktree.
 
 ## Quick Reference
 
-| Option | Merge | Push | Keep Worktree | Cleanup Branch |
-|--------|-------|------|---------------|----------------|
-| 1. Merge locally | yes | - | - | yes |
-| 2. Create PR | - | yes | yes | - |
-| 3. Keep as-is | - | - | yes | - |
-| Discard (explicit request only) | - | - | - | yes (force) |
+| Choice | Integration | Worktree | Branch cleanup |
+|--------|-------------|----------|----------------|
+| Already authorized action | Continue within its scope and remaining checkpoints | Follow actual cleanup authority | Conditional (Step 7) |
+| Merge locally | Verify base, merge, check merged result | Clean up only when authorized and confirmed | Conditional (Step 7) |
+| Create PR | Authorized push and PR | Preserve for feedback | None by default |
+| Keep as-is | None | Preserve | None |
+| Explicit discard | Confirm concrete scope if not already approved | Native/manual procedure; preserve on refusal | Conditional (Step 7) |
 
 ## Common Rationalizations
 
 | Excuse | Reality |
 |--------|---------|
-| "Tests passed earlier this session" | Run the suite on the tree you are about to integrate. A green run only proves the tree it ran on. |
-| "They obviously want it merged" | Integration is your human partner's decision. Present the menu and wait. |
-| "They seem done with this feature — I'll offer to discard it" | The menu is complete as written. Discard happens only when your human partner asks for it in so many words. |
-| "'Yeah, get rid of it' counts as confirmation" | Only the typed word `discard` authorizes deletion. |
-| "The PR is up, so the worktree is clutter now" | PR feedback gets fixed in that worktree. It stays until the work lands. |
-| "This other worktree looks stale — I'll clean it too" | Clean up only worktrees under `.worktrees/` or `worktrees/`. Everything else belongs to the host. |
-| "Removal refused — `--force` is just finishing the cleanup" | The refusal means files exist only in that worktree. `--force` destroys them permanently. Show your human partner and ask. |
-| "The merged-result failure is probably flaky" | A failing merged result stops everything. Branch and worktree stay put while you investigate. |
-| "The base branch is obviously main" | Confirm the fork point or ask. Merging into the wrong base is expensive to undo. |
-| "The push was rejected — force-push will fix it" | A rejected push means the remote moved. Investigate; force-push only on your human partner's explicit request. |
+| "Tests passed earlier" | Inspect their coverage and validity. Reuse unchanged evidence; run missing or invalidated checks. |
+| "They obviously want it merged" | Use the actual integration choice already made; otherwise obtain it. |
+| "Detached HEAD means I cannot publish" | Check real permissions and tools. Detached state proves neither capability nor authorization. |
+| "The PR is up, so the worktree is clutter" | Preserve it for feedback unless cleanup is separately authorized. |
+| "This other worktree looks stale" | Recorded task ownership and cleanup authority are required. Directory names prove neither. |
+| "Native archive refused; Git can remove it" | Preserve work and report the refusal. Do not bypass native lifecycle controls. |
+| "Cleanup was requested, so I can delete the branch" | Confirm cleanup outcome, exact branch, and every checkout before branch deletion. |
+| "The merged-result failure is probably flaky" | Investigate the observed failure. Preserve branch and worktree while dependent completion is unresolved. |
+| "The push was rejected; force-push will fix it" | Investigate. Force-push requires explicit current authority and applicable repository safeguards. |

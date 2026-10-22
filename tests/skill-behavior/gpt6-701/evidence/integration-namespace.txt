@@ -1,0 +1,3 @@
+I couldn’t read the [brainstorming skill](C:/CodexTools/superpowers-gpt6-701/eval/integration-home/plugins/cache/bettergood/superpowers-gpt6/7.0.1-gpt6.1/skills/brainstorming/SKILL.md) because the environment’s execution policy blocked access. Please paste its contents so I can follow the requested workflow.
+
+No implementation has started; I’ll wait for your design approval.

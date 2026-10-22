@@ -1,3 +1,19 @@
+# BetterGood GPT-6 fork instructions
+
+This is the company fork, not an upstream contribution. The accepted
+[customization specification](docs/prompts/superpowers-7.0.1-gpt6-customization.md)
+replaces conflicting upstream automatic-workflow and redundant-verification
+defaults. All 15 workflows are opt-in. User requests and standing preferences
+govern skill defaults within system/developer instructions and host permissions.
+Preserve design/plan approval boundaries and do not infer publication authority.
+Use writing-skills evaluations for behavior edits, applicable evidence for
+completion claims, native Codex worktree management, and PowerShell on Windows.
+Fork branding and policy changes stay here; do not propose them upstream.
+
+The upstream contribution requirements below apply to contributions submitted
+to upstream. Their automatic-bootstrap acceptance test is not this fork's opt-in
+acceptance test; use docs/GPT6-VALIDATION.md for the fork's results.
+
 # Superpowers — Contributor Guidelines
 
 ## If You Are an AI Agent

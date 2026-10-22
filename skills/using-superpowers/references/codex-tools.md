@@ -1,108 +1,130 @@
-## Subagent dispatch requires multi-agent support
+# Codex tool contracts
 
-Add to your Codex config (`~/.codex/config.toml`):
+Use this reference within an accepted `superpowers-gpt6` workflow. Tool
+availability does not authorize delegation, isolation, integration, or
+publication. Follow current user instructions and established preferences
+within system/developer instructions and host permissions. The current tool
+schema takes precedence over examples or historical version claims here.
 
-```toml
-[features]
-multi_agent = true
-```
+## Subagent dispatch
 
-This enables the multi-agent tools that skills like
-`dispatching-parallel-agents` and `subagent-driven-development` use.
-Which tools you get depends on the multi-agent version your model
-preset selects (current presets run V2; older ones run V1). Trust your
-actual tool list over any table — including this one — when they
-disagree.
+Use multi-agent tools only when delegation is authorized and those tools are
+available. Do not modify personal Codex configuration to make a workflow run.
+If a required capability is unavailable, report it and continue independent
+authorized work.
 
-- **Spawning:** give children a clean context with
-  `spawn_agent {fork_turns: "none"}`; the default `"all"` copies your
-  entire transcript into the child. On Codex 0.145+, role files under
-  `~/.codex/agents/` attach to isolated forks via `agent_type`.
-  Full-history forks accept `model` and `reasoning_effort` overrides
-  (only `agent_type` is refused there) — isolated forks are the SDD
-  default for context hygiene, not because overrides require them.
-- **Fix rounds:** resume the implementer with `followup_task` — it
-  delivers your message, triggers a turn, and transparently reloads a
-  child the harness evicted. Never dispatch a fresh implementer on the
-  theory that a spawned agent cannot be messaged again; on V2 it
-  always can.
-- **Lifecycle:** V2 has no `close_agent`. Finished children are
-  evicted automatically when slots are needed; leaving them unclosed
-  costs nothing. Only V1 sessions have `close_agent` — there, close
-  reviewers when their review returns, and close each implementer
-  after its task's review passes.
-- **Model names:** never copy a model name from a skill, table, or old
-  session into `spawn_agent` without checking it against your current
-  spawn allowlist — V2 accepts only V2-capable presets and hard-errors
-  on the rest.
+- **Inherited settings:** Omit `model` and `reasoning_effort` when no override
+  is authorized. `fork_turns: "all"` (including its default) inherits the
+  parent's model and effort and must not receive either override.
+- **Authorized override:** Use `fork_turns: "none"` with both `model` and
+  `reasoning_effort`, each supported by the current spawn allowlist. Do not
+  assume setting only a model preserves the parent's effort. Give the clean
+  child its task, constraints, inputs, and required report in `message`.
+- **Role:** Put role/task information in `message`. The current
+  `collaboration.spawn_agent` has no `agent_type` field; do not invent it.
+- **Fix rounds:** Reuse the implementer through `followup_task`. It delivers
+  the follow-up and starts a turn when the agent is idle. `send_message`
+  delivers information without starting an idle agent. A new worker is not
+  required merely because the first completed its turn.
+- **Lifecycle:** Use only lifecycle tools exposed in the current session;
+  do not assume `close_agent` exists. Preserve the implementer's context for
+  review fixes. If a capability or agent is actually unavailable, report
+  that result before choosing an authorized replacement.
 
 ## Waiting on children
 
-`wait_agent` is an event subscription, not a poll: a long wait wakes
-the moment a child produces mailbox activity, with the same latency as
-a short one. Short-timeout polling buys nothing and costs a tool call —
-and a context rebill — per poll. In measured sessions, roughly
-two-thirds of all wait calls were short polls that timed out.
+Continue useful independent work while children run. When genuinely idle,
+use the available event wait, which wakes on mailbox activity or new user
+input, rather than repeatedly polling status.
 
-- While you still have local work, do not wait at all. A completed
-  child's final answer is pushed into your mailbox and arrives with
-  your next turn.
-- When you are genuinely idle with children outstanding, wait in
-  bounded stretches: `wait_agent` with `timeout_ms` 300000-600000
-  (5-10 minutes). After each stretch — wake or timeout — post one
-  status line, run `list_agents`, and chase any child that finished
-  without reporting. Never stack polls shorter than five minutes; the
-  event subscription wakes a bounded stretch just as fast as a short
-  one.
-- Completion mail cannot wake an idle controller (it is delivered
-  without triggering a turn); covering that idle window is
-  `wait_agent`'s only job. A stretch that times out with no activity
-  is your cue to reconcile, not to shorten the next stretch.
+Choose a timeout within all three bounds: the current tool's supported
+range, the host's blocking limit, and time remaining before the next required
+user update. In this host, blocking calls must not exceed 60 seconds. With a
+60-second update cadence and 45 seconds elapsed, a 15-second wait fits the
+current `wait_agent` minimum of 10 seconds. If too little time remains for a
+supported wait, give the due update first. Check the live schema when these
+limits differ; there is no five-to-ten-minute minimum imposed by this skill.
 
-## Model routing on spawns
+On wake, handle new results and resume work. On timeout, give any due update.
+Use `list_agents` when evidence suggests a stalled task or missing report;
+a timeout alone does not require another status call. Keep later waits
+within the same bounds.
 
-Every `spawn_agent` you issue — including when you are yourself a
-spawned child running a fan-out — sets `model` AND `reasoning_effort`
-explicitly, per the Model Selection rules of the skill you are
-executing. Setting `model` alone is a trap: the child's effort
-silently resets to that model's default, not to yours.
+## Environment detection
 
-Ask your human partner to add a machine-level backstop to
-`~/.codex/config.toml` so any spawn that slips through still routes to
-a deliberate tier instead of silently inheriting the session's most
-expensive model:
+Use the read-only Git inspection in
+[superpowers-gpt6:using-git-worktrees](../../using-git-worktrees/SKILL.md#step-0-detect-existing-isolation).
+Different Git/common directories require the submodule guard before being
+treated as a linked worktree. An empty branch name means detached HEAD:
+no branch is checked out. It proves neither ownership, sandbox restrictions,
+nor permission to publish.
 
-```toml
-[agents]
-default_subagent_model = "<a mid-tier model from your spawn allowlist>"
-default_subagent_reasoning_effort = "medium"
-```
+Establish provenance from the host's worktree records or the session's
+creation record. Establish capabilities from current tools, permissions,
+and observed results. Establish authorization from the human's request and
+applicable instructions, independently of Git state.
 
-## Environment Detection
+## Native worktree setup
 
-Skills that create worktrees or finish branches should detect their
-environment with read-only git commands before proceeding:
+When isolation is authorized, use the Codex app's native tools:
 
-```bash
-GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
-GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
-BRANCH=$(git branch --show-current)
-```
+1. Call `list_artifacts`. Reuse a suitable active worktree attached to this
+   task, checking its repository, workspace path, and intended starting state.
+   A fresh-worktree request may call for a new one; ordinary workflow entry
+   does not. Keep the exact attachment identity for cleanup.
+2. If a suitable managed checkout exists but needs attachment, use
+   `attach_worktree` only within its current ownership/attachment rules. It
+   reuses the checkout without resetting files or running setup again.
+3. Otherwise call `create_worktree` with the current required arguments
+   (currently `allowAsync: true`). Choose `ref` to match the authorized start;
+   omission uses the remote default branch, not necessarily the current
+   branch. Current creation does not copy uncommitted changes. Preserve them
+   and resolve any task dependency before proceeding in the new checkout.
+4. If creation or attachment returns an `operationId`, check
+   `get_worktree_creation_status` until completed or failed, doing independent
+   work between checks and spacing unchanged checks farther apart. If creation
+   succeeded but registration failed, use the returned workspace path with
+   `attach_worktree` as the current contract directs.
+5. Use the returned workspace directory for subsequent commands; the calling
+   shell does not automatically move. Inspect its state before setup or edits.
 
-- `GIT_DIR != GIT_COMMON` → already in a linked worktree (skip creation)
-- `BRANCH` empty → detached HEAD (cannot branch/push/PR from sandbox)
+A native refusal is not permission for manual `git worktree add`, deletion,
+or other lifecycle workarounds. Report the specific limitation and preserve
+work. Manual creation is a fallback only when native creation is unavailable
+and the worktree workflow authorizes it.
 
-See `using-git-worktrees` Step 0 and `finishing-a-development-branch`
-Step 1 for how each skill uses these signals.
+## Codex app finishing
 
-## Codex App Finishing
+Honor an integration action already authorized, while preserving any remaining
+design, review, or execution checkpoint. Detached HEAD can be given a branch
+when the chosen action needs it, using a permitted native control or Git.
+It is not a reason to ask the human to choose the same action again.
 
-When the sandbox blocks branch/push operations (detached HEAD in an
-externally managed worktree), the agent commits all work and informs
-the user to use the App's native controls:
+Do not infer permission to stage, commit, push, publish, discard, or create a
+PR from Git state or tool availability. If a required operation is blocked,
+report the actual limitation and supported handoff options; continue
+authorized preparation and preserve the work. Do not claim a branch control
+or handoff capability exists without checking the current host.
 
-- **"Create branch"** — names the branch, then commit/push/PR via App UI
-- **"Hand off to local"** — transfers work to the user's local checkout
+### Native worktree cleanup
 
-The agent can still run tests, stage files, and output suggested branch
-names, commit messages, and PR descriptions for the user to copy.
+For authorized cleanup of a Codex-managed worktree:
+
+1. Call `list_artifacts` and identify the task's active worktree. Retain its
+   exact `identityKey`; do not derive it from a path or detached HEAD.
+2. Inspect and preserve needed ignored files separately. `archive_worktree`
+   saves a recoverable Git snapshot of local changes, unpushed commits, and
+   non-ignored untracked files; ignored files are not included.
+3. Call `archive_worktree` with that exact `identityKey` as `root`. Include
+   attached PR identity keys only as directed by its current contract. Inspect
+   the outcome: only confirmed archiving completes workspace cleanup. It keeps
+   the chat open and does not modify GitHub PRs.
+4. From a surviving checkout, verify remaining branches and linked worktrees
+   before following
+   [superpowers-gpt6:finishing-a-development-branch](../../finishing-a-development-branch/SKILL.md#step-7-cleanup-branch).
+   An archive success does not prove that a branch was deleted or is unused.
+
+Primary, pinned, shared, or otherwise ineligible worktrees may be refused.
+If archival is unavailable, refused, or uncertain, preserve the checkout and
+branch and report the limitation. Never bypass refusal with Git or filesystem
+deletion. Never archive the chat as a substitute for archiving its worktree.

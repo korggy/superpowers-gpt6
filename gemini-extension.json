@@ -1,6 +1,6 @@
 {
-  "name": "superpowers",
-  "description": "Core skills library: TDD, debugging, collaboration patterns, and proven techniques",
-  "version": "7.0.1",
+  "name": "superpowers-gpt6",
+  "description": "BetterGood GPT-6 workflows based on Superpowers 7.0.1: opt-in planning, TDD, debugging, review, and delivery.",
+  "version": "7.0.1-gpt6.1",
   "contextFileName": "GEMINI.md"
 }

@@ -1,9 +1,15 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, modifying behavior, or planning anything new, in software or out of it (a talk, a business, a renovation)."
+description: Use when your human partner requests brainstorming or design discussion, accepts an offer, or an established workflow preference calls for it.
 ---
 
 # Brainstorming
+
+**Scope:** This is an opt-in workflow. [Selection and authority](../using-superpowers/SKILL.md) apply, including supporting steps of an accepted workflow.
+
+Use this after a direct request, accepted offer, established preference, or
+supporting step of an accepted workflow. A generic creative request does not
+select it. Accepting this skill does not approve its resulting design.
 
 You are very good at building. You build what you believe your human
 partner wants, and that belief is usually thinner than it feels. This
@@ -20,7 +26,9 @@ Before you reply, ask yourself: what do I know about what they want, and
 why?
 
 - **Everything that matters is in the request** ("make the icon cornflower
-  blue"). This is a quick, clear task. Do it, and say what you did.
+  blue"). If implementation is authorized and no design-only checkpoint
+  applies, do it and say what you did. Otherwise produce the small design
+  for approval; clarity does not waive an explicit design gate.
 - **Something non-trivial is missing.** Start the conversation.
 
 Before you start implementing, you must, in order:
@@ -29,7 +37,7 @@ Before you start implementing, you must, in order:
    human partner pick one (see Lay out the approaches).
 2. Write the design doc, short or full (see Size the Work).
 3. Get their approval of that doc.
-4. Invoke the superpowers:writing-plans skill.
+4. Invoke the superpowers-gpt6:writing-plans skill.
 
 Two things aren't implementing: a spike they said yes to (see Spike to
 feel things out), and doing what they asked once they've opted out of
@@ -88,8 +96,8 @@ That's the whole message.
 Each message ends with one question: a single sentence with no list of
 example answers hanging off it. Use plain language, pitched just a little
 above where your human partner is. Match their vocabulary; never use
-process jargon. You never need to quote this skill to your human
-partner.
+process jargon. If this skill requires a pause, link and quote the
+applicable instruction and explain the decision it protects.
 
 Be clear and concise. Lead with what matters. Avoid jargon. When you
 report what you found, give them the most important findings and offer
@@ -131,10 +139,10 @@ already plain, say what you're hoping to learn or what the answer would
 change. A proposal they can correct, plus your reason for it, often
 beats a question.
 
-**Offer recon.** Once you have a bit of grounding and looking further
-would help, offer to go look: deeper into their codebase or project,
-their own files and data, or the web. Say what you'd look for. They
-decide whether you go.
+**Gather context.** Read relevant files and perform read-only investigation
+within the authorized scope directly. Ask only for missing access, an
+unresolved decision, or expansion beyond that scope. Continue independent
+authorized work while a dependent question is pending.
 
 **Lay out the approaches.** Once you understand what they want, and
 before you write anything up, put the ways of building it in a message
@@ -222,7 +230,8 @@ or two each and goes straight to your human partner, without the
 builder check.
 
 **Where it goes:** in a software repo,
-`docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`, committed.
+`docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`. Commit only when
+that action is authorized.
 Otherwise, ask. Your human partner's preferences override both.
 
 **Builder check** (for a project): dispatch a fresh subagent with
@@ -251,13 +260,14 @@ Building includes writing product code, scaffolding, installing
 dependencies, creating projects, and invoking an implementation skill.
 Reading and exploring are fine.
 
-Two exceptions. If they opted out of the questions, the skill is done
-and the gate goes with it. A spike they said yes to may be built; it
+Two exceptions. If they explicitly opt out of the design workflow and
+authorize implementation, the skill is done. Merely accepting a workflow
+or a visual tool does not waive a design-only instruction. A spike they said yes to may be built; it
 stays labeled throwaway, and keeping what it produced is a new request
 that comes back through this gate.
 
 After the design doc is approved, the next step is the plan: invoke
-superpowers:writing-plans and no other skill.
+superpowers-gpt6:writing-plans and no other skill.
 </HARD-GATE>
 
 ## Red Flags

@@ -1,0 +1,62 @@
+[
+  {
+    "path": "skills/using-superpowers/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/brainstorming/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/receiving-code-review/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/verification-before-completion/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/test-driven-development/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/executing-plans/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/dispatching-parallel-agents/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/subagent-driven-development/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/using-superpowers/references/codex-tools.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/using-git-worktrees/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/finishing-a-development-branch/SKILL.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  },
+  {
+    "path": "skills/executing-plans/references/final-review.md",
+    "sourceMatches": true,
+    "installedMatches": true
+  }
+]
