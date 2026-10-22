@@ -1,0 +1,16 @@
+{
+  "name": "bettergood",
+  "interface": {
+    "displayName": "BetterGood"
+  },
+  "plugins": [
+    {
+      "name": "superpowers-gpt6",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
