@@ -1,18 +1,14 @@
 {
-  "name": "superpowers-dev",
+  "name": "bettergood",
   "interface": {
-    "displayName": "Superpowers Dev"
+    "displayName": "BetterGood"
   },
   "plugins": [
     {
-      "name": "superpowers",
+      "name": "superpowers-gpt6",
       "source": {
-        "source": "url",
-        "url": "./"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
+        "source": "local",
+        "path": "./"
       },
       "category": "Developer Tools"
     }

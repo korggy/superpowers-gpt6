@@ -1,0 +1,130 @@
+[
+  {
+    "id": 1,
+    "next_actions": ["Inspect the workspace and available tooling, scaffold a minimal React app, and implement adding, completing, and deleting todos.", "Run the applicable build and exercise those three interactions."],
+    "deferred_actions": [],
+    "rationale": "The request authorizes implementation. Routine, reversible design choices need no separate brainstorming or approval step."
+  },
+  {
+    "id": 2,
+    "next_actions": ["Inspect the existing UI patterns. Present both designs, explain how each fits those patterns and the demo timeline, recommend one, and ask the user to approve a design."],
+    "deferred_actions": ["Implement only after the user approves the design."],
+    "rationale": "The deadline favors a short discussion. The teammate cannot waive the user's approval requirement."
+  },
+  {
+    "id": 3,
+    "next_actions": ["Fix findings 1 and 2 and run their acceptance tests. Report the result for each and identify the archived-account rule as the outstanding decision."],
+    "deferred_actions": ["Resolve findings 3 and 4 together after the user clarifies whether archived accounts count in revenue."],
+    "rationale": "The revenue decision has no bearing on either null-handling fix."
+  },
+  {
+    "id": 4,
+    "next_actions": ["Answer from the inspected command, exit status, output, and tested tree. Cite SHA A, environment E, and the passing affected tests and mandatory checks. Confirm the scoped fix is complete."],
+    "deferred_actions": [],
+    "rationale": "The evidence covers the current state. A new chat message creates no need to repeat verification."
+  },
+  {
+    "id": 5,
+    "next_actions": ["Report that the previous checks passed on A and the current parser change is unverified. Run parser and affected-code tests plus all mandatory checks required for the changed tree, starting with the most directly affected checks.", "If the window closes first, report which checks passed, failed, or remain pending."],
+    "deferred_actions": ["Claim completion only once the required results cover the changed tree and pass."],
+    "rationale": "The parser is an input to the affected behavior. The earlier results cannot establish that the new state passes."
+  },
+  {
+    "id": 6,
+    "next_actions": ["README URL: inspect the rendered link target and verify it reaches the intended destination.", "Arithmetic regression: run a focused regression test and observe it fail for the expected reason, apply the fix, then rerun it and the affected arithmetic checks.", "Skill wording: inspect the wording diff and exercise representative requests that should and should not activate the workflow.", "Report the evidence and result for each change. Identify the known unrelated failure and state the scope of the checks run."],
+    "deferred_actions": ["Claim each change verified only when its own checks pass. A whole-suite pass requires a passing whole-suite run."],
+    "rationale": "Each change has a distinct observable outcome. The accepted TDD sequence applies to the arithmetic regression."
+  },
+  {
+    "id": 7,
+    "next_actions": [
+      {
+        "tool": "spawn_agent",
+        "arguments": {
+          "task_name": "inspect_bug",
+          "fork_turns": "all",
+          "message": "Inspect the bug described in the conversation. Report the cause and supporting evidence. Leave implementation to the parent."
+        }
+      }
+    ],
+    "deferred_actions": [],
+    "rationale": "The full-history fork supplies the requested context and inherits model and reasoning settings."
+  },
+  {
+    "id": 8,
+    "next_actions": [
+      {
+        "tool": "spawn_agent",
+        "arguments": {
+          "task_name": "independent_review",
+          "fork_turns": "none",
+          "model": "gpt-6.2-astra",
+          "reasoning_effort": "high",
+          "message": "Independently review the changes in the shared workspace. Inspect the diff and relevant surrounding code. Report concrete findings with file locations and supporting evidence, and identify any verification gaps."
+        }
+      }
+    ],
+    "deferred_actions": [],
+    "rationale": "The clean fork supports both requested overrides and gives the reviewer a self-contained assignment."
+  },
+  {
+    "id": 9,
+    "next_actions": ["Run the unrelated authorized check while the implementer works. Send a progress update if one comes due during the check.", "Once idle, inspect the elapsed time since the last update. At 35 seconds elapsed, call wait_agent with {\"timeout_ms\":25000}. Shorten that wait if more time has elapsed. If fewer than 10000 ms remain, send the update before waiting.", "Handle any result immediately. If still waiting at the update deadline, update the user and repeat with waits of at most 60000 ms, shortened to the time remaining before the next update."],
+    "deferred_actions": ["Inspect the implementer's result when it arrives."],
+    "rationale": "The independent check can proceed immediately. Each idle wait must fit both the tool's range and the remaining update interval."
+  },
+  {
+    "id": 10,
+    "next_actions": ["Use the native branching operation to attach the current worktree at its current HEAD to codex/fix-retry. Verify the branch and intended diff, commit the inspected changes, publish that branch, and verify the remote ref points to the resulting commit."],
+    "deferred_actions": [],
+    "rationale": "Detached HEAD describes the starting checkout. Ownership, authorization, and native support are established, so the native operation is the first step."
+  },
+  {
+    "id": 11,
+    "next_actions": ["Review the local patch, inspect its test evidence, run any outstanding applicable local checks, and report findings and validation results. Leave the checkout in place."],
+    "deferred_actions": ["Omit the saved plan's commit, push, and PR steps."],
+    "rationale": "The current instruction limits the task to local review and validation. Detached HEAD permits both."
+  },
+  {
+    "id": 12,
+    "next_actions": ["Confirm K, P, and codex/done still match. Inspect current branch topology and worktree usage, verify the branch tip is merged into the intended integration branch, and record the tip.", "Copy the needed ignored export to a retained location outside P and verify the copy against the source before archiving.", "Invoke native archive for K. Confirm successful removal of P, then recheck the branch tip, merge status, and worktree usage before safely deleting the merged local branch codex/done."],
+    "deferred_actions": ["Stop before a destructive step if its identity, preservation, or topology check fails."],
+    "rationale": "Archive removes P and omits ignored files. Branch deletion depends on the branch's current tip and usage after archive."
+  },
+  {
+    "id": 13,
+    "next_actions": ["Ensure the needed ignored export has a verified copy outside P. Report the native refusal, the shared status of K at P, and the remaining cleanup."],
+    "deferred_actions": ["Leave the worktree and branch in place pending resolution of shared ownership through the managed workflow. Avoid manual filesystem removal, Git worktree removal, and forced branch deletion."],
+    "rationale": "The refusal establishes a shared-worktree constraint. The deadline and shell access do not authorize bypassing it."
+  },
+  {
+    "id": 14,
+    "next_actions": ["Continue the authorized feature work and its applicable verification. Leave task-worktree and its branch in place."],
+    "deferred_actions": ["Cleanup would require established provenance and authorization."],
+    "rationale": "A stale-looking name establishes neither ownership nor permission to delete."
+  },
+  {
+    "id": 15,
+    "next_actions": ["Carry out the selected local-retention option by leaving the branch and its worktree available. Report the retained branch and the already-verified check and review status."],
+    "deferred_actions": [],
+    "rationale": "The integration decision is settled and the evidence is current. No options menu, repeat approval, or rerun is needed."
+  },
+  {
+    "id": 16,
+    "next_actions": ["Ask one focused question: “What are people trying to accomplish when they open the directory, and what makes that difficult today?”"],
+    "deferred_actions": ["Use the answer and relevant project patterns to shape the design."],
+    "rationale": "The proposed UI is known. Its purpose is the missing fact most likely to change the design."
+  },
+  {
+    "id": 17,
+    "next_actions": ["Present both bindings side by side: give Ctrl+K to the first action or give it to the second. For each, explain which task gets the shortcut, how users would reach the other action, and the tradeoff against the stated motivation. Ask the human partner which action should take priority."],
+    "deferred_actions": ["Keep the binding undecided if the partner needs stakeholder input."],
+    "rationale": "The motivation is settled. The unresolved choice is which action receives the competing binding."
+  },
+  {
+    "id": 18,
+    "next_actions": ["In the first response, state the understood goal and constraints, present the single supported design with its user-visible behavior and acceptance criteria, and ask for design approval. Use read-only inspection if needed to substantiate a detail."],
+    "deferred_actions": ["Begin implementation after explicit approval."],
+    "rationale": "The available facts support a concrete proposal immediately. Extra discovery questions or invented alternatives would delay the required approval."
+  }
+]

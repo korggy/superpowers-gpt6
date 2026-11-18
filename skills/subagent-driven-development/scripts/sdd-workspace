@@ -74,16 +74,45 @@ case "$plan_abs" in
   *)         plan_id=$plan_abs ;;
 esac
 
-# True when the workspace at $1 is (or becomes) this plan's: an existing
-# marker must name this plan; a missing marker means a new workspace or a
-# pre-marker legacy one, and either way the plan claims it by writing one.
+# Publish a complete marker under an exclusive create-new lock. A contender
+# that saw no marker must recheck after acquiring the lock: the former owner
+# may have just moved its lock into place. PowerShell uses the same protocol.
+claim_marker() {
+  local marker="$1/plan-path" lock="$1/plan-path.lock" attempt
+  mkdir -p "$1" || exit 2
+  for ((attempt=0; attempt<100; attempt++)); do
+    [ ! -e "$marker" ] || return 0
+    if (set -C; : > "$lock") 2>/dev/null; then
+      if [ -e "$marker" ]; then
+        rm -f -- "$lock" || exit 2
+        return 0
+      fi
+      if printf '%s\n' "$plan_id" > "$lock" && mv -- "$lock" "$marker"; then return 0; fi
+      rm -f -- "$lock"
+      exit 2
+    fi
+    if [ ! -e "$lock" ] && [ ! -e "$marker" ]; then
+      echo "cannot claim workspace: $marker" >&2
+      exit 2
+    fi
+    sleep 0.05
+  done
+  echo "workspace claim timed out: $lock (check for an interrupted owner)" >&2
+  exit 2
+}
+
 owns() {
-  if [ -e "$1/plan-path" ]; then
-    [ "$(cat "$1/plan-path")" = "$plan_id" ]
-  else
-    mkdir -p "$1"
-    printf '%s\n' "$plan_id" > "$1/plan-path"
-  fi
+  [ -f "$1/plan-path" ] || claim_marker "$1"
+  owner=$(cat "$1/plan-path") || exit 2
+  case "$OSTYPE" in
+    msys*|cygwin*)
+      owner=${owner%$'\r'}
+      if [[ "$owner" =~ ^([a-zA-Z]):/(.*)$ ]]; then
+        owner="/${BASH_REMATCH[1],,}/${BASH_REMATCH[2]}"
+      fi
+      [ "${owner,,}" = "${plan_id,,}" ] ;;
+    *) [ "$owner" = "$plan_id" ] ;;
+  esac
 }
 
 dir="$base/$slug"
@@ -99,7 +128,9 @@ fi
 
 # Create-only: a repo may commit its own .gitignore here (e.g. to version
 # progress.md ledgers); overwriting it would revert that on every run.
-[ -e "$base/.gitignore" ] || printf '*\n' > "$base/.gitignore"
+if [ ! -e "$base/.gitignore" ]; then
+  (set -C; printf '*\n' > "$base/.gitignore") 2>/dev/null || [ -f "$base/.gitignore" ] || exit 2
+fi
 
 # On Windows (Git Bash, MSYS2, Cygwin) print C:/Users/... rather than
 # /c/Users/... or /tmp/...: the caller may be PowerShell or another native

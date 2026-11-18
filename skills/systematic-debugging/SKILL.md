@@ -1,9 +1,11 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: Use when your human partner requests systematic debugging of an unexplained failure, or an accepted workflow calls for root-cause investigation.
 ---
 
 # Systematic Debugging
+
+**Scope:** This is an opt-in workflow. [Selection and authority](../using-superpowers/SKILL.md) apply, including supporting steps of an accepted workflow.
 
 ## Overview
 
@@ -17,7 +19,8 @@ description: Use when encountering any bug, test failure, or unexpected behavior
 NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 ```
 
-If you haven't completed Phase 1, you cannot propose fixes.
+For an investigation-only request, finish with the evidence for the cause,
+its effect, and what is still unknown. Apply a fix when implementation is authorized.
 
 ## When to Use
 
@@ -174,7 +177,7 @@ You MUST complete each phase before proceeding to the next.
    - Automated test if possible
    - One-off test script if no framework
    - MUST have before fixing
-   - Use the `superpowers:test-driven-development` skill for writing proper failing tests
+   - Use the `superpowers-gpt6:test-driven-development` skill for writing proper failing tests
 
 2. **Implement Single Fix**
    - Address the root cause identified
@@ -186,7 +189,7 @@ You MUST complete each phase before proceeding to the next.
    - Test passes now?
    - No other tests broken?
    - Issue actually resolved?
-   - Use the `superpowers:verification-before-completion` skill before claiming success
+   - Use the `superpowers-gpt6:verification-before-completion` skill before claiming success
 
 4. **If Fix Doesn't Work**
    - STOP

@@ -1,9 +1,11 @@
 ---
 name: writing-skills
-description: Use when creating new skills, editing existing skills, or verifying skills work before deployment
+description: Use when your human partner requests skill authoring or validation, or an accepted workflow requires behavior-shaping skill changes.
 ---
 
 # Writing Skills
+
+**Scope:** This is an opt-in workflow. [Selection and authority](../using-superpowers/SKILL.md) apply, including supporting steps of an accepted workflow.
 
 ## Overview
 
@@ -15,7 +17,7 @@ You write test cases (pressure scenarios with subagents), watch them fail (basel
 
 **Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.
 
-**REQUIRED BACKGROUND:** You MUST understand superpowers:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.
+**REQUIRED BACKGROUND:** You MUST understand superpowers-gpt6:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.
 
 **Official guidance:** For Anthropic's official skill authoring best practices, see references/anthropic-best-practices.md. This document provides additional patterns and guidelines that complement the TDD-focused approach in this skill.
 
@@ -160,26 +162,14 @@ When: Reference material too large for inline
 
 Invoke bundled scripts through their interpreter in the prose (`bash scripts/tool.sh`, `node scripts/tool.js`), never by bare path: some harness plugin packagers strip executable bits, and a bare `scripts/tool.sh` fails there with `Permission denied`.
 
-## The Iron Law (Same as TDD)
+## Evidence Before Behavior Claims
 
-```
-NO SKILL WITHOUT A FAILING TEST FIRST
-```
-
-This applies to NEW skills AND EDITS to existing skills.
-
-Write skill before testing? Delete it. Start over.
-Edit skill without testing? Same violation.
-
-**No exceptions:**
-- Not for "simple additions"
-- Not for "just adding a section"
-- Not for "documentation updates"
-- Don't keep untested changes as "reference"
-- Don't "adapt" while running tests
-- Delete means delete
-
-**REQUIRED BACKGROUND:** The superpowers:test-driven-development skill explains why this matters. Same principles apply to documentation.
+For behavior-shaping edits, capture an immutable baseline and run fresh
+control and baseline samples before editing, then test the candidate.
+Use actual model/tool capabilities and preserve raw results. If both arms
+pass, report no demonstrated gain; this is not a manufactured RED-to-GREEN.
+Static formatting uses artifact validation instead of invented unit tests.
+A required unavailable model or harness is a validation gap, not a pass.
 
 ## Testing All Skill Types
 
@@ -297,7 +287,7 @@ Agent found new rationalization? Add explicit counter. Re-test until bulletproof
 Full pressure-scenario runs are the final gate, but they are slow and expensive per iteration. Verify the wording itself first with micro-tests:
 
 1. **One fresh-context sample per call** — a raw API call, or a single-shot subagent if you don't have API access. System prompt = the realistic context the guidance will live in (the full skill or prompt template, not the guidance in isolation); user message = a task that tempts the failure.
-2. **Always include a no-guidance control.** If the control doesn't exhibit the failure, there is nothing to fix — stop, don't author the guidance.
+2. **Always include a no-guidance control.** If the control and candidate both pass, report no demonstrated improvement. An explicit policy customization may still proceed, with its evidence limits stated.
 3. **5+ reps per variant.** Single samples lie.
 4. **Manually read every flagged match.** Score programmatically if you like, but template echoes and quoted counter-examples masquerade as hits; automated counts alone overstate both failure and success.
 5. **Variance is a metric.** When guidance lands, reps converge on the same shape. Five different interpretations across five reps means the wording isn't binding — tighten the form before adding words.
@@ -333,11 +323,11 @@ helper1, helper2, step3, pattern4
 
 ## STOP: Before Moving to Next Skill
 
-**After writing ANY skill, you MUST STOP and complete the deployment process.**
+**Before claiming a changed skill is validated, complete its applicable checks.**
 
 **Do NOT:**
-- Create multiple skills in batch without testing each
-- Move to next skill before current one is verified
+- Claim that grouped skill changes passed without evaluating the affected behaviors
+- Treat an unavailable required evaluation as a pass
 - Skip testing because "batching is more efficient"
 
 **The deployment checklist below is MANDATORY for EACH skill.**
@@ -382,8 +372,8 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 - [ ] Supporting files only for tools or heavy reference
 
 **Deployment:**
-- [ ] Commit skill to git and push to your fork (if configured)
-- [ ] Consider contributing back via PR (if broadly useful)
+- [ ] Commit, push, install or publish only when separately authorized
+- [ ] Keep company customizations in the fork; follow contributor rules for any separately requested PR
 
 ## Discovery Workflow
 

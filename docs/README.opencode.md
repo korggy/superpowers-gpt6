@@ -4,7 +4,7 @@ Complete guide for using Superpowers with [OpenCode.ai](https://opencode.ai).
 
 ## Installation
 
-OpenCode V2 requires version 2.0.4 or later.
+OpenCode V2 requires version 2.0.4 or later. Use the local checkout for an uncommitted candidate. For a Git installation, replace <reviewed-fork-commit> with the published BetterGood revision you reviewed.
 
 ### OpenCode V1
 
@@ -12,7 +12,7 @@ Use the existing V1 plugin configuration:
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
+  "plugin": ["superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git#<reviewed-fork-commit>"]
 }
 ```
 
@@ -22,7 +22,7 @@ Use the V2 plugin configuration:
 
 ```json
 {
-  "plugins": ["superpowers@git+https://github.com/obra/superpowers.git"]
+  "plugins": ["superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git#<reviewed-fork-commit>"]
 }
 ```
 
@@ -111,7 +111,7 @@ V1 `plugin` key and the V2 `plugins` key):
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git#v7.0.2"]
+  "plugin": ["superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git#<reviewed-fork-commit>"]
 }
 ```
 
@@ -148,7 +148,7 @@ Skills speak in actions rather than naming any one runtime's tools. The bootstra
 
 - "Create a todo" / "mark complete in todo list" → `todowrite`
 - `Subagent (general-purpose):` template → OpenCode's `task` tool with `subagent_type: "general"` (or `"explore"` for codebase exploration)
-- "Invoke a skill" → OpenCode's native `skill` tool with the bare skill name (`superpowers:brainstorming` → `name: "brainstorming"`)
+- "Invoke a skill" → OpenCode's native `skill` tool with the bare skill name (`superpowers-gpt6:brainstorming` → `name: "brainstorming"`)
 - "Read a file" → `read`
 - "Create a file" / "edit a file" / "delete a file" → `apply_patch`
 - "Run a shell command" → `bash`
@@ -159,7 +159,7 @@ Skills speak in actions rather than naming any one runtime's tools. The bootstra
 
 - "Create a todo" → V2 has no todo tool of any kind; the mapping tells the model to track the plan in a markdown file (or the harness's plan facility) instead
 - `Subagent (general-purpose):` template → OpenCode's `subagent` tool with `agent: "general"` (or `"explore"`); pass `sessionID` to continue a previous subagent
-- "Invoke a skill" → OpenCode's native `skill` tool with the bare skill id (`superpowers:brainstorming` → `id: "brainstorming"`)
+- "Invoke a skill" → OpenCode's native `skill` tool with the bare skill id (`superpowers-gpt6:brainstorming` → `id: "brainstorming"`)
 - "Read a file" → `read`
 - "Create, edit, or delete files" → use `patch` with `patchText` when available; otherwise use `write` to create or overwrite files, `edit` for targeted changes, and `shell` for deletion
 - "Run a shell command" → `shell` (`command`, `workdir`, `timeout`, `background`)
@@ -202,7 +202,7 @@ the plugin, try installing with system npm and pointing OpenCode at the local
 package:
 
 ```powershell
-npm install superpowers@git+https://github.com/obra/superpowers.git --prefix "$HOME\.config\opencode"
+npm install "superpowers-gpt6@git+https://github.com/korggy/superpowers-gpt6.git#<reviewed-fork-commit>" --prefix "$HOME\.config\opencode"
 ```
 
 Then use the absolute path of the installed package in `opencode.json` for your
@@ -213,7 +213,7 @@ package name, not a local directory.
 
 ```json
 {
-  "plugin": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers"]
+  "plugin": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers-gpt6"]
 }
 ```
 
@@ -221,7 +221,7 @@ package name, not a local directory.
 
 ```json
 {
-  "plugins": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers"]
+  "plugins": ["C:\\Users\\<you>\\.config\\opencode\\node_modules\\superpowers-gpt6"]
 }
 ```
 
@@ -238,7 +238,7 @@ package name, not a local directory.
 
 ## Getting Help
 
-- Report issues: https://github.com/obra/superpowers/issues
-- Main documentation: https://github.com/obra/superpowers
+- Report fork issues: https://github.com/korggy/superpowers-gpt6/issues
+- Upstream project: https://github.com/obra/superpowers
 - OpenCode V2 docs: https://opencode.ai/v2/docs/
 - OpenCode V1 docs: https://opencode.ai/docs/

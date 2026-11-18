@@ -25,14 +25,11 @@ plan=$1
 n=$2
 [ -f "$plan" ] || { echo "no such plan file: $plan" >&2; exit 2; }
 
-if [ $# -eq 3 ]; then
-  out=$3
-else
-  # Invoke via bash rather than direct exec: some extractors (Python zipfile)
-  # strip Unix exec bits when unpacking marketplace packages (#2040).
-  dir=$("${BASH:-bash}" "$here/sdd-workspace" "$plan")
-  out="$dir/task-${n}-brief.md"
-fi
+[[ "$n" =~ ^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*$ && "$n" =~ [0-9] ]] || { echo "invalid task ID: $n" >&2; exit 2; }
+"${BASH:-bash}" "$here/sdd-repo" >/dev/null
+
+tmp=$(mktemp)
+trap 'rm -f -- "$tmp"' EXIT
 
 # A task heading is `Task` followed by an ID: letters and digits, optionally
 # dot-separated, containing at least one digit (3, 6b, A1, 2.1). The digit
@@ -59,50 +56,93 @@ fi
 # The plan path goes through ENVIRON, not -v, which would mangle the
 # backslashes of a Windows path.
 rc=0
-TASK_BRIEF_PLAN="$plan" awk -v n="$n" '
-  /^```/ { infence = !infence; if (infence) { fence_line = NR; hidden = 0 } }
-  infence && /^#+[ \t]+Task[ \t]/ { hidden = 1 }
-  !infence && /^#+[ \t]+Task[ \t]/ {
-    id = $0
-    sub(/^#+[ \t]+Task[ \t]+/, "", id)
-    if (match(id, /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*/) && substr(id, 1, RLENGTH) ~ /[0-9]/) {
-      tasks++
-      id = substr(id, 1, RLENGTH)
-      match($0, /^#+/)
-      subtask = intask && RLENGTH > level && substr(id, 1, length(n)) == n \
-        && substr(id, length(n) + 1, 1) ~ /[A-Za-z.]/
-      if (!subtask) {
-        intask = (id == n)
-        level = RLENGTH
+LC_ALL=C TASK_BRIEF_PLAN="$plan" awk -v n="$n" '
+  {
+    line = $0
+    sub(/\r$/, "", line)
+    sub(/^ ? ? ?/, "", line)
+    if (fence != "") {
+      closing = line
+      sub(/[ \t]*$/, "", closing)
+      if (length(closing) >= fence_length && closing !~ ("[^" fence "]")) fence = ""
+    } else if (match(line, /^(```+|~~~+)/)) {
+      token = substr(line, 1, RLENGTH)
+      rest = substr(line, RLENGTH + 1)
+      if (substr(token, 1, 1) != "`" || rest !~ /`/) {
+        fence = substr(token, 1, 1)
+        fence_length = length(token)
+        fence_line = NR
+        hidden = 0
       }
     }
+    match(line, /^#+/)
+    depth = RLENGTH
+    if (depth > 0 && depth <= 6 && match(line, /^#+[ \t]+Task[ \t]+/)) {
+      id = substr(line, RLENGTH + 1)
+      if (match(id, /^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*/) && substr(id, 1, RLENGTH) ~ /[0-9]/) {
+        id = substr(id, 1, RLENGTH)
+        if (fence != "") {
+          hidden = 1
+        } else {
+          # Workspace filenames must stay distinct on a case-insensitive volume.
+          key = "id:" tolower(id)
+          if (key in spelling && spelling[key] != id) {
+            print "task IDs " spelling[key] " and " id " differ only by case in " ENVIRON["TASK_BRIEF_PLAN"] | "cat >&2"
+            ambiguous = 1
+            exit 3
+          }
+          spelling[key] = id
+          tasks++
+          subtask = intask && depth > level && substr(id, 1, length(n)) == n \
+            && substr(id, length(n) + 1, 1) ~ /[A-Za-z.]/
+          if (!subtask) {
+            intask = ("x" id == "x" n)
+            if (intask) found++
+            level = depth
+          }
+        }
+      }
+    }
+    if (fence == "" && line ~ /^#+[ \t]+[^ \t]+[ \t]+[A-Za-z0-9.]*[0-9]/ && shaped < 5)
+      shaped_heading[++shaped] = line
+    if (intask) print
   }
-  !infence && /^#+[ \t]+[^ \t]+[ \t]+[A-Za-z0-9.]*[0-9]/ && shaped < 5 { shaped_heading[++shaped] = $0 }
-  intask { print; found = 1 }
   END {
+    if (ambiguous) exit 3
+    if (found > 1) {
+      print "task " n " is ambiguous in " ENVIRON["TASK_BRIEF_PLAN"] " (duplicate task headings)" | "cat >&2"
+      exit 3
+    }
     where = "the code fence opened at line " fence_line " of " ENVIRON["TASK_BRIEF_PLAN"] " never closes"
-    if (infence && hidden && (intask || !found)) {
+    if (fence != "" && hidden && (intask || !found)) {
       print "task-brief: " where ", so no Task heading after it can be seen; close that fence in the plan and rerun" | "cat >&2"
       if (intask) exit 4
-    } else if (infence && intask) {
+    } else if (fence != "" && intask) {
       print "task-brief: warning: " where "; it hides no Task heading, so this brief is complete" | "cat >&2"
     }
     # An open fence that hid Task headings already explains why none were
     # seen; the English-word hint would contradict it.
-    if (!tasks && shaped && !(infence && hidden)) {
+    if (!tasks && shaped && !(fence != "" && hidden)) {
       print "task-brief: no task headings found. Task headings must use the English word \"Task\" (\"### Task 1: ...\"), even when the rest of the plan is in another language. Headings shaped like tasks:" | "cat >&2"
       for (i = 1; i <= shaped; i++) print "  " shaped_heading[i] | "cat >&2"
     }
   }
-' "$plan" > "$out" || rc=$?
-if [ "$rc" -ne 0 ]; then
-  if [ -f "$out" ]; then rm -f "$out"; fi
-  exit "$rc"
-fi
+' "$plan" > "$tmp" || rc=$?
+[ "$rc" -eq 0 ] || exit "$rc"
 
-if [ ! -s "$out" ]; then
+if [ ! -s "$tmp" ]; then
   echo "task ${n} not found in ${plan} (no heading matching 'Task ${n}')" >&2
   exit 3
 fi
 
+if [ $# -eq 3 ]; then
+  out=$3
+else
+  # Invoke via bash rather than direct exec: some extractors (Python zipfile)
+  # strip Unix exec bits when unpacking marketplace packages (#2040).
+  dir=$("${BASH:-bash}" "$here/sdd-workspace" "$plan")
+  out="$dir/task-${n}-brief.md"
+fi
+
+cat "$tmp" > "$out"
 echo "wrote ${out}: $(wc -l < "$out" | tr -d ' ') lines"

@@ -1,0 +1,18 @@
+[PASS] in-repository plan reuses one workspace across shells
+[PASS] outside plan created by PowerShell is reused by Git Bash
+[PASS] outside plan created by Git Bash is reused by PowerShell
+[PASS] an in-flight exclusive claim is respected before publication
+[PASS] concurrent helper returns its own plan's workspace for one/shared/race.md
+[PASS] concurrent helper returns its own plan's workspace for one/shared/race.md
+[PASS] concurrent helper returns its own plan's workspace for two/shared/race.md
+[PASS] concurrent helper returns its own plan's workspace for two/shared/race.md
+[PASS] concurrent helper returns its own plan's workspace for three/shared/race.md
+[PASS] concurrent helper returns its own plan's workspace for three/shared/race.md
+[PASS] concurrent same-basename plans retain unique owners and the existing ledger
+[PASS] both -C helpers resolve the linked workspace from the primary checkout
+[PASS] both shells extract identical task lines into explicit -C-relative outputs
+[PASS] review packages cover the same worktree-only commit
+[PASS] task-start reads HEAD in the linked worktree for an external plan
+[PASS] recorded evidence preserves the same UTF-8 log across shells
+[PASS] both shells append matching records to the linked ledger only
+Checks: 17; failures: 0

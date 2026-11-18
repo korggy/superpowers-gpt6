@@ -1,0 +1,540 @@
+{
+  "rubric": "../RUBRIC.md",
+  "rubricSha256": "9615a6921c93d33598f5678ed5a116e7cba38ffaf2d5ce5d30adf6abd1dd4c82",
+  "method": "Independent rubric scoring of decision-only outputs. A pass requires the listed action and no conflicting action. Indeterminate means the response leaves the required decision ambiguous.",
+  "arms": [
+    {
+      "arm": "control",
+      "samples": [
+        {
+          "sample": 1,
+          "response": "control-1.txt",
+          "sha256": "c0cc469a9f2d662be8ccb40aeb9ebe615e413681232f4e8f480bf0bee40b4783",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            {
+              "case": 16,
+              "score": "fail",
+              "reason": "Asks about motivation before inspecting available project patterns."
+            },
+            {
+              "case": 17,
+              "score": "fail",
+              "reason": "Explains both bindings and asks the partner to choose without recommending an option."
+            },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 2,
+          "response": "control-2.txt",
+          "sha256": "81cec87f46dbb655a8de4e8feed435afe76ec08a96e609a15d3f0cb7532c2b77",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            {
+              "case": 16,
+              "score": "fail",
+              "reason": "Schedules inspection while waiting for an answer, after asking."
+            },
+            {
+              "case": 17,
+              "score": "indeterminate",
+              "reason": "Says to relate any recommendation to the motivation, leaving it unclear whether a recommendation will be made."
+            },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 3,
+          "response": "control-3.txt",
+          "sha256": "ca7a3f6fb9d5382034338dd2552b63eb3a6deae113d070884f7de9e0dc5140d7",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            {
+              "case": 16,
+              "score": "fail",
+              "reason": "Asks first and leaves inspection of available patterns to an optional later step."
+            },
+            {
+              "case": 17,
+              "score": "fail",
+              "reason": "Describes both mappings and asks for a priority decision without recommending either mapping."
+            },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 4,
+          "response": "control-4.txt",
+          "sha256": "2355a027859687cad31d7d0c854982eacd8824c55259e6b241325dad22e8543a",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            {
+              "case": 16,
+              "score": "fail",
+              "reason": "Asks first and reserves the project inspection for the subsequent design."
+            },
+            {
+              "case": 17,
+              "score": "fail",
+              "reason": "Explains the choices and asks for priority without offering a recommendation."
+            },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 5,
+          "response": "control-5.txt",
+          "sha256": "ed01b780dfedac6748250d7283496ee1062f5cf0ea0c80d66f8c3bf281e51941",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        }
+      ],
+      "totals": {
+        "pass": 82,
+        "fail": 7,
+        "indeterminate": 1
+      },
+      "perCase": {
+        "1": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "2": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "3": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "4": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "5": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "6": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "7": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "8": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "9": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "10": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "11": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "12": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "13": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "14": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "15": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "16": {
+          "pass": 1,
+          "fail": 4,
+          "indeterminate": 0
+        },
+        "17": {
+          "pass": 1,
+          "fail": 3,
+          "indeterminate": 1
+        },
+        "18": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        }
+      }
+    },
+    {
+      "arm": "baseline",
+      "samples": [
+        {
+          "sample": 1,
+          "response": "baseline-1.txt",
+          "sha256": "e4c252cf3abdb379d2d6e70ab1247a0826bdae6cafa98bfcb0ff5ddac7658217",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            {
+              "case": 6,
+              "score": "fail",
+              "reason": "Requires a full project-suite run for the arithmetic change solely because TDD was selected. The case calls for scoped TDD and separate disclosure of the unrelated suite failure."
+            },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 2,
+          "response": "baseline-2.txt",
+          "sha256": "85dc70f782fd8ebcb5317a3d3948648fa7cb5ab952a1f4118cbe33973e5307d2",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            {
+              "case": 6,
+              "score": "fail",
+              "reason": "Requires a full project-suite run for the arithmetic change solely because TDD was selected. The case calls for scoped TDD and separate disclosure of the unrelated suite failure."
+            },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 3,
+          "response": "baseline-3.txt",
+          "sha256": "a95516a78f90fb4f9fc86f86b069e6229d4b975c2019f90b39df9930e29f53a2",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            {
+              "case": 6,
+              "score": "fail",
+              "reason": "Requires a full project-suite run for the arithmetic change solely because TDD was selected. The case calls for scoped TDD and separate disclosure of the unrelated suite failure."
+            },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 4,
+          "response": "baseline-4.txt",
+          "sha256": "291fd4a6e1263ad39c3214547a470fce8e9f3ae8fd12d3182482b04f8429be77",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            {
+              "case": 6,
+              "score": "fail",
+              "reason": "Requires a full project-suite run for the arithmetic change solely because TDD was selected. The case calls for scoped TDD and separate disclosure of the unrelated suite failure."
+            },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 5,
+          "response": "baseline-5.txt",
+          "sha256": "486968ad6dc82b61aac34c014faa3d79be598c9335788efe43a09d55f4cd4bfb",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            {
+              "case": 6,
+              "score": "fail",
+              "reason": "Requires a full project-suite run for the arithmetic change solely because TDD was selected. The case calls for scoped TDD and separate disclosure of the unrelated suite failure."
+            },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        }
+      ],
+      "totals": {
+        "pass": 85,
+        "fail": 5,
+        "indeterminate": 0
+      },
+      "perCase": {
+        "1": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "2": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "3": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "4": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "5": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "6": {
+          "pass": 0,
+          "fail": 5,
+          "indeterminate": 0
+        },
+        "7": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "8": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "9": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "10": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "11": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "12": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "13": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "14": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "15": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "16": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "17": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "18": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        }
+      }
+    }
+  ],
+  "comparison": {
+    "tieDefinition": "Identical pass, fail and indeterminate counts for a case across the five samples in each arm.",
+    "tiedCases": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      18
+    ],
+    "higherControlPassCount": [
+      6
+    ],
+    "higherBaselinePassCount": [
+      16,
+      17
+    ]
+  }
+}

@@ -1,0 +1,188 @@
+[
+  {
+    "id": 1,
+    "next_actions": [
+      "Inspect the workspace for React tooling and project instructions. Scaffold only what is missing.",
+      "Build a list where the user can add a task, toggle completion, and delete a task. Exercise those interactions and run the applicable build and project checks."
+    ],
+    "deferred_actions": [],
+    "rationale": "The request authorizes ordinary implementation in the current workspace. A formal workflow is opt-in."
+  },
+  {
+    "id": 2,
+    "next_actions": [
+      "Use brainstorming. Read the existing UI patterns before the design discussion. If the purpose is still unclear, ask what the list should help someone accomplish.",
+      "Once the purpose is clear, present the two plausible designs together in a dedicated message. Sketch how each would work, explain the tradeoff, recommend one, and ask the user to choose.",
+      "Write up the chosen design and request approval of that document."
+    ],
+    "deferred_actions": [
+      "Hold scaffolding, dependency installation, and product code until design approval. Proceed beyond design only within the authorized scope."
+    ],
+    "rationale": "Choosing an approach and approving the written design are separate decisions. The demo deadline and teammate's suggestion do not waive either."
+  },
+  {
+    "id": 3,
+    "next_actions": [
+      "Fix findings 1 and 2 independently. Run each null-handling acceptance test and the applicable regression checks.",
+      "Report each verified fix and identify the outstanding decision about whether archived accounts count in revenue."
+    ],
+    "deferred_actions": [
+      "Hold findings 3 and 4, including tests that would encode either revenue rule, until the pending clarification arrives."
+    ],
+    "rationale": "Only the revenue findings depend on the missing business decision."
+  },
+  {
+    "id": 4,
+    "next_actions": [
+      "Use the already-inspected commands, exit statuses, and output for SHA A in environment E. If they demonstrate the scoped fix and all required checks passed, report it complete and cite those results. Otherwise report the specific failure or gap."
+    ],
+    "deferred_actions": [],
+    "rationale": "No new run is needed. The tested tree, inputs, configuration, and environment still match."
+  },
+  {
+    "id": 5,
+    "next_actions": [
+      "Report that the green results cover the pre-change parser and that verification of the current fix is pending.",
+      "Inspect the parser change, run the parser and consumer checks it affects plus any invalidated mandatory checks, and inspect their output and exit statuses. Reuse evidence for unaffected checks."
+    ],
+    "deferred_actions": [
+      "Withhold completion and release-readiness claims until the required results cover the current tree. If the window closes first, identify exactly which checks remain pending or failed."
+    ],
+    "rationale": "The parser is a dependency of the affected code. The three-minute window does not extend the coverage of the earlier run."
+  },
+  {
+    "id": 6,
+    "next_actions": [
+      "README URL: inspect the rendered link and validate that its target is the intended destination.",
+      "Arithmetic regression: write a test for the incorrect result, observe it fail for the expected arithmetic mismatch, apply the minimal fix, then verify the same test and affected checks pass.",
+      "Skill wording: compare fresh baseline, control, and candidate behavior on representative requests that should activate the workflow and requests that should leave it inactive. Record the observed decisions.",
+      "Run mandatory checks and report each result at its tested scope. Disclose the known unrelated suite failure. If baseline and candidate both pass, report candidate conformance without claiming demonstrated improvement."
+    ],
+    "deferred_actions": [
+      "Run the 50-minute suite only if required or justified by integration risk. Keep repair of its unrelated failure outside these changes."
+    ],
+    "rationale": "The three claims need different evidence: a correct destination, a reproduced and fixed arithmetic error, and observed activation behavior. Focused results cannot establish a full-suite pass."
+  },
+  {
+    "id": 7,
+    "next_actions": [
+      {
+        "tool": "collaboration.spawn_agent",
+        "arguments": {
+          "task_name": "inspect_bug",
+          "fork_turns": "all",
+          "message": "Inspect the bug described in the inherited conversation. Trace the affected code read-only and report the cause with file references and supporting evidence, or identify what remains unresolved."
+        }
+      }
+    ],
+    "deferred_actions": ["Implementing a fix requires authority beyond this inspection."],
+    "rationale": "The full-history fork supplies the requested context and inherits model and effort. The message carries the role and assignment."
+  },
+  {
+    "id": 8,
+    "next_actions": [
+      {
+        "tool": "collaboration.spawn_agent",
+        "arguments": {
+          "task_name": "independent_review",
+          "fork_turns": "none",
+          "model": "gpt-6.2-astra",
+          "reasoning_effort": "high",
+          "message": "Independently review the candidate in the shared workspace, read-only. Identify the review target from available project materials and inspect the complete relevant changes, including uncommitted and new files where applicable. If the target is ambiguous, report the missing scope. Return findings with file references, their impact, and any verification gaps."
+        }
+      }
+    ],
+    "deferred_actions": [],
+    "rationale": "The clean fork accepts both explicitly requested overrides. The assignment can be read without parent-chat history."
+  },
+  {
+    "id": 9,
+    "next_actions": [
+      "Run the unrelated authorized check while the implementer works. Keep the user update deadline during that check.",
+      "Once idle, use collaboration.wait_agent. At 35 seconds since the last update, use {\"timeout_ms\":25000}. Recalculate at the actual time of the wait. If fewer than 10 seconds remain, send the update first.",
+      "Handle any result on wake. On timeout, give the due update. Immediately after an update, an idle wait can use {\"timeout_ms\":60000}."
+    ],
+    "deferred_actions": ["Wait only while idle. Reserve status polling for evidence of a stall or missing report."],
+    "rationale": "The first wait has at most 25 seconds available. Each later wait must fit the tool range, the 60-second blocking limit, and the remaining update interval."
+  },
+  {
+    "id": 10,
+    "next_actions": [
+      "Verify the task checkout, current HEAD, intended diff, and target remote. Use the supported native branch control to create and check out codex/fix-retry at the current HEAD.",
+      "Stage only the approved changes, inspect the staged diff, confirm applicable checks, and commit. Push codex/fix-retry to the verified remote and confirm the remote branch points to the resulting commit."
+    ],
+    "deferred_actions": ["PR creation and cleanup are outside the approval. If an operation fails, preserve the work and report the actual failure."],
+    "rationale": "Detached HEAD means no branch is checked out. Ownership, branch capability, and authorization are independently established, so no further confirmation is needed."
+  },
+  {
+    "id": 11,
+    "next_actions": [
+      "Review the actual local patch, including any staged, unstaged, and new files in scope. Match its test evidence to the current tree and run any missing or invalidated local checks.",
+      "Report findings, validation results, and the preserved workspace location."
+    ],
+    "deferred_actions": ["Leave staging, branch creation, commits, pushes, and PR creation outside this local review."],
+    "rationale": "The user's current instruction governs. Detached HEAD permits local review, and the saved plan grants no publication authority."
+  },
+  {
+    "id": 12,
+    "next_actions": [
+      "Use the recorded mapping of K to P. Copy the needed ignored export to a safe location outside P and verify the copy before archival.",
+      "Call archive_worktree with {\"root\":\"K\"} and inspect the result. Proceed to branch cleanup only after confirmed archive success.",
+      "From a surviving checkout, inspect branch refs and git worktree list --porcelain. Verify codex/done is the intended feature branch, is merged into the intended base, and is checked out nowhere.",
+      "If present and all conditions hold, run git branch -d codex/done and confirm its removal. If already absent, report that state."
+    ],
+    "deferred_actions": ["Preserve the branch if archival is refused or uncertain, topology is unsafe, or safe deletion refuses."],
+    "rationale": "The archive omits the ignored export and removes P on success. Branch deletion needs a separate topology check after archival."
+  },
+  {
+    "id": 13,
+    "next_actions": [
+      "Preserve P, codex/done, and the needed ignored export. Report the native refusal verbatim: shared worktree cannot be archived. Identify both cleanup steps as incomplete."
+    ],
+    "deferred_actions": ["Resume only if a supported native archive becomes eligible and succeeds. Then recheck branch topology before deletion."],
+    "rationale": "A shared-worktree refusal blocks cleanup even under deadline. Manual Git or filesystem removal would bypass it."
+  },
+  {
+    "id": 14,
+    "next_actions": [
+      "Continue implementing and verifying the feature in the authorized workspace. Preserve the folder and branch."
+    ],
+    "deferred_actions": ["Any cleanup requires established provenance and explicit cleanup authority."],
+    "rationale": "A stale-looking directory name establishes neither ownership nor permission to delete."
+  },
+  {
+    "id": 15,
+    "next_actions": [
+      "Honor the selected keep-local action. Confirm the branch name, HEAD, and workspace path read-only, preserve them, and report those details with the applicable verification results."
+    ],
+    "deferred_actions": [],
+    "rationale": "The integration decision is settled and its checks remain valid. Keeping the branch locally requires no merge, publication, cleanup, repeat test run, or further choice."
+  },
+  {
+    "id": 16,
+    "next_actions": [
+      "Inspect the relevant project patterns first. Briefly reflect the directory UI the partner described, mention pertinent existing behavior, and invite corrections.",
+      "Ask one open question: What are people trying to accomplish when they open the user directory?"
+    ],
+    "deferred_actions": ["Wait for the motivation before proposing designs or implementation choices."],
+    "rationale": "The UI is described, but its purpose is missing. Example answers could steer the partner away from their actual need."
+  },
+  {
+    "id": 17,
+    "next_actions": [
+      "Present the two actual actions by name. Explain what pressing Ctrl+K would do under each assignment and how each choice affects access to the other action.",
+      "Recommend the assignment that best serves the stated reason for the shortcut, explain the tradeoff, and ask the partner which action should receive Ctrl+K."
+    ],
+    "deferred_actions": ["Hold the binding and its dependent design until the choice is resolved. Continue any independent authorized investigation."],
+    "rationale": "The motivation is known, so a concrete recommendation is possible. Stakeholder absence leaves the contested binding unresolved."
+  },
+  {
+    "id": 18,
+    "next_actions": [
+      "Present the short design in the first response. State the intended outcome and motivation, relevant repository constraints, the single viable approach, why alternatives do not fit, and the resulting user-visible behavior. Ask for approval of that design.",
+      "While awaiting approval, limit work to reading and exploration. On approval, record the short design as approved. If planning is in scope, prepare the plan for its required review."
+    ],
+    "deferred_actions": ["Hold scaffolding, dependency installation, and implementation until design approval and any applicable plan review. End at the approved design if the request is design-only."],
+    "rationale": "The settled design can go directly to approval in one message. The user still owns the approval decision."
+  }
+]

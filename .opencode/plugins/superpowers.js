@@ -79,7 +79,7 @@ export const V1_MAPPING = `**Tool Mapping for OpenCode:**
 When skills request actions, substitute OpenCode equivalents:
 - Create or update todos → \`todowrite\`
 - \`Subagent (general-purpose):\` → \`task\` with \`subagent_type: "general"\`
-- Invoke a skill → OpenCode's native \`skill\` tool. Skill ids are bare names, so drop the \`superpowers:\` prefix skills use when they name each other (\`superpowers:brainstorming\` → \`skill\` with \`name: "brainstorming"\`)
+- Invoke a skill → OpenCode's native \`skill\` tool. Skill ids are bare names, so drop the \`superpowers-gpt6:\` prefix skills use when they name each other (\`superpowers-gpt6:brainstorming\` → \`skill\` with \`name: "brainstorming"\`)
 - Read files → \`read\`
 - Create, edit, or delete files → \`apply_patch\`
 - Run shell commands → \`bash\`
@@ -97,7 +97,7 @@ export const V2_MAPPING = `**Tool Mapping for OpenCode:**
 When skills request actions, substitute OpenCode equivalents:
 - Create or update todos → OpenCode v2 has no todo tool; track the plan in a markdown file (or the harness's plan facility) instead
 - \`Subagent (general-purpose):\` → \`subagent\` with \`agent: "general"\` (give it \`description\` and \`prompt\`, optionally \`background\`; pass \`sessionID\` to continue a previous subagent)
-- Invoke a skill → OpenCode's native \`skill\` tool. Skill ids are bare names, so drop the \`superpowers:\` prefix skills use when they name each other (\`superpowers:brainstorming\` → \`skill\` with \`id: "brainstorming"\`)
+- Invoke a skill → OpenCode's native \`skill\` tool. Skill ids are bare names, so drop the \`superpowers-gpt6:\` prefix skills use when they name each other (\`superpowers-gpt6:brainstorming\` → \`skill\` with \`id: "brainstorming"\`)
 - Read files → \`read\`
 - Create, edit, or delete files → use \`patch\` with \`patchText\` when available; otherwise use \`write\` to create or overwrite files, \`edit\` for targeted changes, and \`shell\` for deletion
 - Run shell commands → \`shell\` (\`command\`, \`workdir\`, \`timeout\`, \`background\`)
@@ -207,7 +207,7 @@ const isChildSession = async (fetchSession, sessionID) => {
   } catch (err) {
     // Fail open: on lookup errors keep injecting (previous behavior) and do
     // not cache, so a transient failure can recover on the next step.
-    console.error('[superpowers] session lookup failed, treating session as top-level:', err);
+    console.error('[superpowers-gpt6] session lookup failed, treating session as top-level:', err);
     return false;
   }
   _cacheChildSession(sessionID, isChild);
@@ -333,14 +333,14 @@ async function setup(ctx) {
         try {
           draft.add(skill);
         } catch (err) {
-          console.error(`[superpowers] skill "${skill.id}" rejected by host, skipping:`, err);
+          console.error(`[superpowers-gpt6] skill "${skill.id}" rejected by host, skipping:`, err);
         }
       }
     });
   } catch (err) {
     // Never break plugin activation: one failing plugin takes down the whole
     // V2 generation (including provider/catalog plugins => no models in TUI).
-    console.error('[superpowers] skill registration failed:', err);
+    console.error('[superpowers-gpt6] skill registration failed:', err);
   }
 
   // 2. Inject bootstrap into first user message via V2 session hooks.
@@ -379,14 +379,14 @@ async function setup(ctx) {
       }
     } catch (err) {
       // Never let hook callback errors break the request pipeline.
-      console.error('[superpowers] session hook failed:', err);
+      console.error('[superpowers-gpt6] session hook failed:', err);
     }
   };
   for (const hookName of ['context', 'compaction', 'generate']) {
     try {
       await ctx.session.hook(hookName, injectBootstrap);
     } catch (err) {
-      console.error(`[superpowers] session hook registration failed (${hookName}):`, err);
+      console.error(`[superpowers-gpt6] session hook registration failed (${hookName}):`, err);
     }
   }
 }
@@ -399,7 +399,7 @@ async function setup(ctx) {
  * server() is exported for V1 compatibility.
  */
 export default {
-  id: 'superpowers',
+  id: 'superpowers-gpt6',
   server: SuperpowersPlugin,
   setup,
 };

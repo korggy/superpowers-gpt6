@@ -205,7 +205,7 @@ function assertMappingConstants(mod) {
   return failures;
 }
 
-// #2583: skills reference each other as `superpowers:<name>` (the Claude Code
+// #2583: skills reference each other as `superpowers-gpt6:<name>` (the Claude Code
 // plugin namespace), but OpenCode V1 and V2 register bare ids (`brainstorming`)
 // and their `skill` tools do an exact lookup, so a namespaced call fails with
 // "Unable to load skill". When the injected bootstrap contains namespaced
@@ -213,13 +213,13 @@ function assertMappingConstants(mod) {
 // the flavor's `skill` parameter (V1 `name`, V2 `id`).
 function assertTeachesBareSkillIds(flavor, text, param) {
   const failures = [];
-  const refs = [...new Set(text.match(/superpowers:[a-z0-9-]+/g) || [])];
+  const refs = [...new Set(text.match(/superpowers-gpt6:[a-z0-9-]+/g) || [])];
   if (refs.length === 0) return failures;
-  if (!text.includes('drop the `superpowers:` prefix')) {
-    failures.push(`expected ${flavor} bootstrap to tell the model to drop the superpowers: prefix (bootstrap references ${refs.join(', ')})`);
+  if (!text.includes('drop the `superpowers-gpt6:` prefix')) {
+    failures.push(`expected ${flavor} bootstrap to tell the model to drop the superpowers-gpt6: prefix (bootstrap references ${refs.join(', ')})`);
   }
-  if (!text.includes(`\`superpowers:brainstorming\` → \`skill\` with \`${param}: "brainstorming"\``)) {
-    failures.push(`expected ${flavor} bootstrap to show superpowers:brainstorming loading as \`skill\` with \`${param}: "brainstorming"\``);
+  if (!text.includes(`\`superpowers-gpt6:brainstorming\` → \`skill\` with \`${param}: "brainstorming"\``)) {
+    failures.push(`expected ${flavor} bootstrap to show superpowers-gpt6:brainstorming loading as \`skill\` with \`${param}: "brainstorming"\``);
   }
   return failures;
 }

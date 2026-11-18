@@ -12,6 +12,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
+if grep -Eq '"name"[[:space:]]*:[[:space:]]*"superpowers-gpt6"' "$REPO_ROOT/.codex-plugin/plugin.json"; then
+  echo 'For the BetterGood fork use: pwsh -File scripts/build-gpt6-package.ps1' >&2
+  exit 2
+fi
+
 REF="HEAD"
 OUTPUT=""
 FORMAT=""

@@ -1,9 +1,12 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, modifying behavior, or planning anything new, in software or out of it (a talk, a business, a renovation)."
+description: Use when your human partner requests brainstorming or design discussion, accepts an offer, or an established workflow preference calls for it.
 ---
 
 # Brainstorming
+
+Use this after a direct request, accepted offer, established preference, or
+supporting step of an accepted workflow. See [workflow selection](../using-superpowers/SKILL.md).
 
 You are very good at building. You build what you believe your human
 partner wants, and that belief is usually thinner than it feels. This
@@ -19,8 +22,8 @@ hundred decisions they never mention the way they would have made them.
 Before you reply, ask yourself: what do I know about what they want, and
 why?
 
-- **Everything that matters is in the request** ("make the icon cornflower
-  blue"). This is a quick, clear task. Do it, and say what you did.
+- **The purpose and design are settled.** Present the short design for
+  approval in your first message.
 - **Something non-trivial is missing.** Start the conversation.
 
 Before you start implementing, you must, in order:
@@ -29,15 +32,14 @@ Before you start implementing, you must, in order:
    human partner pick one (see Lay out the approaches).
 2. Write the design doc, short or full (see Size the Work).
 3. Get their approval of that doc.
-4. Invoke the superpowers:writing-plans skill.
+4. When planning is in scope, invoke superpowers-gpt6:writing-plans.
 
 If nothing is open when you write your first message and there's one
 sensible way, steps 1 to 3 happen in that message (see Your First
 Message).
 
-Two things aren't implementing: a spike they said yes to (see Spike to
-feel things out), and doing what they asked once they've opted out of
-the questions.
+A separately authorized spike can explore a design question (see Spike to
+feel things out). Bring its result back to the design conversation.
 
 ## Look Before You Ask
 
@@ -73,39 +75,26 @@ Move the work forward, with one of these:
   sensible way: end with the short design itself (the approach, a line on
   why the others don't fit, and the design in a few lines) and ask them
   to approve it. Their approval covers the approach and the design: write
-  the short design doc as approved and go on to the plan.
+  the short design doc as approved. A design-only request ends there.
+  When planning is in scope, hand off to writing-plans.
   Specs are often incomplete, so confirm before you build on one.
-- **They haven't:** one open question, in their own terms, about the
-  biggest thing their request leaves unsettled. Say why you're asking:
-  what the answer would change about what you build. For "a website for
-  my bakery": "If it's mostly for people deciding whether to stop by,
-  I'd lead with hours and what's in the case today; taking orders is a
-  different site. What do you want someone to do when they land on it?"
+- **They haven't:** ask one open question in their own terms about the
+  outcome they want. For “a website for my bakery”, ask what they want
+  someone to be able to do when they land on it.
 
-How the message ends depends on whether their message asked for
-brainstorming:
-
-- **They asked for it** (by name, by invoking it, or by asking for a
-  design discussion): end there. They want this conversation.
-- **They didn't:** they may not want a conversation at all. End with a
-  light, one-line offer to just get going instead, like
-  "Or if you'd rather I just dive in, say so." If they take you up on
-  it, this skill is done: state any significant how-it-gets-made choice
-  (platform, language, medium) in one plain line, then do what they
-  asked through the normal workflow.
-
-That's the whole message.
+If they explicitly opt out of brainstorming, follow their current request.
+Implementation still requires authority. A design-only request stays design-only.
 
 ## The Conversation
 
 Ask a question only when the answer would change what gets built and
 neither the request nor the project answers it. Otherwise, state your
 call and your reason as a proposal they can correct, and move the work
-forward. Process steps are always your calls: writing things up, where
+forward. Within the agreed scope, choose the process steps: writing things up, where
 files go, looking further, how to show something. Do them and say so.
 Ask one at a time. Use plain language, pitched just a little above where
 your human partner is. Match their vocabulary; never use process jargon.
-You never need to quote this skill to your human partner.
+If a skill instruction requires a pause, identify it and explain which decision it protects.
 
 Be clear and concise. Lead with what matters. Avoid jargon. When you
 report what you found, give them the most important findings and offer
@@ -151,7 +140,8 @@ beats a question.
 
 **Do recon.** Once you have a bit of grounding and looking further
 would help, go look: deeper into their codebase or project, their own
-files and data, or the web. Say what you looked for and what you found.
+files and data, or the web, within authorized scope. Continue independent
+work while awaiting a decision. Say what you looked for and what you found.
 
 **Lay out the approaches.** Once you understand what they want, and
 before you write anything up, put the ways of building it in a message
@@ -163,7 +153,8 @@ each trades off. Recommend one and say why, then ask which way they want
 to go; if they've handed you the how, say you'll go with your pick
 instead. When there's genuinely one sensible way, say so in that
 message and explain why the others don't fit; the design comes in the
-next one. This is for how it gets built; for what they want, get them
+next one. If the purpose and design were settled at intake, present them
+together using the short-design route above. This is for how it gets built; for what they want, get them
 describing first.
 
 **Show, don't tell.** Whenever seeing would help more than reading,
@@ -243,7 +234,7 @@ or two each and goes straight to your human partner, without the
 builder check.
 
 **Where it goes:** in a software repo,
-`docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`, committed.
+`docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`. Commit only when authorized.
 Otherwise, pick a sensible place and say where. Your human partner's
 preferences override both.
 
@@ -273,13 +264,14 @@ Building includes writing product code, scaffolding, installing
 dependencies, creating projects, and invoking an implementation skill.
 Reading and exploring are fine.
 
-Two exceptions. If they opted out of the questions, the skill is done
-and the gate goes with it. A spike they said yes to may be built; it
+If they explicitly opt out and authorize implementation, follow that request.
+A spike they said yes to may be built; it
 stays labeled throwaway, and keeping what it produced is a new request
 that comes back through this gate.
 
-After the design doc is approved, the next step is the plan: invoke
-superpowers:writing-plans and no other skill.
+After approval, deliver the design and stop if design alone was requested.
+When planning is authorized, invoke superpowers-gpt6:writing-plans. The
+plan requires its own review before execution.
 </HARD-GATE>
 
 ## Red Flags

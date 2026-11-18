@@ -34,7 +34,11 @@ REM the current directory. The filters use for-variable modifiers, which never
 REM re-expand the path, and skip extensionless matches and the WSL launchers
 REM (System32, Sysnative, the Store alias in WindowsApps), which fail when no
 REM Linux distro is installed.
-if not defined BASH_EXE if defined SystemRoot for /f "delims=" %%B in ('"%SystemRoot%\System32\where.exe" $PATH:bash 2^>nul') do if not defined BASH_EXE if not "%%~xB"=="" if /i not "%%~dpB"=="%SystemRoot%\System32\" if /i not "%%~dpB"=="%SystemRoot%\Sysnative\" if /i not "%%~dpB"=="%LOCALAPPDATA%\Microsoft\WindowsApps\" set "BASH_EXE=%%B"
+REM Compare the short directory names too: where.exe can return a long name
+REM even if LOCALAPPDATA or the PATH entry uses an 8.3 spelling.
+set "STORE_BASH_DIR="
+if defined LOCALAPPDATA for %%D in ("%LOCALAPPDATA%\Microsoft\WindowsApps") do set "STORE_BASH_DIR=%%~fsD\"
+if not defined BASH_EXE if defined SystemRoot for /f "delims=" %%B in ('"%SystemRoot%\System32\where.exe" $PATH:bash 2^>nul') do if not defined BASH_EXE if not "%%~xB"=="" if /i not "%%~dpB"=="%SystemRoot%\System32\" if /i not "%%~dpB"=="%SystemRoot%\Sysnative\" if /i not "%%~dpB"=="%LOCALAPPDATA%\Microsoft\WindowsApps\" if /i not "%%~dpsB"=="%STORE_BASH_DIR%" set "BASH_EXE=%%B"
 
 REM No bash found - exit silently rather than error
 REM (plugin still works, just without SessionStart context injection)

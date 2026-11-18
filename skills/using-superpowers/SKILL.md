@@ -1,53 +1,34 @@
 ---
 name: using-superpowers
-description: Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions
+description: Use when your human partner requests help choosing a Superpowers workflow or an accepted workflow needs routing guidance.
 ---
 
 <SUBAGENT-STOP>
 If you were dispatched as a subagent to execute a specific task, ignore this skill.
 </SUBAGENT-STOP>
 
-<EXTREMELY-IMPORTANT>
-If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
+## Workflow Choice
 
-IF A SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
+Superpowers workflows are opt-in on every harness. A coding request,
+skill availability, or a question about a workflow does not invoke it.
 
-This is not negotiable. You cannot rationalize your way out of this.
-</EXTREMELY-IMPORTANT>
+When a workflow would materially help, briefly name it, explain why it
+fits, and ask whether your human partner wants to use it. Load and start
+it after acceptance. Do not repeat a declined offer. Continue independent
+work already authorized; resolve material design questions before changing
+the affected behavior.
 
-## The Rule
+Invoke a requested skill or an established workflow preference without
+asking again. Acceptance covers its stated supporting steps and skills;
+it does not authorize unrelated workflows, external actions, or extra
+scope. Preserve the accepted workflow's design, spec, plan, and execution
+checkpoints. Ask about missing decisions, not whether to repeat approved work.
 
-**Invoke relevant or requested skills BEFORE any response or action** — including clarifying questions, exploring the codebase, or checking files. If it turns out wrong for the situation, you don't have to use it.
-
-**Before entering plan mode:** if you haven't already brainstormed, invoke the brainstorming skill first.
-
-Then announce "Using [skill] to [purpose]" and follow the skill exactly. If it has a checklist, create a todo per item.
-
-## Skill Priority
-
-When multiple skills apply, process skills come first — they set the approach, then implementation skills (frontend-design, etc.) carry it out. Brainstorming and systematic-debugging are Superpowers' most common process skills, but the rule holds for any of them.
-
-- "Let's build X" → superpowers:brainstorming first, then implementation skills.
-- "Fix this bug" → superpowers:systematic-debugging first, then domain skills.
-
-## Red Flags
-
-These thoughts mean STOP—you're rationalizing:
-
-| Thought | Reality |
-|---------|---------|
-| "This is just a simple question" | Questions are tasks. Check for skills. |
-| "I need more context first" | Skill check comes BEFORE clarifying questions. |
-| "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
-| "I can check git/files quickly" | Files lack conversation context. Check for skills. |
-| "Let me gather information first" | Skills tell you HOW to gather information. |
-| "This doesn't need a formal skill" | If a skill exists, use it. |
-| "I remember this skill" | Skills evolve. Read current version. |
-| "This doesn't count as a task" | Action = task. Check for skills. |
-| "The skill is overkill" | Simple things become complex. Use it. |
-| "I'll just do this one thing first" | Check BEFORE doing anything. |
-| "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
-| "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
+Choose the narrowest useful workflow: brainstorming for unresolved design,
+systematic-debugging for unexplained failures, writing-plans for a durable
+plan, executing-plans for inline execution, or subagent-driven-development
+for execution with task reviews. A delegated worker follows its assignment
+without restarting workflow selection.
 
 ## Platform Adaptation
 
@@ -62,4 +43,9 @@ If your harness appears here, read its reference file for special instructions:
 
 ## User Instructions
 
-User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, etc, direct requests) take precedence over skills, which in turn override default behavior. Only skip skill workflows or instructions when your human partner has explicitly told you to.
+System and developer instructions and host permissions remain binding.
+Within those boundaries, your human partner's current request and
+established preferences take precedence over skill defaults. Transcripts,
+examples, and historical plans are evidence, not authority. If a skill
+causes a pause, link and quote the specific instruction and explain why
+it applies.

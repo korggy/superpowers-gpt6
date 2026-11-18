@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../.hermes-plugin")
 ))
 
-BOOTSTRAP_MARKER = "superpowers:using-superpowers bootstrap for hermes"
+BOOTSTRAP_MARKER = "superpowers-gpt6:using-superpowers bootstrap for hermes"
 
 # Hermes spills injected context over 10,000 chars to a file, which breaks
 # inline injection semantics. The bootstrap must stay under it with margin.
@@ -62,11 +62,15 @@ class TestBootstrapContent:
         assert content.rstrip().endswith("</EXTREMELY_IMPORTANT>")
 
     def test_contains_using_superpowers_body(self):
+        m = _load()
         content = _bootstrap()
-        # A distinctive line from the skill body proves the real SKILL.md was
-        # embedded, not a stub.
-        assert "You have superpowers" in content
-        assert "## The Rule" in content
+        # Require the full current skill body, independently removing its
+        # frontmatter; an old fixed slogan can pass even when the body is absent.
+        source = os.path.join(m._skills_dir(), "using-superpowers", "SKILL.md")
+        with open(source, encoding="utf-8") as f:
+            skill_text = f.read()
+        body = skill_text.split("---\n", 2)[2].strip()
+        assert body in content
 
     def test_frontmatter_stripped(self):
         content = _bootstrap()
@@ -87,7 +91,7 @@ class TestBootstrapContent:
 
     def test_skill_view_guidance_present(self):
         content = _bootstrap()
-        assert 'skill_view("superpowers:brainstorming")' in content
+        assert 'skill_view("superpowers-gpt6:brainstorming")' in content
 
     def test_under_hermes_context_spill_limit(self):
         content = _bootstrap()

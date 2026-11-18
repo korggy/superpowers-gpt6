@@ -264,15 +264,27 @@ PLAN
     done
 
     for id in 2 '2|6' '6(' Overview; do
+        local expected_rc=2
+        [[ "$id" != 2 ]] || expected_rc=3
         rc=0
         (cd "$repo" && "$SDD_SCRIPTS/task-brief" plan-ids.md "$id" "$id_out" >/dev/null 2>&1) || rc=$?
-        if [[ "$rc" -eq 3 ]]; then
-            pass "task-brief '$id' matches no task (exit 3)"
+        if [[ "$rc" -eq "$expected_rc" ]]; then
+            pass "task-brief '$id' matches no task (exit $expected_rc)"
         else
-            fail "task-brief '$id' matches no task (exit 3)"
+            fail "task-brief '$id' matches no task (exit $expected_rc)"
             echo "    exit: $rc, brief: $(cat "$id_out" 2>/dev/null)"
         fi
     done
+
+    printf '## Task A1: First\n## Task A1: Duplicate\n' > "$repo/duplicate.md"
+    printf 'existing brief\n' > "$id_out"
+    rc=0
+    (cd "$repo" && bash "$SDD_SCRIPTS/task-brief" duplicate.md A1 "$id_out" >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 3 && "$(cat "$id_out")" == 'existing brief' ]]; then
+        pass "duplicate alphanumeric headings preserve the previous brief"
+    else
+        fail "duplicate alphanumeric headings preserve the previous brief"
+    fi
 
     # --- Translated task headings: say so instead of "not found" (#2496) ---
     cat > "$repo/plan-es.md" <<'PLAN'
@@ -348,6 +360,15 @@ PLAN
         fail "task-brief names the unclosed fence when it hides the requested heading"
         echo "    exit: $rc"
         echo "    stderr: $fence_err"
+    fi
+
+    printf 'existing complete brief\n' > "$fence_out"
+    rc=0
+    (cd "$repo" && bash "$SDD_SCRIPTS/task-brief" plan-unclosed.md 1 "$fence_out" >/dev/null 2>&1) || rc=$?
+    if [[ "$rc" -eq 4 && "$(cat "$fence_out")" == 'existing complete brief' ]]; then
+        pass "an unclosed fence preserves an existing complete brief"
+    else
+        fail "an unclosed fence preserves an existing complete brief"
     fi
 
     # An unclosed fence in a later task does not touch an earlier task's brief.
@@ -657,7 +678,9 @@ PLAN
     # owner, a FAT or network drive, WSL /mnt/c), the shared message alone
     # would be wrong, so git's own line has to follow it. git's test knob
     # GIT_TEST_ASSUME_DIFFERENT_OWNER simulates another owner without root.
-    local dub_err dub_msg="SDD scripts must run from inside the git working tree you're executing in, with at least one commit (current directory: $repo). If this is a new project, run 'git init' and make a first commit, then rerun."
+    local dub_dir
+    dub_dir=$(cd "$repo" && pwd)
+    local dub_err dub_msg="SDD scripts must run from inside the git working tree you're executing in, with at least one commit (current directory: $dub_dir). If this is a new project, run 'git init' and make a first commit, then rerun."
     if (cd "$repo" && GIT_TEST_ASSUME_DIFFERENT_OWNER=1 git rev-parse --show-toplevel >/dev/null 2>&1); then
         echo "  [SKIP] git refusing a dubious-ownership repo ($(git --version) ignores GIT_TEST_ASSUME_DIFFERENT_OWNER)"
     else

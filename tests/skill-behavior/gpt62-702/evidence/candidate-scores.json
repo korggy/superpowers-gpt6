@@ -1,0 +1,306 @@
+{
+  "rubric": "../RUBRIC.md",
+  "rubricSha256": "9615a6921c93d33598f5678ed5a116e7cba38ffaf2d5ce5d30adf6abd1dd4c82",
+  "method": "Independent rubric scoring of decision-only outputs. A pass requires the listed action and no conflicting action. Indeterminate means the response leaves the required decision ambiguous.",
+  "arms": [
+    {
+      "arm": "candidate",
+      "samples": [
+        {
+          "sample": 1,
+          "response": "candidate-1.txt",
+          "sha256": "bd7121ab6f9f3ed8b6368a2043f1775fd859193ff95b857e26ea99509efab99c",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 2,
+          "response": "candidate-2.txt",
+          "sha256": "9c9cdb9cfe3e009335248098224aec60df18e0a1ddd2430488c0800d9c895eef",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 3,
+          "response": "candidate-3.txt",
+          "sha256": "a975ac323d678d52181b6973924dd848aa2bee0019d83cb8b23ca4d2057dd6af",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 4,
+          "response": "candidate-4.txt",
+          "sha256": "1e729be2f5ced38eee35db90f5aa5809d8f00f84e3e96f5a660dcc3b2c8466e4",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        },
+        {
+          "sample": 5,
+          "response": "candidate-5.txt",
+          "sha256": "d3d59ffa57cdd452f1bd848d375519a6ff2deaecfa3bc338bb32efc25cc49ea8",
+          "scores": [
+            { "case": 1, "score": "pass" },
+            { "case": 2, "score": "pass" },
+            { "case": 3, "score": "pass" },
+            { "case": 4, "score": "pass" },
+            { "case": 5, "score": "pass" },
+            { "case": 6, "score": "pass" },
+            { "case": 7, "score": "pass" },
+            { "case": 8, "score": "pass" },
+            { "case": 9, "score": "pass" },
+            { "case": 10, "score": "pass" },
+            { "case": 11, "score": "pass" },
+            { "case": 12, "score": "pass" },
+            { "case": 13, "score": "pass" },
+            { "case": 14, "score": "pass" },
+            { "case": 15, "score": "pass" },
+            { "case": 16, "score": "pass" },
+            { "case": 17, "score": "pass" },
+            { "case": 18, "score": "pass" }
+          ]
+        }
+      ],
+      "totals": {
+        "pass": 90,
+        "fail": 0,
+        "indeterminate": 0
+      },
+      "perCase": {
+        "1": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "2": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "3": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "4": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "5": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "6": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "7": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "8": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "9": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "10": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "11": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "12": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "13": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "14": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "15": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "16": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "17": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        },
+        "18": {
+          "pass": 5,
+          "fail": 0,
+          "indeterminate": 0
+        }
+      }
+    }
+  ],
+  "comparison": {
+    "reference": "control-baseline-scores.json",
+    "tieDefinition": "Identical pass, fail and indeterminate counts for a case across the five samples in each arm.",
+    "againstControl": {
+      "tiedCases": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        18
+      ],
+      "higherCandidatePassCount": [
+        16,
+        17
+      ],
+      "lowerCandidatePassCount": []
+    },
+    "againstBaseline": {
+      "tiedCases": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "higherCandidatePassCount": [
+        6
+      ],
+      "lowerCandidatePassCount": []
+    },
+    "allThreeTied": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      18
+    ],
+    "inference": "Scores describe these five contextual samples of 18 decisions per arm. These arms do not isolate the contribution of individual wording changes, and no application or tool operation was executed in this decision-only evaluation."
+  }
+}

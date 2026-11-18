@@ -8,9 +8,12 @@
 
 You run scenarios without the skill (RED - watch agent fail), write skill addressing those failures (GREEN - watch agent comply), then close loopholes (REFACTOR - stay compliant).
 
-**Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill prevents the right failures.
+**Evidence scope:** Compare fresh baseline, no-guidance control and candidate
+results. Passing baselines demonstrate no improvement on that case; never
+invent a failure or reuse historical results as current evidence. Decision
+evaluations do not establish real tool integration.
 
-**REQUIRED BACKGROUND:** You MUST understand superpowers:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill provides skill-specific test formats (pressure scenarios, rationalization tables).
+**REQUIRED BACKGROUND:** You MUST understand superpowers-gpt6:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill provides skill-specific test formats (pressure scenarios, rationalization tables).
 
 **Complete worked example:** See CLAUDE_MD_TESTING.md in this directory for a full test campaign testing CLAUDE.md documentation variants.
 
